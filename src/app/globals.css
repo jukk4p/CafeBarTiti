@@ -1,0 +1,207 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Fondo mucho más suave y menos saturado (Hues 60, Saturation 15%, Lightness 97%) */
+    --background: 60 15% 97%;
+    --foreground: 17 47% 12%;
+    /* Madera Oscura #2C1810 */
+    --card: 60 15% 98%;
+    --card-foreground: 17 47% 12%;
+    --popover: 60 15% 97%;
+    --popover-foreground: 17 47% 12%;
+    --primary: 138 43% 15%;
+    /* Verde Bosque Profundo #152B1B */
+    --primary-foreground: 60 15% 97%;
+    --secondary: 46 65% 52%;
+    /* Dorado #D4AF37 */
+    --secondary-foreground: 138 43% 10%;
+    --muted: 60 10% 90%;
+    --muted-foreground: 25 30% 30%;
+    --accent: 25 76% 31%;
+    /* Marrón #8B4513 */
+    --accent-foreground: 60 15% 97%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 25 10% 85%;
+    --input: 25 10% 90%;
+    --ring: 138 43% 21%;
+    --radius: 0.75rem;
+
+    /* Theme Scales (Light Mode equivalents to match existing aesthetic) */
+    --bg-1: 60 15% 97%;
+    --bg-2: 60 15% 95%;
+    --bg-3: 60 15% 93%;
+    --bg-4: 60 10% 90%;
+    --bg-5: 60 10% 88%;
+    --bg-6: 60 10% 85%;
+
+    --text-primary: 17 47% 12%;
+    --text-secondary: 25 30% 30%;
+    --text-muted: 60 10% 40%;
+
+    --border-subtle: 25 10% 90%;
+    --border-default: 25 10% 85%;
+    --border-strong: 25 10% 75%;
+  }
+
+  /* Dark Mode Palette - Deep Tavern Aesthetic / IGU Premium */
+  .dark {
+    --background: 0 0% 5%;
+    /* True OLED Dark #0d0d0d */
+    --foreground: 60 15% 97%;
+    /* Light warm text */
+    --card: 0 0% 7%;
+    /* Dark surface #111111 */
+    --card-foreground: 60 15% 97%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 60 15% 97%;
+    --primary: 41 100% 50%;
+    /* Amber Gold #FFB000 */
+    --primary-foreground: 0 0% 0%;
+    /* Black text on primary */
+    --secondary: 46 65% 45%;
+    /* Burnished gold */
+    --secondary-foreground: 17 47% 12%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 41 100% 30%;
+    /* Deep amber */
+    --accent-foreground: 60 15% 97%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 60 15% 97%;
+    --border: 0 0% 15%;
+    /* Sleek dark border */
+    --input: 0 0% 20%;
+    --ring: 41 100% 50%;
+
+    /* Theme Scales - Dark */
+    --bg-1: 25 11% 10%;
+    --bg-2: 25 10% 13%;
+    --bg-3: 25 9% 15%;
+    --bg-4: 25 9% 19%;
+    --bg-5: 25 8% 22%;
+    --bg-6: 25 8% 26%;
+
+    --text-primary: 60 15% 95%;
+    --text-secondary: 25 10% 70%;
+    --text-muted: 25 10% 50%;
+
+    --border-subtle: 25 10% 15%;
+    --border-default: 25 10% 20%;
+    --border-strong: 25 10% 30%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  *:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased transition-colors duration-300;
+  }
+
+  /* Wood texture isolated to a pseudo-element for easier blending depending on theme */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+    background-repeat: repeat;
+    opacity: 0.3;
+    /* Light subtle texture for both themes */
+    pointer-events: none;
+  }
+
+  .dark body::before {
+    opacity: 0.15;
+    /* Even more subtle in dark mode */
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-headline tracking-tight;
+  }
+}
+
+.font-headline {
+  font-family: 'Space Grotesk', var(--font-space-grotesk), sans-serif;
+}
+
+.font-body {
+  font-family: 'Inter', var(--font-inter), sans-serif;
+}
+
+/* Custom scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+::selection {
+  @apply bg-primary/20 text-primary;
+}
+
+.glass-nav {
+  @apply bg-white/80 dark:bg-black/40 backdrop-blur-lg border-b border-black/5 dark:border-white/10;
+}
+
+/* Estilos específicos para el calendario de reservas */
+.rbc-calendar {
+  @apply font-body bg-white rounded-xl shadow-xl border-4 border-primary/10 overflow-hidden;
+}
+
+.rbc-day-available {
+  @apply bg-white text-primary hover:bg-primary/10 cursor-pointer transition-colors;
+}
+
+.rbc-day-reserved {
+  @apply bg-red-100 text-red-800 cursor-not-allowed opacity-60;
+}
+
+.rbc-day-selected {
+  @apply bg-primary text-white font-bold border-2 border-white;
+}
+
+/* Glass utility classes */
+@layer components {
+  .glass {
+    @apply backdrop-blur-md bg-white/5 dark:bg-black/40 border border-black/5 dark:border-white/10 shadow-sm dark:shadow-none;
+  }
+
+  .glass-card {
+    @apply backdrop-blur-md bg-white/5 dark:bg-black/60 border border-black/10 dark:border-white/10 rounded-xl shadow-lg dark:shadow-none;
+  }
+
+  .glass-panel {
+    @apply backdrop-blur-lg bg-black/5 dark:bg-black/90 border border-black/5 dark:border-white/5;
+  }
+
+  .glass-overlay {
+    @apply backdrop-blur-sm bg-black/60;
+  }
+
+  .glass-nav {
+    @apply backdrop-blur-md border-b border-border transition-colors duration-300;
+  }
+}

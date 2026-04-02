@@ -1,0 +1,82 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-bar-exterior",
+      "description": "Fachada principal de Bar Titi en Coria del Río",
+      "imageUrl": "/Portada/00_Portada.webp",
+      "imageHint": "Bar facade"
+    },
+    {
+      "id": "historia-titi",
+      "description": "Imagen de la familia y el legado de Bar Titi",
+      "imageUrl": "/images/historia.png",
+      "imageHint": "Family bar"
+    },
+    {
+      "id": "tapa-montadito",
+      "description": "Traditional Spanish Montadito de Pringá sandwich",
+      "imageUrl": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxidXJnZXIlMjBvciUyMHNhbmR3aWNofGVufDB8fHx8MTc3MTE3MjY4MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Montadito pringá"
+    },
+    {
+      "id": "serranito-lomo",
+      "description": "Serranito sandwich con lomo y jamón",
+      "imageUrl": "/images/serranito.png",
+      "imageHint": "Serranito sandwich"
+    },
+    {
+      "id": "serranito-pollo",
+      "description": "Chicken serranito sandwich",
+      "imageUrl": "https://images.unsplash.com/photo-1666819604716-7b60a604bb76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxDaGlja2VuJTIwc2FuZHdpY2h8ZW58MHx8fHwxNzcxMTU4MDY4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Chicken sandwich"
+    },
+    {
+      "id": "choco",
+      "description": "Chocos fritos crujientes",
+      "imageUrl": "/images/choco.png",
+      "imageHint": "Fried cuttlefish"
+    },
+    {
+      "id": "boquerones",
+      "description": "Fried anchovies",
+      "imageUrl": "https://images.unsplash.com/photo-1565733618599-cb82f14f34ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxGcmllZCUyMGZpc2h8ZW58MHx8fHwxNzcxMTU4MDY5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Fried fish"
+    },
+    {
+      "id": "adobo",
+      "description": "Marinated fried dogfish",
+      "imageUrl": "https://images.unsplash.com/photo-1700760933848-194ad3408fc4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw8fHxNYXJpbmF0ZWQlMjBmaXNofGVufDB8fHx8MTc3MTE1ODA2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Marinated fish"
+    },
+    {
+      "id": "solomillo-iberico",
+      "description": "Iberian pork sirloin",
+      "imageUrl": "https://images.unsplash.com/photo-1708388464743-80126e9cdecf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw8fHxHcmlsbGVkJTIwbWVhdHxlbnwwfHx8fDE3NzExNTgwNjl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Grilled meat"
+    },
+    {
+      "id": "presa-iberica",
+      "description": "Presa Ibérica de bellota a la brasa",
+      "imageUrl": "/images/presa.png",
+      "imageHint": "Iberian pork"
+    },
+    {
+      "id": "ensaladilla",
+      "description": "Spanish potato salad",
+      "imageUrl": "https://images.unsplash.com/photo-1649305094981-776598832597?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxQb3RhdG8lMjBzYWxhZHxlbnwwfHx8fDE3NzExNTgwNjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Potato salad"
+    },
+    {
+      "id": "croquetas",
+      "description": "Homemade ham croquettes",
+      "imageUrl": "https://images.unsplash.com/photo-1637487880059-51537f1a2afc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxDcm9xdWV0dGVzfGVufDB8fHx8MTc3MTE1ODA2OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Croquettes"
+    },
+    {
+      "id": "salmorejo",
+      "description": "Salmorejo tomato soup",
+      "imageUrl": "https://images.unsplash.com/photo-1626200949817-4719bd60000b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw8fHxUb21hdG8lMjBzb3VwfGVufDB8fHx8MTc3MTE1ODA2OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Tomato soup"
+    }
+  ]
+}

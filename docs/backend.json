@@ -1,0 +1,281 @@
+
+{
+  "entities": {
+    "MenuItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "MenuItem",
+      "type": "object",
+      "description": "Represents a single item available on the restaurant's menu, such as a dish or a drink.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the MenuItem entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the menu item (e.g., 'Patatas bravas', 'Cerveza')."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category to which the menu item belongs (e.g., 'Tapas', 'Montaditos', 'Raciones', 'Bebidas')."
+        },
+        "price": {
+          "type": "number",
+          "description": "The price of the menu item in local currency (e.g., Euros)."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the menu item, detailing its ingredients or characteristics."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to an image of the menu item.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "category",
+        "price",
+        "description"
+      ]
+    },
+    "GalleryItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "GalleryItem",
+      "type": "object",
+      "description": "Represents an image in the restaurant's gallery.",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "hint": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "url", "category"]
+    },
+    "Reservation": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Reservation",
+      "type": "object",
+      "description": "Stores details for a customer's table reservation at the restaurant.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Reservation entity."
+        },
+        "customerName": {
+          "type": "string",
+          "description": "The full name of the customer making the reservation."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "The contact phone number of the customer."
+        },
+        "reservationDate": {
+          "type": "string",
+          "description": "The specific date for which the reservation is made.",
+          "format": "date"
+        },
+        "reservationTime": {
+          "type": "string",
+          "description": "The specific time of the reservation.",
+          "format": "time"
+        },
+        "numberOfPeople": {
+          "type": "number",
+          "description": "The total number of people included in the reservation."
+        },
+        "message": {
+          "type": "string",
+          "description": "An optional message or special request from the customer regarding the reservation."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the reservation record was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "customerName",
+        "phoneNumber",
+        "reservationDate",
+        "reservationTime",
+        "numberOfPeople",
+        "createdAt"
+      ]
+    },
+    "Review": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Review",
+      "type": "object",
+      "description": "Captures customer feedback, including a rating and a written comment about their experience.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Review entity."
+        },
+        "customerName": {
+          "type": "string",
+          "description": "The name of the customer who submitted the review."
+        },
+        "rating": {
+          "type": "number",
+          "description": "The numerical rating given by the customer (e.g., 1-5 stars)."
+        },
+        "comment": {
+          "type": "string",
+          "description": "The textual feedback or comment provided by the customer."
+        },
+        "reviewDate": {
+          "type": "string",
+          "description": "The date and time when the review was submitted.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "customerName",
+        "rating",
+        "comment",
+        "reviewDate"
+      ]
+    },
+    "Suggestion": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Suggestion",
+      "type": "object",
+      "description": "Records suggestions or general feedback submitted by users via the contact form.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Suggestion entity."
+        },
+        "customerName": {
+          "type": "string",
+          "description": "The name of the customer submitting the suggestion (optional)."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the customer submitting the suggestion (optional).",
+          "format": "email"
+        },
+        "suggestionText": {
+          "type": "string",
+          "description": "The detailed content of the suggestion or feedback message."
+        },
+        "submittedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the suggestion was submitted.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "suggestionText",
+        "submittedAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/menuItems/{menuItemId}",
+        "definition": {
+          "entityName": "MenuItem",
+          "schema": {
+            "$ref": "#/backend/entities/MenuItem"
+          },
+          "description": "Stores individual menu items of the restaurant.",
+          "params": [
+            {
+              "name": "menuItemId",
+              "description": "The unique identifier for a specific menu item."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/gallery/{galleryId}",
+        "definition": {
+          "entityName": "GalleryItem",
+          "schema": {
+            "$ref": "#/backend/entities/GalleryItem"
+          },
+          "description": "Stores images for the restaurant gallery.",
+          "params": [
+            {
+              "name": "galleryId",
+              "description": "The unique identifier for a specific gallery image."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/reservations/{reservationId}",
+        "definition": {
+          "entityName": "Reservation",
+          "schema": {
+            "$ref": "#/backend/entities/Reservation"
+          },
+          "description": "Stores customer table reservations.",
+          "params": [
+            {
+              "name": "reservationId",
+              "description": "The unique identifier for a specific reservation."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/reviews/{reviewId}",
+        "definition": {
+          "entityName": "Review",
+          "schema": {
+            "$ref": "#/backend/entities/Review"
+          },
+          "description": "Stores customer reviews.",
+          "params": [
+            {
+              "name": "reviewId",
+              "description": "The unique identifier for a specific customer review."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/suggestions/{suggestionId}",
+        "definition": {
+          "entityName": "Suggestion",
+          "schema": {
+            "$ref": "#/backend/entities/Suggestion"
+          },
+          "description": "Stores customer suggestions.",
+          "params": [
+            {
+              "name": "suggestionId",
+              "description": "The unique identifier for a specific customer suggestion."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "Standard flat collection model for high performance and authorization independence."
+  }
+}
