@@ -4,24 +4,52 @@
 import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { MapPin, Phone, Mail, Clock, Plus, Minus, Navigation, Flame } from "lucide-react"
+import { MapPin, Phone, Mail, Clock, Plus, Minus, Navigation, Flame, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
 
+import { useFirebase } from "@/firebase"
+import { collection, addDoc } from "firebase/firestore"
+
 export default function ContactoPage() {
   const historyBanner = PlaceHolderImages.find(img => img.id === 'hero-bar-exterior')
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Cafe+Bar+Titi+Av.+Palomares+1+Coria+del+Rio"
+  
+  const { firestore } = useFirebase()
+  const [loading, setLoading] = React.useState(false)
+  const [submitted, setSubmitted] = React.useState(false)
+  const [formData, setFormData] = React.useState({ nombre: "", email: "", mensaje: "" })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!firestore) return
+    
+    setLoading(true)
+    try {
+      await addDoc(collection(firestore, "contacts"), {
+        ...formData,
+        createdAt: new Date().toISOString(),
+        status: "nuevo"
+      })
+      setSubmitted(true)
+      setFormData({ nombre: "", email: "", mensaje: "" })
+    } catch (error) {
+      console.error("Error sending message:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="bg-transparent min-h-screen pb-20">
-      {/* Hero Banner - Contacto y Nuestra Historia */}
+      {/* Hero Banner Section */}
       <section className="container mx-auto px-4 py-8 max-w-7xl" aria-labelledby="history-title">
         <div className="relative h-[300px] md:h-[400px] w-full rounded-3xl overflow-hidden shadow-2xl bg-black">
           <Image
-            src="/1.webp"
+            src="/historia/historia-imagen.webp"
             alt="Cafe Bar Titi Fachada Exterior"
             fill
             className="object-cover scale-110 opacity-60"
@@ -38,7 +66,7 @@ export default function ContactoPage() {
       </section>
 
       <div className="container mx-auto px-4 max-w-7xl mt-12">
-        {/* History & Schedule Section */}
+        {/* History Details */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-20">
           <div className="lg:col-span-2 space-y-8">
             <article className="space-y-4">
@@ -97,9 +125,8 @@ export default function ContactoPage() {
           </aside>
         </div>
 
-        {/* Contact Form & Map Section */}
+        {/* Contact Form Container Area */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-12" aria-labelledby="contact-form-title">
-          {/* Form */}
           <div className="space-y-8">
             <div className="bg-card p-8 md:p-10 rounded-[2rem] shadow-sm border border-border">
               <div className="mb-8">
@@ -107,25 +134,57 @@ export default function ContactoPage() {
                 <p className="text-muted-foreground">¿Tienes alguna duda o sugerencia? Escríbenos.</p>
               </div>
 
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label htmlFor="nombre" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Nombre completo</label>
-                    <Input id="nombre" placeholder="Tu nombre" className="bg-background border-muted h-12" />
+              {submitted ? (
+                <div className="bg-primary/10 border border-primary/20 rounded-2xl py-12 px-6 flex flex-col items-center text-center space-y-4">
+                  <div className="h-16 w-16 bg-primary rounded-full flex items-center justify-center text-white shadow-xl">
+                    <Sparkles className="h-8 w-8" />
+                  </div>
+                  <h3 className="text-2xl font-bold font-headline">¡Mensaje Enviado!</h3>
+                  <p className="text-muted-foreground">Muchas gracias por contactar con Cafe Bar Titi. Te responderemos lo antes posible.</p>
+                  <Button variant="outline" onClick={() => setSubmitted(false)} className="rounded-xl font-bold mt-4">
+                    Enviar otro mensaje
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label htmlFor="nombre" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Nombre completo</label>
+                      <Input 
+                        id="nombre" 
+                        required
+                        value={formData.nombre}
+                        onChange={e => setFormData({...formData, nombre: e.target.value})}
+                        placeholder="Tu nombre" className="bg-background border-muted h-12" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Correo electrónico</label>
+                      <Input 
+                        id="email" type="email" required
+                        value={formData.email}
+                        onChange={e => setFormData({...formData, email: e.target.value})}
+                        placeholder="hola@ejemplo.com" className="bg-background border-muted h-12" 
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Correo electrónico</label>
-                    <Input id="email" type="email" placeholder="hola@ejemplo.com" className="bg-background border-muted h-12" />
+                    <label htmlFor="mensaje" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Mensaje</label>
+                    <Textarea 
+                      id="mensaje" required
+                      value={formData.mensaje}
+                      onChange={e => setFormData({...formData, mensaje: e.target.value})}
+                      placeholder="¿En qué podemos ayudarte?" className="bg-background border-muted min-h-[150px] resize-none" 
+                    />
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="mensaje" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Mensaje</label>
-                  <Textarea id="mensaje" placeholder="¿En qué podemos ayudarte?" className="bg-background border-muted min-h-[150px] resize-none" />
-                </div>
-                <Button className="w-full bg-primary text-white h-14 text-lg font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90">
-                  Enviar mensaje
-                </Button>
-              </form>
+                  <Button 
+                    type="submit" disabled={loading}
+                    className="w-full bg-primary text-white h-14 text-lg font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90"
+                  >
+                    {loading ? "Enviando..." : "Enviar mensaje"}
+                  </Button>
+                </form>
+              )}
 
               {/* Info Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">

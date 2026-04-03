@@ -3,13 +3,13 @@
     {
       "id": "hero-bar-exterior",
       "description": "Fachada principal de Bar Titi en Coria del Río",
-      "imageUrl": "/Portada/00_Portada.webp",
+      "imageUrl": "/hero/00_Portada.webp",
       "imageHint": "Bar facade"
     },
     {
       "id": "historia-titi",
       "description": "Imagen de la familia y el legado de Bar Titi",
-      "imageUrl": "/images/historia.png",
+      "imageUrl": "/historia/historia-imagen.webp",
       "imageHint": "Family bar"
     },
     {
@@ -21,7 +21,7 @@
     {
       "id": "serranito-lomo",
       "description": "Serranito sandwich con lomo y jamón",
-      "imageUrl": "/images/serranito.png",
+      "imageUrl": "/menu/serranito.webp",
       "imageHint": "Serranito sandwich"
     },
     {
@@ -33,7 +33,7 @@
     {
       "id": "choco",
       "description": "Chocos fritos crujientes",
-      "imageUrl": "/images/choco.png",
+      "imageUrl": "/menu/choco.webp",
       "imageHint": "Fried cuttlefish"
     },
     {
@@ -57,7 +57,7 @@
     {
       "id": "presa-iberica",
       "description": "Presa Ibérica de bellota a la brasa",
-      "imageUrl": "/images/presa.png",
+      "imageUrl": "/menu/presa.webp",
       "imageHint": "Iberian pork"
     },
     {

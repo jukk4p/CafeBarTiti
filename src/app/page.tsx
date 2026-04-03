@@ -121,7 +121,7 @@ export default function Home() {
             >
               <div className="relative h-[300px] sm:h-[400px] w-full overflow-hidden bg-stone-900 hover:shadow-inner">
                 <Image
-                  src="/1.webp"
+                  src="/historia/historia-imagen.webp"
                   alt="Historia Cafe Bar Titi en 1968"
                   fill
                   className="object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90"
@@ -176,7 +176,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-10 pt-10">
               <div className="flex gap-5 group">
-                <div className="h-14 w-14 bg-card border border-border text-primary rounded-xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-black transition-colors duration-300">
+                <div className="h-14 w-14 bg-card border border-border text-primary rounded-xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                   <Heart className="h-5 w-5" />
                 </div>
                 <div className="flex flex-col justify-center">
@@ -185,7 +185,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="flex gap-5 group">
-                <div className="h-14 w-14 bg-card border border-border text-secondary rounded-xl flex items-center justify-center shrink-0 group-hover:bg-secondary group-hover:text-black transition-colors duration-300">
+                <div className="h-14 w-14 bg-card border border-border text-secondary rounded-xl flex items-center justify-center shrink-0 group-hover:bg-secondary group-hover:text-white transition-colors duration-300">
                   <HomeIcon className="h-5 w-5" />
                 </div>
                 <div className="flex flex-col justify-center">

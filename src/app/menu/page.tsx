@@ -53,7 +53,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
+import { useFirebase, useCollection, useMemoFirebase } from "@/firebase"
+import { collection } from "firebase/firestore"
 import { MENU_BACKUP } from "@/lib/menu-backup"
+import { Loader2 } from "lucide-react"
 
 const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa"]
 
@@ -120,6 +123,29 @@ const ALLERGENS_LIST = [
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = React.useState("Entrantes")
   const [selectedItem, setSelectedItem] = React.useState<any>(null)
+  const { firestore } = useFirebase()
+
+  // Suscribirse a la colección de platos en tiempo real
+  const menuQuery = useMemoFirebase(() => {
+    if (!firestore) return null
+    return collection(firestore, "menuItems")
+  }, [firestore])
+
+  const { data: menuItems, isLoading } = useCollection(menuQuery)
+
+  // Organizar los platos por categoría para el renderizado
+  const displayedMenu = React.useMemo(() => {
+    if (!menuItems || menuItems.length === 0) return MENU_BACKUP;
+    
+    const organized: Record<string, any> = {}
+    CATEGORIES.forEach(cat => {
+      organized[cat] = {
+        items: menuItems.filter(item => item.category === cat),
+        footer: cat === "Carnes a la Brasa" 
+      }
+    })
+    return organized
+  }, [menuItems])
 
   const AllergenBadge = ({ name, size = "sm" }: { name: string, size?: "sm" | "md" }) => {
     const config = ALLERGENS_LIST.find(a => a.name === name)
@@ -231,7 +257,7 @@ export default function MenuPage() {
         </nav>
 
         <div className="container mx-auto px-4 py-12 lg:max-w-7xl">
-          {Object.entries(MENU_BACKUP).map(([section, data]) => (
+          {Object.entries(displayedMenu).map(([section, data]) => (
             <TabsContent key={section} value={section} className="mt-0 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div className="text-center mb-10">
                 <div className="inline-flex p-3 bg-card border border-border text-primary mb-4 [&>svg]:h-6 [&>svg]:w-6 shadow-sm">
@@ -254,7 +280,7 @@ export default function MenuPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/50">
-                      {data.items.map((item) => (
+                      {data.items.map((item: any) => (
                         <tr key={item.id} className="group hover:bg-primary/[0.03] transition-colors">
                           <td className="px-8 py-7">
                             <div className="flex items-center gap-6">
@@ -284,7 +310,7 @@ export default function MenuPage() {
                                     {item.nombre}
                                   </h3>
                                   <div className="flex gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity shrink-0">
-                                    {item.alergenos?.map(a => (
+                                    {item.alergenos?.map((a: string) => (
                                       <AllergenBadge key={a} name={a} size="sm" />
                                     ))}
                                   </div>
@@ -294,21 +320,21 @@ export default function MenuPage() {
                             </div>
                           </td>
                           <td className="px-6 py-7 text-center">
-                            {item.prices.tapa ? (
+                            {item.prices?.tapa ? (
                               <span className="text-lg font-bold text-primary font-body">{item.prices.tapa.toFixed(2)}€</span>
                             ) : (
                               <span className="text-muted-foreground/10">—</span>
                             )}
                           </td>
                           <td className="px-6 py-7 text-center">
-                            {item.prices.media ? (
+                            {item.prices?.media ? (
                               <span className="text-lg font-bold text-secondary font-body">{item.prices.media.toFixed(2)}€</span>
                             ) : (
                               <span className="text-muted-foreground/10">—</span>
                             )}
                           </td>
                           <td className="px-6 py-7 text-center">
-                            {item.prices.racion ? (
+                            {item.prices?.racion ? (
                               <span className="text-lg font-bold text-accent font-body">{item.prices.racion.toFixed(2)}€</span>
                             ) : (
                               <span className="text-muted-foreground/10">—</span>
@@ -322,7 +348,7 @@ export default function MenuPage() {
 
                 {/* Mobile Version */}
                 <div className="md:hidden divide-y divide-border/50">
-                  {data.items.map((item) => (
+                  {data.items.map((item: any) => (
                     <div key={item.id} className="px-6 py-8 space-y-6 hover:bg-primary/[0.01] transition-colors">
                       <div className="flex items-start gap-5">
                         {item.image ? (
@@ -348,7 +374,7 @@ export default function MenuPage() {
                               {item.nombre}
                             </h3>
                             <div className="flex gap-1 shrink-0 items-center pt-1">
-                              {item.alergenos?.map(a => (
+                              {item.alergenos?.map((a: string) => (
                                 <AllergenBadge key={a} name={a} size="sm" />
                               ))}
                             </div>
@@ -358,9 +384,9 @@ export default function MenuPage() {
                       </div>
 
                       <div className="flex justify-center flex-wrap gap-4 pt-2">
-                        {item.prices.tapa && <PricePill label="Tapa" price={item.prices.tapa} variant="primary" />}
-                        {item.prices.media && <PricePill label="Media" price={item.prices.media} variant="secondary" />}
-                        {item.prices.racion && <PricePill label="Ración" price={item.prices.racion} variant="accent" />}
+                        {item.prices?.tapa && <PricePill label="Tapa" price={item.prices.tapa} variant="primary" />}
+                        {item.prices?.media && <PricePill label="Media" price={item.prices.media} variant="secondary" />}
+                        {item.prices?.racion && <PricePill label="Ración" price={item.prices.racion} variant="accent" />}
                       </div>
                     </div>
                   ))}

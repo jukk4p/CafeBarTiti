@@ -8,10 +8,10 @@ import { Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const HERO_IMAGES = [
-  "/Portada/00_Portada.webp",
-  "/Portada/01_Portada.webp",
-  "/Portada/02_Portada.webp",
-  "/Portada/03_Portada.webp"
+  "/hero/00_Portada.webp",
+  "/hero/01_Portada.webp",
+  "/hero/02_Portada.webp",
+  "/hero/03_Portada.webp"
 ]
 
 export function HeroSlider() {

@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/Portada/00_Portada.webp',
+        url: '/hero/00_Portada.webp',
         width: 1200,
         height: 630,
         alt: 'Fachada Cafe Bar Titi',
@@ -50,7 +50,11 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Bar Titi - Tapas Tradicionales en Coria del Río',
     description: 'El corazón del tapeo en Coria del Río desde 1968.',
-    images: ['/Portada/00_Portada.webp'],
+    images: ['/hero/00_Portada.webp'],
+  },
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
   },
   robots: {
     index: true,
@@ -74,7 +78,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Restaurant",
     "name": "Cafe Bar Titi",
-    "image": "https://bartiti.com/Portada/00_Portada.webp",
+    "image": "https://bartiti.com/hero/00_Portada.webp",
     "@id": "https://bartiti.com",
     "url": "https://bartiti.com",
     "telephone": "+34954772132",
