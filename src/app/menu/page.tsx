@@ -188,9 +188,9 @@ export default function MenuPage() {
       <section className="relative pt-8 pb-6 text-center px-4 overflow-hidden" aria-labelledby="menu-title">
         <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2" />
         <div className="relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 bg-card px-4 py-1.5 border border-border shadow-sm">
-            <Sparkles className="h-3 w-3 text-primary" />
-            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-primary">Sabor Tradicional de Sevilla</span>
+          <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
+            <Sparkles className="h-3 w-3 text-[#b5c99a]" />
+            <span className="text-white text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Sabor Tradicional de Sevilla</span>
           </div>
           <h1 id="menu-title" className="text-4xl md:text-5xl font-headline font-bold text-foreground tracking-tight">Nuestra Carta</h1>
           <p className="text-muted-foreground text-sm md:text-base italic font-light max-w-xl mx-auto border-l-2 border-primary/30 pl-4">
@@ -211,7 +211,7 @@ export default function MenuPage() {
                   <TabsTrigger
                     key={cat}
                     value={cat}
-                    className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl h-full px-4 text-[11px] font-bold uppercase tracking-wider text-foreground/80 hover:text-primary transition-colors flex items-center gap-2 flex-1 whitespace-nowrap"
+                    className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-lg rounded-full h-full px-6 text-[11px] font-bold uppercase tracking-wider text-foreground/80 hover:text-primary transition-colors flex items-center gap-2 flex-1 whitespace-nowrap"
                   >
                     <span className="shrink-0">{CATEGORY_ICONS[cat]}</span>
                     {cat}
@@ -223,7 +223,7 @@ export default function MenuPage() {
             {/* Mobile Select Wrapper */}
             <div className="lg:hidden w-full flex justify-center">
               <Select value={activeCategory} onValueChange={setActiveCategory}>
-                <SelectTrigger className="w-auto min-w-[200px] h-14 bg-card rounded-2xl border-primary/10 font-bold uppercase tracking-widest text-xs shadow-md px-6 [&>span]:w-full [&>span]:flex [&>span]:justify-center" aria-label="Seleccionar categoría">
+                <SelectTrigger className="w-auto min-w-[200px] h-14 bg-card rounded-full border-primary/10 font-bold uppercase tracking-widest text-xs shadow-md px-6 [&>span]:w-full [&>span]:flex [&>span]:justify-center" aria-label="Seleccionar categoría">
                   <SelectValue placeholder="Categoría">
                     <div className="flex items-center justify-center gap-3">
                       <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -238,7 +238,7 @@ export default function MenuPage() {
                     <SelectItem
                       key={cat}
                       value={cat}
-                      className="rounded-xl text-[11px] font-bold uppercase tracking-widest py-3 focus:bg-primary/10 focus:text-primary data-[state=checked]:bg-primary/5 data-[state=checked]:text-primary mb-1 last:mb-0 cursor-pointer transition-colors"
+                      className="rounded-full text-[11px] font-bold uppercase tracking-widest py-3 focus:bg-primary/10 focus:text-primary data-[state=checked]:bg-primary/5 data-[state=checked]:text-primary mb-1 last:mb-0 cursor-pointer transition-colors"
                     >
                       <div className="flex items-center justify-center gap-3 w-full">
                         <div className="p-1.5 bg-primary/5 rounded-lg text-primary/60">
@@ -399,7 +399,7 @@ export default function MenuPage() {
                     <Info className="h-5 w-5" />
                   </div>
                   <p className="text-xs text-muted-foreground italic font-medium leading-relaxed">
-                    Nuestra cocina abre <span className="text-secondary font-bold">todos los mediodías</span> (hasta las 16:00) y <span className="text-secondary font-bold">Jueves a Sábado noche</span>. Domingos cierre a las 17:00.
+                    Nuestra cocina abre <span className="text-secondary font-bold">todos los mediodías</span> y de <span className="text-secondary font-bold">Jueves noche a Domingo mediodía</span>.
                   </p>
                 </div>
               )}
@@ -491,7 +491,7 @@ export default function MenuPage() {
           <div className="px-8 pb-8 lg:px-12 lg:pb-12 pt-6 border-t border-black/5 flex flex-col items-center justify-center gap-3 text-center">
             <div className="flex items-center justify-center gap-2 text-primary/60">
               <Flame className="h-3 w-3" />
-              <span className="text-[10px] font-bold uppercase tracking-widest">Cocina: <span className="font-bold">Todos los mediodías (16:00)</span> y <span className="font-bold">Jueves a Sábado noche</span>. Domingos cierre a las 17:00</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Cocina: <span className="font-bold">Todos los mediodías</span> y <span className="font-bold">Jueves noche a Domingo mediodía</span></span>
             </div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">© 2026 Cafe Bar Titi Coria</p>
           </div>

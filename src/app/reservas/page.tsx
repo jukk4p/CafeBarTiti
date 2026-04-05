@@ -45,6 +45,7 @@ import { useFirestore, useCollection, useMemoFirebase } from "@/firebase"
 import { collection, query, addDoc, serverTimestamp } from "firebase/firestore"
 import { errorEmitter } from "@/firebase/error-emitter"
 import { FirestorePermissionError } from "@/firebase/errors"
+import { triggerReservationWebhook } from "@/app/actions/n8n"
 
 const LUNCH_SLOTS = ["13:00", "13:30", "14:00", "14:30", "15:00"]
 const DINNER_SLOTS = ["20:00", "20:30", "21:00", "21:30", "22:00", "22:30"]
@@ -105,15 +106,22 @@ export default function ReservasPage() {
     const dateStr = format(selectedDate, 'yyyy-MM-dd')
 
     try {
-      await addDoc(collection(firestore, "reservas"), {
+      const reservationData = {
         fecha: dateStr,
         hora: formData.hora,
         nombre: formData.nombre,
         telefono: formData.telefono,
         mesas: parseInt(formData.mesas),
         notas: formData.notas,
+      };
+
+      await addDoc(collection(firestore, "reservas"), {
+        ...reservationData,
         createdAt: serverTimestamp()
       })
+
+      // Trigger n8n webhook (Background/Async)
+      await triggerReservationWebhook(reservationData);
 
       setIsSubmitting(false)
       setIsModalOpen(false)
@@ -164,9 +172,9 @@ export default function ReservasPage() {
       <div className="container mx-auto px-4 max-w-7xl">
 
         <div className="text-center mb-12 md:mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
-            <Sparkles className="h-3 w-3 text-primary" />
-            <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Bar Titi Coria del Río</span>
+          <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
+            <Sparkles className="h-3 w-3 text-[#b5c99a]" />
+            <span className="text-white text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Bar Titi Coria del Río</span>
           </div>
           <h1 className="text-4xl md:text-7xl font-headline font-bold text-foreground leading-tight">
             Reserva tu mesa<br /><span className="italic text-primary dark:text-secondary">en Café Bar Titi</span>
@@ -204,7 +212,7 @@ export default function ReservasPage() {
                 <div className="space-y-1 md:space-y-2">
                   <h3 className="font-headline font-bold text-lg md:text-xl text-primary dark:text-foreground">Horario de Cocina</h3>
                   <p className="text-xs md:text-sm text-muted-foreground italic">
-                    Abierta de <span className="text-secondary dark:text-primary font-bold">Jueves noche a Domingo mediodía</span>.
+                    Abierta <span className="text-secondary dark:text-primary font-bold">todos los mediodías</span> y de <span className="text-secondary dark:text-primary font-bold">Jueves noche a Domingo mediodía</span>.
                   </p>
                 </div>
               </Card>
@@ -278,7 +286,7 @@ export default function ReservasPage() {
               <p className="text-xs md:text-sm text-muted-foreground leading-relaxed italic mb-6">
                 Acompaña tu reserva con nuestros platos estrella: Serranitos, Chocos fritos y la mejor carne a la brasa.
               </p>
-              <Button asChild variant="outline" className="w-full border-primary text-primary h-12 font-bold uppercase tracking-widest text-[10px] rounded-xl hover:bg-primary hover:text-white transition-colors">
+              <Button asChild variant="outline" className="w-full border-primary text-primary h-12">
                 <a href="/menu">Ver Carta Completa</a>
               </Button>
             </Card>

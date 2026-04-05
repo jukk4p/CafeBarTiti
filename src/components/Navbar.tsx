@@ -76,15 +76,15 @@ export function Navbar() {
           </div>
 
           {/* CTA Reservas (Desktop) */}
-          <Button asChild size="sm" className="hidden sm:flex bg-[#1a4731] dark:bg-primary text-white dark:text-black hover:bg-[#1a4731]/90 dark:hover:bg-primary/90 text-xs font-bold tracking-widest px-6 h-11 rounded-md uppercase shadow-sm dark:shadow-lg border-none">
+          <Button asChild size="sm" className="hidden sm:flex bg-[#1a4731] dark:bg-primary text-white dark:text-black border-none shadow-sm dark:shadow-lg">
             <Link href="/reservas">Reservar Mesa</Link>
           </Button>
 
           {/* Theme Switch & Hamburger wrapper (Mobile) */}
-          <div className="flex sm:hidden items-center gap-2">
+          <div className="flex lg:hidden items-center gap-2">
             <ThemeToggle />
             <button
-              className="md:hidden text-foreground dark:text-white p-2.5 -mr-1"
+              className="lg:hidden text-foreground dark:text-white p-2.5 -mr-1"
               onClick={() => setIsOpen(!isOpen)}
               aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
             >
@@ -113,7 +113,7 @@ export function Navbar() {
               {item.name}
             </Link>
           ))}
-          <Button asChild size="lg" className="w-full bg-primary text-white mt-4 uppercase tracking-widest text-xs font-bold">
+          <Button asChild size="lg" className="w-full mt-4">
             <Link href="/reservas" onClick={() => setIsOpen(false)}>RESERVAR MESA</Link>
           </Button>
         </div>

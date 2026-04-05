@@ -40,7 +40,7 @@ export default function AdminInfoPage() {
       lun_mie: "06:00 - 00:00",
       jue_sab: "06:00 - 02:00",
       dom: "06:00 - 17:00",
-      cocina: "Jueves noche a Domingo"
+      cocina: "Todos los mediodías | Jueves noche a Domingo mediodía"
     }
   })
 

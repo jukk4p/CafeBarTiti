@@ -46,8 +46,8 @@ export function HeroSlider() {
       ))}
 
       <div className="relative z-10 max-w-4xl space-y-6">
-        <div className="inline-flex items-center gap-2 bg-primary/80 backdrop-blur-sm px-4 py-1.5 rounded-full mb-4 border border-white/10">
-          <Sparkles className="h-3 w-3 text-white" />
+        <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 backdrop-blur-md px-5 py-2 rounded-full mb-4 border border-white/10 shadow-lg shadow-black/20">
+          <Sparkles className="h-3 w-3 text-[#b5c99a]" />
           <span className="text-white text-[10px] tracking-[0.2em] font-bold uppercase">TRADICIÓN SEVILLANA DESDE 1968</span>
         </div>
         <h1 className="text-5xl md:text-7xl font-headline font-bold text-white leading-[1.1] drop-shadow-2xl">
@@ -57,10 +57,10 @@ export function HeroSlider() {
           Desde 1968, el sabor de Coria del Río servido con alma y tradición familiar.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
-          <Button asChild size="lg" className="bg-primary text-white hover:bg-primary/90 text-[10px] font-bold tracking-widest px-10 py-6 rounded-md uppercase shadow-xl">
+          <Button asChild size="lg" className="px-10 py-6 shadow-xl">
             <Link href="/menu">VER NUESTRA CARTA</Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="bg-white/5 text-white border-white/20 backdrop-blur-md hover:bg-white/10 text-[10px] font-bold tracking-widest px-10 py-6 rounded-md uppercase">
+          <Button asChild variant="outline" size="lg" className="bg-white/5 border-white/20 text-white backdrop-blur-md hover:bg-white/20 hover:border-white/40 px-10 py-6">
             <Link href="/reservas">RESERVAR MESA</Link>
           </Button>
         </div>

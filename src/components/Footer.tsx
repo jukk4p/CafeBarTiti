@@ -12,7 +12,7 @@ export function Footer() {
   return (
     <footer className="bg-[#1A1614] dark:bg-[#050505] border-t border-white/5 text-white pt-16 pb-12 transition-colors duration-300">
       <div className="container mx-auto px-6 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12 md:mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
 
           {/* Brand & Social */}
           <div className="flex flex-col items-center text-center md:items-start md:text-left space-y-6">
@@ -73,10 +73,6 @@ export function Footer() {
                 <span className="font-medium">Domingos</span>
                 <span className="font-bold">06:00 - 17:00</span>
               </div>
-              <div className={`flex items-center justify-center md:justify-start gap-2 pt-4 ${brandGreen}`}>
-                <Flame className="h-3 w-3" />
-                <span className="text-[9px] font-bold uppercase tracking-widest">Cocina: Jueves noche a Domingo</span>
-              </div>
             </div>
           </div>
 
@@ -104,6 +100,17 @@ export function Footer() {
                 <span className="text-[9px] font-bold text-white uppercase tracking-widest whitespace-nowrap">Ver en Google Maps</span>
               </div>
             </Link>
+          </div>
+        </div>
+
+        {/* Full Width Kitchen Hours */}
+        <div className="mb-12 py-6 border-y border-white/5 dark:border-border/10 flex flex-col md:flex-row items-center justify-center gap-4 text-center">
+          <div className="flex items-center gap-3">
+            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse`} />
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-white whitespace-nowrap">
+              Cocina: Todos los mediodías y Jueves noche a Domingo mediodía
+            </span>
+            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse`} />
           </div>
         </div>
 

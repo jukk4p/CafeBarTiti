@@ -113,7 +113,7 @@ export default function ContactoPage() {
                     <h4 className="font-bold text-sm uppercase tracking-wider">Horario de Cocina</h4>
                   </div>
                   <p className="text-xs text-muted-foreground italic font-medium leading-relaxed">
-                    Nuestra cocina permanece abierta de <span className="text-secondary font-bold">Jueves noche a Domingo</span>.
+                    Abierta <span className="text-secondary dark:text-primary font-bold">todos los mediodías</span> y de <span className="text-secondary dark:text-primary font-bold">Jueves noche a Domingo mediodía</span>.
                   </p>
                 </div>
 
@@ -141,7 +141,7 @@ export default function ContactoPage() {
                   </div>
                   <h3 className="text-2xl font-bold font-headline">¡Mensaje Enviado!</h3>
                   <p className="text-muted-foreground">Muchas gracias por contactar con Cafe Bar Titi. Te responderemos lo antes posible.</p>
-                  <Button variant="outline" onClick={() => setSubmitted(false)} className="rounded-xl font-bold mt-4">
+                  <Button variant="outline" onClick={() => setSubmitted(false)} className="mt-4">
                     Enviar otro mensaje
                   </Button>
                 </div>
@@ -179,7 +179,7 @@ export default function ContactoPage() {
                   </div>
                   <Button 
                     type="submit" disabled={loading}
-                    className="w-full bg-primary text-white h-14 text-lg font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90"
+                    className="w-full shadow-lg shadow-primary/20"
                   >
                     {loading ? "Enviando..." : "Enviar mensaje"}
                   </Button>
@@ -252,7 +252,7 @@ export default function ContactoPage() {
               </div>
 
               <div className="flex justify-start pointer-events-auto">
-                <Button asChild className="bg-primary text-black gap-2 rounded-full px-8 h-12 shadow-lg hover:shadow-primary/30 transition-shadow hover:-translate-y-1">
+                <Button asChild className="gap-2 shadow-lg hover:shadow-primary/30">
                   <Link href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
                     <Navigation className="h-4 w-4" /> Cómo llegar
                   </Link>

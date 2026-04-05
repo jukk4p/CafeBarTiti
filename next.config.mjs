@@ -1,6 +1,9 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: {
+    N8N_WEBHOOK_URL: "https://n8n-yiezniczwepznycn3bf3kj1n.137.74.115.57.sslip.io/webhook-test/38685c10-8a73-4e57-a50a-7c836ed96936",
+  },
   /* Configuración optimizada para producción */
   // Mejora el rendimiento en Docker/VPS
   output: 'standalone',
