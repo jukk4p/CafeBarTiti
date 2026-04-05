@@ -52,10 +52,6 @@ export const metadata: Metadata = {
     description: 'El corazón del tapeo en Coria del Río desde 1968.',
     images: ['/hero/00_Portada.webp'],
   },
-  icons: {
-    icon: '/icon.png',
-    apple: '/icon.png',
-  },
   robots: {
     index: true,
     follow: true,
