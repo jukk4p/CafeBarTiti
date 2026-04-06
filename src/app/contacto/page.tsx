@@ -108,12 +108,12 @@ export default function ContactoPage() {
                 </div>
 
                 <div className="pt-4 border-t border-muted/20">
-                  <div className="flex items-center gap-3 text-secondary mb-2">
+                  <div className="flex items-center gap-3 text-primary mb-2">
                     <Flame className="h-5 w-5" />
                     <h4 className="font-bold text-sm uppercase tracking-wider">Horario de Cocina</h4>
                   </div>
                   <p className="text-xs text-muted-foreground italic font-medium leading-relaxed">
-                    Abierta <span className="text-secondary dark:text-primary font-bold">todos los mediodías</span> y de <span className="text-secondary dark:text-primary font-bold">Jueves noche a Domingo mediodía</span>.
+                    Abierta <span className="text-primary font-bold">todos los mediodías</span> y de <span className="text-primary font-bold">Jueves noche a Domingo mediodía</span>.
                   </p>
                 </div>
 
@@ -213,50 +213,46 @@ export default function ContactoPage() {
             </div>
           </div>
 
-          {/* Map Interactive Area */}
-          <div className="relative rounded-[2rem] overflow-hidden shadow-sm min-h-[500px] border border-muted group" role="img" aria-label="Mapa de ubicación">
-            <Image
-              src="https://images.unsplash.com/photo-1524661135-423995f22d0b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYXB8ZW58MHx8fHwxNzcxMTc2NTA2fDA&ixlib=rb-4.1.0&q=80&w=1080"
-              alt="Mapa de Ubicación de Cafe Bar Titi"
-              fill
-              className="object-cover grayscale opacity-40 group-hover:opacity-50 transition-opacity duration-500"
+          {/* Map Interactive Area - REAL Google Maps Integration */}
+          <div className="relative rounded-[3rem] overflow-hidden shadow-2xl min-h-[500px] border border-muted group h-full">
+            <iframe
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3175.765625907406!2d-6.057145524141!3d37.28911077227448!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1272c700389b23%3A0x53962cf33a184785!2sBar%20Titi!5e0!3m2!1ses!2ses!4v1712431234567!5m2!1ses!2ses"
+              className="absolute inset-0 grayscale contrast-125 brightness-75 hover:grayscale-0 transition-all duration-1000"
             />
+            
             {/* Map Overlay Elements */}
             <div className="absolute inset-0 p-8 flex flex-col justify-between pointer-events-none">
-              <div className="flex justify-end gap-2 pointer-events-auto">
-                <button className="bg-card p-2 rounded-lg shadow-md border border-border hover:bg-muted transition-colors" aria-label="Aumentar zoom"><Plus className="h-4 w-4" /></button>
-                <button className="bg-card p-2 rounded-lg shadow-md border border-border hover:bg-muted transition-colors" aria-label="Disminuir zoom"><Minus className="h-4 w-4" /></button>
-              </div>
-
-              <div className="flex justify-center">
-                <Link
-                  href={googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-card px-6 py-4 rounded-2xl shadow-xl flex items-center gap-4 border border-border pointer-events-auto hover:scale-105 transition-transform"
-                >
+              <div className="flex justify-center mt-4">
+                <div className="bg-background/90 dark:bg-black/80 backdrop-blur-md px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border border-border pointer-events-auto hover:scale-105 transition-transform">
                   <div className="p-3 bg-primary rounded-xl">
-                    <Image
-                      src="https://picsum.photos/seed/restaurant-icon/40/40"
-                      alt="Restaurante"
-                      width={24}
-                      height={24}
-                      className="invert"
+                    <img
+                      src="/historia/historia-imagen.webp"
+                      alt="Bar Titi"
+                      className="h-10 w-10 object-cover rounded-md"
                     />
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-bold text-lg">Cafe Bar Titi</span>
+                    <span className="font-bold text-lg text-foreground">Cafe Bar Titi</span>
                     <span className="text-xs text-muted-foreground">Av. Palomares, 1</span>
                   </div>
-                </Link>
+                </div>
               </div>
 
-              <div className="flex justify-start pointer-events-auto">
-                <Button asChild className="gap-2 shadow-lg hover:shadow-primary/30">
+              <div className="flex justify-start items-end gap-4 pointer-events-auto">
+                <Button asChild className="gap-2 shadow-2xl bg-primary text-white hover:scale-105 transition-transform rounded-full px-6 h-12">
                   <Link href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
                     <Navigation className="h-4 w-4" /> Cómo llegar
                   </Link>
                 </Button>
+                <div className="hidden md:flex bg-background/80 backdrop-blur-sm px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border shadow-lg">
+                  Coria del Río, Sevilla
+                </div>
               </div>
             </div>
           </div>

@@ -31,9 +31,13 @@ import {
   UtensilsCrossed,
   X,
   Zap,
-  Clock,
   MapPin,
-  Beer
+  Beer,
+  Search,
+  Filter,
+  CheckCircle2,
+  AlertCircle,
+  PlusCircle
 } from "lucide-react"
 import {
   Select,
@@ -107,27 +111,35 @@ const ALLERGEN_ICONS: Record<string, React.ReactNode> = {
 };
 
 const ALLERGENS_LIST = [
-  { name: "Contiene Gluten", color: "bg-orange-600" },
-  { name: "Crustáceos", color: "bg-blue-500" },
-  { name: "Huevos", color: "bg-yellow-500" },
-  { name: "Pescado", color: "bg-blue-800" },
-  { name: "Cacahuetes", color: "bg-amber-800" },
-  { name: "Soja", color: "bg-green-700" },
-  { name: "Lácteos", color: "bg-orange-800" },
-  { name: "Frutos de cáscara", color: "bg-red-900" },
-  { name: "Apio", color: "bg-emerald-600" },
-  { name: "Mostaza", color: "bg-yellow-700" },
-  { name: "Granos de sésamo", color: "bg-yellow-300 text-black" },
-  { name: "Dióxido de azufre y sulfitos", color: "bg-purple-600" },
-  { name: "Altramuces", color: "bg-yellow-400 text-black" },
-  { name: "Moluscos", color: "bg-blue-400" },
+  { name: "Contiene Gluten", label: "Gluten", color: "bg-orange-600" },
+  { name: "Crustáceos", label: "Crustáceos", color: "bg-blue-500" },
+  { name: "Huevos", label: "Huevos", color: "bg-yellow-500" },
+  { name: "Pescado", label: "Pescado", color: "bg-blue-800" },
+  { name: "Cacahuetes", label: "Cacahuetes", color: "bg-amber-800" },
+  { name: "Soja", label: "Soja", color: "bg-green-700" },
+  { name: "Lácteos", label: "Lácteos", color: "bg-orange-800" },
+  { name: "Frutos de cáscara", label: "Frutos", color: "bg-red-900" },
+  { name: "Apio", label: "Apio", color: "bg-emerald-600" },
+  { name: "Mostaza", label: "Mostaza", color: "bg-yellow-700" },
+  { name: "Granos de sésamo", label: "Sésamo", color: "bg-yellow-300 text-black" },
+  { name: "Dióxido de azufre y sulfitos", label: "Sulfitos", color: "bg-purple-600" },
+  { name: "Altramuces", label: "Altramuces", color: "bg-yellow-400 text-black" },
+  { name: "Moluscos", label: "Moluscos", color: "bg-blue-400" },
 ];
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = React.useState("Entrantes")
   const [selectedItem, setSelectedItem] = React.useState<any>(null)
+  const [searchTerm, setSearchTerm] = React.useState("")
+  const [excludedAllergens, setExcludedAllergens] = React.useState<string[]>([])
   const [isVisible, setIsVisible] = React.useState(true)
   const [lastScrollY, setLastScrollY] = React.useState(0)
   const { firestore } = useFirebase()
+
+  const toggleAllergen = (name: string) => {
+    setExcludedAllergens(prev => 
+      prev.includes(name) ? prev.filter(a => a !== name) : [...prev, name]
+    )
+  }
 
   // Control de scroll inteligente para el selector de menú
   React.useEffect(() => {
@@ -163,26 +175,34 @@ export default function MenuPage() {
     
     CATEGORIES.forEach(cat => {
       // 1. Filtramos de Firebase para esta categoría
-      const firestoreItems = hasFirebaseData ? menuItems.filter(item => 
+      let items = hasFirebaseData ? menuItems.filter(item => 
         (item.categoria === cat || item.category === cat)
-      ) : []
+      ) : (MENU_BACKUP[cat]?.items || [])
 
-      // 2. Si Firebase para esa categoría está vacío, usamos Backup
-      if (firestoreItems.length === 0) {
-        organized[cat] = {
-          items: MENU_BACKUP[cat]?.items || [],
-          footer: MENU_BACKUP[cat]?.footer || (cat === "Carnes a la Brasa" ? "Consultar carnes fuera de carta." : undefined)
-        }
-      } else {
-        organized[cat] = {
-          items: firestoreItems,
-          footer: cat === "Carnes a la Brasa" ? "Consultar carnes fuera de carta." : undefined
-        }
+      // 2. Filtro de Búsqueda
+      if (searchTerm) {
+        const lowerSearch = searchTerm.toLowerCase()
+        items = items.filter((item: any) => 
+          item.nombre.toLowerCase().includes(lowerSearch) || 
+          (item.desc && item.desc.toLowerCase().includes(lowerSearch))
+        )
+      }
+
+      // 3. Filtro de Alérgenos (Excluir)
+      if (excludedAllergens.length > 0) {
+        items = items.filter((item: any) => 
+          !item.alergenos?.some((a: string) => excludedAllergens.includes(a))
+        )
+      }
+
+      organized[cat] = {
+        items: items,
+        footer: cat === "Carnes a la Brasa" ? "Consultar carnes fuera de carta." : MENU_BACKUP[cat]?.footer
       }
     })
     
     return organized
-  }, [menuItems])
+  }, [menuItems, searchTerm, excludedAllergens])
 
   const AllergenBadge = ({ name, size = "sm" }: { name: string, size?: "sm" | "md" }) => {
     const config = ALLERGENS_LIST.find(a => a.name === name)
@@ -232,6 +252,59 @@ export default function MenuPage() {
           <p className="text-muted-foreground text-sm md:text-base italic font-light max-w-xl mx-auto border-l-2 border-primary/30 pl-4">
             "Tradición de Coria del Río servida con alma en cada bocado desde 1968."
           </p>
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 mb-8 lg:max-w-7xl animate-in fade-in slide-in-from-top-2 duration-700">
+        <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-3xl p-6 md:p-6 shadow-xl flex flex-col md:flex-row gap-6 items-center">
+          {/* Search Input Area - Narrower to give more room to filters */}
+          <div className="relative w-full md:w-56 lg:w-72 group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <input 
+              type="text"
+              placeholder="¿Qué te apetece hoy?"
+              className="w-full bg-background/50 border border-border/50 rounded-2xl py-3 pl-11 pr-4 text-sm text-center md:text-left focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all placeholder:text-muted-foreground/60"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="w-full md:w-px h-px md:h-10 bg-border/50" />
+
+          {/* Allergen Filters Area - Grid layout for perfect rows */}
+          <div className="w-full md:flex-1">
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <div className="flex items-center gap-2 shrink-0 text-primary justify-center md:justify-start">
+                <Filter className="h-3.5 w-3.5" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">Excluir:</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-1.5 md:gap-2 w-full">
+                {ALLERGENS_LIST.map((al) => {
+                  const isExcluded = excludedAllergens.includes(al.name);
+                  return (
+                    <button
+                      key={al.name}
+                      onClick={() => toggleAllergen(al.name)}
+                      className={cn(
+                        "flex items-center gap-1 md:gap-1.5 px-1.5 py-1.5 lg:px-2 lg:py-1.5 rounded-full border transition-all duration-300 w-full justify-center lg:justify-start overflow-hidden",
+                        isExcluded 
+                        ? "bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400 ring-1 ring-red-500/20 shadow-md scale-95" 
+                        : "bg-background/50 border-border hover:border-primary/30 hover:bg-primary/5 text-muted-foreground hover:scale-105"
+                      )}
+                    >
+                      <div className={cn(
+                        "h-3.5 w-3.5 lg:h-3.5 lg:w-3.5 rounded-full flex items-center justify-center text-white p-0.5 shadow-sm shrink-0",
+                        isExcluded ? "bg-red-500 font-bold" : al.color
+                      )}>
+                        {isExcluded ? <X className="h-full w-full stroke-[3]" /> : ALLERGEN_ICONS[al.name]}
+                      </div>
+                      <span className="text-[7.5px] lg:text-[8.5px] font-bold uppercase tracking-tighter whitespace-nowrap">{al.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -313,7 +386,24 @@ export default function MenuPage() {
                 <div className="h-[2px] w-16 bg-primary/20 mx-auto mt-4" />
               </div>
 
-              <div className="bg-card rounded-3xl border border-border shadow-2xl overflow-hidden glass-card">
+              {data.items.length === 0 ? (
+                <div className="py-20 text-center space-y-4 bg-muted/10 rounded-3xl border border-dashed border-border/50">
+                  <div className="p-4 bg-background rounded-full w-fit mx-auto shadow-sm">
+                    <Utensils className="h-8 w-8 text-muted-foreground/30" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-lg font-headline font-bold text-foreground italic">No se han encontrado platos</p>
+                    <p className="text-sm text-muted-foreground">Prueba a ajustar tu búsqueda o los filtros de alérgenos.</p>
+                  </div>
+                  <button 
+                    onClick={() => {setSearchTerm(""); setExcludedAllergens([])}}
+                    className="text-xs font-bold text-primary uppercase tracking-widest hover:underline"
+                  >
+                    Restablecer filtros
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-card rounded-3xl border border-border shadow-2xl overflow-hidden glass-card">
                 {/* Desktop Version */}
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left">
@@ -446,6 +536,7 @@ export default function MenuPage() {
                   ))}
                 </div>
               </div>
+            )}
 
               {data.footer && (
                 <div className="mt-8 bg-card/60 backdrop-blur-md p-5 rounded-3xl border border-border/50 flex items-center gap-5 shadow-sm max-w-2xl mx-auto">

@@ -206,13 +206,13 @@ export default function ReservasPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               <Card className="bg-card/80 dark:bg-white/5 border-border/50 dark:border-white/10 glass shadow-md rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 flex items-start gap-4 md:gap-5">
-                <div className="bg-secondary/20 dark:bg-primary/20 p-3 md:p-4 rounded-xl md:rounded-2xl text-secondary dark:text-primary">
+                <div className="bg-primary/10 dark:bg-primary/20 p-3 md:p-4 rounded-xl md:rounded-2xl text-primary">
                   <Clock className="h-6 w-6 md:h-8 md:w-8" />
                 </div>
                 <div className="space-y-1 md:space-y-2">
                   <h3 className="font-headline font-bold text-lg md:text-xl text-primary dark:text-foreground">Horario de Cocina</h3>
                   <p className="text-xs md:text-sm text-muted-foreground italic">
-                    Abierta <span className="text-secondary dark:text-primary font-bold">todos los mediodías</span> y de <span className="text-secondary dark:text-primary font-bold">Jueves noche a Domingo mediodía</span>.
+                    Abierta <span className="text-primary font-bold">todos los mediodías</span> y de <span className="text-primary font-bold">Jueves noche a Domingo mediodía</span>.
                   </p>
                 </div>
               </Card>
@@ -233,28 +233,28 @@ export default function ReservasPage() {
           <div className="lg:col-span-4 space-y-8">
             <Card className="rounded-[2rem] md:rounded-[2.5rem] shadow-xl border-none dark:border-solid dark:border-white/10 bg-primary dark:bg-white/5 p-8 md:p-10 space-y-8 glass">
               <div className="space-y-4">
-                <div className="flex items-center gap-3 text-secondary dark:text-primary">
+                <div className="flex items-center gap-3 text-primary">
                   <Info className="h-5 w-5 md:h-6 md:w-6" />
                   <h3 className="text-xl md:text-2xl font-headline font-bold">Información Útil</h3>
                 </div>
                 <ul className="space-y-4 text-[13px] md:text-sm font-light text-white/90 dark:text-foreground/80 italic leading-relaxed">
                   <li className="flex gap-3">
-                    <ChevronRight className="h-4 w-4 text-secondary shrink-0 mt-0.5" />
+                    <ChevronRight className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                     <span>Límite de 4 mesas diarias por reserva online.</span>
                   </li>
                   <li className="flex gap-3">
-                    <ChevronRight className="h-4 w-4 text-secondary shrink-0 mt-0.5" />
+                    <ChevronRight className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                     <span>Se ruega puntualidad. La mesa se mantendrá 15 min.</span>
                   </li>
                   <li className="flex gap-3">
-                    <ChevronRight className="h-4 w-4 text-secondary shrink-0 mt-0.5" />
+                    <ChevronRight className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                     <span>Indíquenos en 'Notas' si prefiere terraza o interior.</span>
                   </li>
                 </ul>
               </div>
 
               <div className="pt-8 border-t border-white/10 dark:border-border/50">
-                <h4 className="text-lg font-headline font-bold mb-4 text-secondary dark:text-primary">Ubicación</h4>
+                <h4 className="text-lg font-headline font-bold mb-4 text-primary">Ubicación</h4>
                 <Link
                   href={googleMapsUrl}
                   target="_blank"
@@ -267,8 +267,8 @@ export default function ReservasPage() {
                     className="w-full h-full object-cover grayscale opacity-40 group-hover:opacity-60 transition-all duration-700"
                   />
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-                    <div className="bg-secondary dark:bg-primary p-2.5 rounded-full mb-2 shadow-2xl group-hover:scale-110 transition-transform">
-                      <MapPin className="h-5 w-5 text-primary dark:text-background" />
+                    <div className="bg-primary p-2.5 rounded-full mb-2 shadow-2xl group-hover:scale-110 transition-transform">
+                      <MapPin className="h-5 w-5 text-white dark:text-background" />
                     </div>
                     <span className="text-[9px] font-bold text-white dark:text-background bg-primary dark:bg-primary px-4 py-1.5 rounded-full border border-white/20 dark:border-transparent uppercase tracking-widest shadow-lg">
                       Av. Palomares, 1
@@ -296,9 +296,9 @@ export default function ReservasPage() {
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="w-[95%] sm:max-w-[600px] p-0 overflow-hidden border-none rounded-[2rem] md:rounded-[3rem] bg-background">
-          <DialogHeader className="bg-primary p-6 md:p-10 text-white border-b-4 border-secondary">
+          <DialogHeader className="bg-primary p-6 md:p-10 text-white border-b-4 border-secondary/30">
             <DialogTitle className="text-2xl md:text-4xl font-headline flex items-center gap-3">
-              <CalendarIcon className="h-6 w-6 md:h-8 md:w-8 text-secondary" />
+              <CalendarIcon className="h-6 w-6 md:h-8 md:w-8 text-primary/30 dark:text-secondary" />
               Finalizar Reserva
             </DialogTitle>
             <DialogDescription className="text-white/60 font-medium uppercase tracking-widest text-[10px] mt-2">
