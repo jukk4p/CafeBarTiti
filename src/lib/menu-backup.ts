@@ -90,5 +90,19 @@ export const MENU_BACKUP: Record<string, MenuSection> = {
       { id: "presa-iberica", nombre: "Presa Ibérica", desc: "Presa ibérica de máxima calidad a la brasa.", prices: { tapa: 6.50, racion: 13.00 }, image: "/menu/presa.webp" },
     ],
     footer: "En todas las carnes: suplemento con jamón añadido de 4,00€. Salsa extra: 0,50€."
+  },
+  "Bebidas": {
+    items: [
+      { id: "cana-cruzcampo", nombre: "Caña Cruzcampo", desc: "Nuestra cerveza de barril, tirada a la perfección.", prices: { tapa: 1.50 }, image: "/menu/cana.png" },
+      { id: "botellin-cruzcampo", nombre: "Botellín Cruzcampo", desc: "El tercio clásico, helado.", prices: { tapa: 1.80 }, image: "/menu/botellin.png" },
+      { id: "jarra-cruzcampo", nombre: "Jarra de Cerveza", desc: "Medio litro de Cruzcampo bien tirada.", prices: { racion: 3.50 }, image: "/menu/jarra.png" },
+      { id: "mosto-aljarafe", nombre: "Mosto del Aljarafe", desc: "Vino joven típico de nuestra tierra, suave y afrutado.", prices: { tapa: 1.50, media: 4.50, racion: 8.00 }, image: "/menu/mosto.png" },
+      { id: "manzanilla-sanlucar", nombre: "Manzanilla de Sanlúcar", desc: "Vino generoso ideal para acompañar el pescaito frito.", prices: { tapa: 1.80, media: 12.00 }, image: "/menu/manzanilla.png" },
+      { id: "vino-tinto-ribera", nombre: "Vino Tinto (Ribera o Rioja)", desc: "Copa de vino tinto seleccionado de la casa.", prices: { tapa: 2.50 }, image: "/menu/vino_tinto.png" },
+      { id: "tinto-verano", nombre: "Tinto de Verano", desc: "Mezcla refrescante de vino tinto y limón o casera.", prices: { tapa: 2.50, racion: 8.00 }, image: "/menu/tinto_verano.png" },
+      { id: "refrescos", nombre: "Refrescos Variados", desc: "Coca-Cola, Fanta, Aquarius, Nestea...", prices: { tapa: 2.20 }, image: "/menu/refresco.png" },
+      { id: "combinado-nacional", nombre: "Copa Combinada", desc: "Larios, Barceló, Terry... con tu refresco favorito.", prices: { racion: 5.50 }, image: "/menu/combinado.png" },
+      { id: "cafe-infusion", nombre: "Café o Infusión", desc: "Café recién hecho, té, manzanilla o poleo.", prices: { tapa: 1.40 }, image: "/menu/cafe.png" },
+    ]
   }
 };

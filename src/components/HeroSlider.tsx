@@ -46,9 +46,9 @@ export function HeroSlider() {
       ))}
 
       <div className="relative z-10 max-w-4xl space-y-6">
-        <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 backdrop-blur-md px-5 py-2 rounded-full mb-4 border border-white/10 shadow-lg shadow-black/20">
-          <Sparkles className="h-3 w-3 text-[#b5c99a]" />
-          <span className="text-white text-[10px] tracking-[0.2em] font-bold uppercase">TRADICIÓN SEVILLANA DESDE 1968</span>
+        <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 dark:bg-primary/20 backdrop-blur-md px-5 py-2 rounded-full mb-4 border border-white/10 shadow-lg shadow-black/20">
+          <Sparkles className="h-3 w-3 text-[#b5c99a] dark:text-primary" />
+          <span className="text-white dark:text-primary text-[10px] tracking-[0.2em] font-bold uppercase">TRADICIÓN SEVILLANA DESDE 1968</span>
         </div>
         <h1 className="text-5xl md:text-7xl font-headline font-bold text-white leading-[1.1] drop-shadow-2xl">
           El Corazón del<br />Tapeo en Coria

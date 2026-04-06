@@ -3,66 +3,65 @@
 import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-import { motion } from "framer-motion"
+import { cn } from "@/lib/utils"
+
 
 export function ThemeToggle() {
-    const { theme, setTheme } = useTheme()
+    const { setTheme, resolvedTheme } = useTheme()
     const [mounted, setMounted] = React.useState(false)
 
-    // Avoid hydration mismatch
     React.useEffect(() => {
         setMounted(true)
     }, [])
 
-    if (!mounted) {
-        return <div className="w-9 h-9" /> // Placeholder
+    const toggleTheme = (e: React.PointerEvent | React.MouseEvent) => {
+        // Detener cualquier interferencia
+        e.stopPropagation()
+        
+        // Vibrate immediately if possible
+        if (typeof window !== 'undefined' && window.navigator.vibrate) {
+            window.navigator.vibrate(40)
+        }
+        
+        // Miramos directamente al DOM para no depender de estados de React
+        if (typeof document !== 'undefined') {
+            const isDark = document.documentElement.classList.contains('dark')
+            setTheme(isDark ? "light" : "dark")
+        }
     }
 
-    const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)
+    if (!mounted) return (
+        <div className="h-12 w-12 rounded-full border border-border bg-white/50 dark:bg-black/50 backdrop-blur-md animate-pulse shrink-0" />
+    )
+
+    // Solo para el icono visual, sí usamos resolvedTheme
+    const isDark = resolvedTheme === "dark"
 
     return (
-        <button
-            onClick={() => setTheme(isDark ? "light" : "dark")}
-            className="relative inline-flex h-9 w-16 items-center rounded-full bg-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            aria-label="Toggle theme"
-        >
-            <span className="sr-only">Cambiar modo oscuro</span>
-            <motion.div
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-background shadow-sm"
-                layout
-                transition={{ type: "spring", stiffness: 700, damping: 30 }}
-                initial={false}
-                animate={{
-                    x: isDark ? "32px" : "4px",
-                }}
+        <div className="relative p-2 -m-2 z-[999] touch-none">
+            <button
+                type="button"
+                onPointerDown={toggleTheme}
+                onClick={(e) => e.stopPropagation()} 
+                className="group relative flex h-10 w-10 items-center justify-center rounded-full border border-primary/10 bg-white/40 dark:bg-black/40 backdrop-blur-xl shadow-lg transition-all active:scale-90 overflow-hidden shrink-0"
+                style={{ touchAction: 'none' }}
+                aria-label="Cambiar tema"
             >
-                <AnimatePresence mode="wait" initial={false}>
+                {/* Visual feedback glow */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                
+                <div className="relative h-5 w-5 pointer-events-none">
                     {isDark ? (
-                        <motion.div
-                            key="moon"
-                            initial={{ rotate: -90, opacity: 0 }}
-                            animate={{ rotate: 0, opacity: 1 }}
-                            exit={{ rotate: 90, opacity: 0 }}
-                            transition={{ duration: 0.15 }}
-                        >
-                            <Moon className="h-4 w-4 text-primary" />
-                        </motion.div>
+                        <Moon className="h-5 w-5 text-primary animate-in zoom-in spin-in-90 duration-500 fill-primary/10" />
                     ) : (
-                        <motion.div
-                            key="sun"
-                            initial={{ rotate: 90, opacity: 0 }}
-                            animate={{ rotate: 0, opacity: 1 }}
-                            exit={{ rotate: -90, opacity: 0 }}
-                            transition={{ duration: 0.15 }}
-                        >
-                            <Sun className="h-4 w-4 text-secondary" />
-                        </motion.div>
+                        <Sun className="h-5 w-5 text-secondary animate-in zoom-in spin-in-90 duration-500" />
                     )}
-                </AnimatePresence>
-            </motion.div>
-        </button>
+                </div>
+            </button>
+        </div>
     )
 }
 
-// Ensure AnimatePresence is imported correctly within the component's scope
-import { AnimatePresence } from "framer-motion"
+
+
+

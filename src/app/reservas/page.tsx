@@ -172,9 +172,9 @@ export default function ReservasPage() {
       <div className="container mx-auto px-4 max-w-7xl">
 
         <div className="text-center mb-12 md:mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
-            <Sparkles className="h-3 w-3 text-[#b5c99a]" />
-            <span className="text-white text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Bar Titi Coria del Río</span>
+          <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 dark:bg-primary/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
+            <Sparkles className="h-3 w-3 text-[#b5c99a] dark:text-primary" />
+            <span className="text-white dark:text-primary text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Bar Titi Coria del Río</span>
           </div>
           <h1 className="text-4xl md:text-7xl font-headline font-bold text-foreground leading-tight">
             Reserva tu mesa<br /><span className="italic text-primary dark:text-secondary">en Café Bar Titi</span>

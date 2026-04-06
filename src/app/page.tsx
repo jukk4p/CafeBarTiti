@@ -104,12 +104,8 @@ export default function Home() {
       </section>
 
       {/* History Section */}
-      <section id="historia" className="py-32 bg-secondary/5 dark:bg-background relative overflow-hidden">
-        {/* Organic texture/blob background for frontend-design aesthetic */}
-        <div className="absolute -top-40 -right-40 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 -left-20 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none" />
-
-        <div className="container mx-auto px-4 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <section id="historia" className="py-24 md:py-32 bg-secondary/5 dark:bg-background relative overflow-hidden">
+        <div className="container mx-auto px-4 max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="relative group flex justify-center items-center py-10">
             {/* Vintage Polaroid Style Frame */}
             <motion.div

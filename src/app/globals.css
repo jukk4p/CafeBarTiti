@@ -6,12 +6,13 @@
   :root {
     /* Fondo mucho más suave y menos saturado (Hues 60, Saturation 15%, Lightness 97%) */
     --background: 60 15% 97%;
-    --foreground: 17 47% 12%;
+    /* Dark Gray #222222 */
+    --foreground: 0 0% 13.3%;
     /* Madera Oscura #2C1810 */
     --card: 60 15% 98%;
-    --card-foreground: 17 47% 12%;
+    --card-foreground: 0 0% 13.3%;
     --popover: 60 15% 97%;
-    --popover-foreground: 17 47% 12%;
+    --popover-foreground: 0 0% 13.3%;
     --primary: 138 43% 15%;
     /* Verde Bosque Profundo #152B1B */
     --primary-foreground: 60 15% 97%;
@@ -19,9 +20,9 @@
     /* Dorado #D4AF37 */
     --secondary-foreground: 138 43% 10%;
     --muted: 60 10% 90%;
-    --muted-foreground: 25 30% 30%;
-    --accent: 25 76% 31%;
-    /* Marrón #8B4513 */
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 0% 13.3%;
+    /* Text Color #222222 */
     --accent-foreground: 60 15% 97%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -38,8 +39,8 @@
     --bg-5: 60 10% 88%;
     --bg-6: 60 10% 85%;
 
-    --text-primary: 17 47% 12%;
-    --text-secondary: 25 30% 30%;
+    --text-primary: 0 0% 13.3%;
+    --text-secondary: 0 0% 25%;
     --text-muted: 60 10% 40%;
 
     --border-subtle: 25 10% 90%;
@@ -107,6 +108,8 @@
 
   body {
     @apply bg-background text-foreground font-body antialiased transition-colors duration-300;
+    overflow-x: hidden;
+    position: relative;
   }
 
   /* Wood texture isolated to a pseudo-element for easier blending depending on theme */
@@ -115,8 +118,8 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     z-index: -1;
     background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
     background-repeat: repeat;

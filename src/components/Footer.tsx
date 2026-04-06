@@ -3,7 +3,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Facebook, Instagram, MapPin, Phone, Mail, Flame } from "lucide-react"
+import { Facebook, Instagram, MapPin, Phone, Mail, Flame, UtensilsCrossed } from "lucide-react"
 
 export function Footer() {
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Cafe+Bar+Titi+Av.+Palomares+1+Coria+del+Rio"
@@ -16,11 +16,14 @@ export function Footer() {
 
           {/* Brand & Social */}
           <div className="flex flex-col items-center text-center md:items-start md:text-left space-y-6">
-            <Link href="/" className="flex flex-col transition-transform hover:scale-105 group">
-              <span className="text-3xl font-headline font-bold text-white dark:text-foreground leading-none">Cafe Bar Titi</span>
-              <span className={`text-[11px] font-bold uppercase tracking-[0.2em] ${brandGreen} mt-2`}>Desde 1968</span>
+            <Link href="/" className="flex items-center gap-4 transition-transform hover:scale-105 group">
+              <UtensilsCrossed className={`h-10 w-10 ${brandGreen} opacity-80 transition-transform duration-500 group-hover:rotate-12 shrink-0`} />
+              <div className="flex flex-col items-start">
+                <span className="text-2xl md:text-3xl font-headline font-bold text-white dark:text-foreground leading-none">Cafe Bar Titi</span>
+                <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${brandGreen} mt-1.5`}>Desde 1968</span>
+              </div>
             </Link>
-            <p className="text-white/60 dark:text-muted-foreground text-sm leading-relaxed max-w-xs">
+            <p className="text-stone-300/80 dark:text-muted-foreground text-sm leading-relaxed max-w-xs italic">
               Llevamos el sabor auténtico de Coria del Río a tu mesa. Tradición, frescura y el auténtico ambiente de nuestro pueblo.
             </p>
             <div className="flex items-center gap-5 justify-center md:justify-start">
@@ -92,11 +95,11 @@ export function Footer() {
                 className="object-cover opacity-60 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-80"
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-[#b5c99a] dark:bg-primary p-2 rounded-full shadow-lg border-2 border-black/20 dark:border-background transition-colors duration-300">
-                  <MapPin className="h-4 w-4 text-[#1A1614] dark:text-black animate-bounce" />
+                <div className={`bg-[#b5c99a] dark:bg-primary p-2 rounded-full shadow-lg border-2 border-black/20 dark:border-background transition-colors duration-300`}>
+                  <MapPin className={`h-4 w-4 text-[#1A1614] dark:text-black animate-bounce`} />
                 </div>
               </div>
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/80 dark:bg-black/80 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10 dark:border-primary/20 transition-transform group-hover:scale-105">
+              <div className={`absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/80 dark:bg-black/80 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10 dark:border-primary/20 transition-transform group-hover:scale-105`}>
                 <span className="text-[9px] font-bold text-white uppercase tracking-widest whitespace-nowrap">Ver en Google Maps</span>
               </div>
             </Link>

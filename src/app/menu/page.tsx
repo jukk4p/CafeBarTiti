@@ -32,7 +32,8 @@ import {
   X,
   Zap,
   Clock,
-  MapPin
+  MapPin,
+  Beer
 } from "lucide-react"
 import {
   Select,
@@ -58,7 +59,7 @@ import { collection } from "firebase/firestore"
 import { MENU_BACKUP } from "@/lib/menu-backup"
 import { Loader2 } from "lucide-react"
 
-const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa"]
+const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Bebidas"]
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "Entrantes": <Salad className="h-5 w-5" strokeWidth={1.75} />,
@@ -67,6 +68,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "Pescado Frito": <FishSymbol className="h-5 w-5" strokeWidth={1.75} />,
   "Pescado Plancha": <Fish className="h-5 w-5" strokeWidth={1.75} />,
   "Carnes a la Brasa": <Beef className="h-5 w-5" strokeWidth={1.75} />,
+  "Bebidas": <Beer className="h-5 w-5" strokeWidth={1.75} />,
 }
 
 const ALLERGEN_ICONS: Record<string, React.ReactNode> = {
@@ -123,7 +125,28 @@ const ALLERGENS_LIST = [
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = React.useState("Entrantes")
   const [selectedItem, setSelectedItem] = React.useState<any>(null)
+  const [isVisible, setIsVisible] = React.useState(true)
+  const [lastScrollY, setLastScrollY] = React.useState(0)
   const { firestore } = useFirebase()
+
+  // Control de scroll inteligente para el selector de menú
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      
+      // Si scrolleamos hacia abajo más de 200px, ocultamos. Si subimos, mostramos.
+      if (currentScrollY > lastScrollY && currentScrollY > 200) {
+        setIsVisible(false)
+      } else {
+        setIsVisible(true)
+      }
+      
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
 
   // Suscribirse a la colección de platos en tiempo real
   const menuQuery = useMemoFirebase(() => {
@@ -135,15 +158,29 @@ export default function MenuPage() {
 
   // Organizar los platos por categoría para el renderizado
   const displayedMenu = React.useMemo(() => {
-    if (!menuItems || menuItems.length === 0) return MENU_BACKUP;
-    
+    const hasFirebaseData = menuItems && menuItems.length > 0
     const organized: Record<string, any> = {}
+    
     CATEGORIES.forEach(cat => {
-      organized[cat] = {
-        items: menuItems.filter(item => item.category === cat),
-        footer: cat === "Carnes a la Brasa" 
+      // 1. Filtramos de Firebase para esta categoría
+      const firestoreItems = hasFirebaseData ? menuItems.filter(item => 
+        (item.categoria === cat || item.category === cat)
+      ) : []
+
+      // 2. Si Firebase para esa categoría está vacío, usamos Backup
+      if (firestoreItems.length === 0) {
+        organized[cat] = {
+          items: MENU_BACKUP[cat]?.items || [],
+          footer: MENU_BACKUP[cat]?.footer || (cat === "Carnes a la Brasa" ? "Consultar carnes fuera de carta." : undefined)
+        }
+      } else {
+        organized[cat] = {
+          items: firestoreItems,
+          footer: cat === "Carnes a la Brasa" ? "Consultar carnes fuera de carta." : undefined
+        }
       }
     })
+    
     return organized
   }, [menuItems])
 
@@ -185,12 +222,11 @@ export default function MenuPage() {
   return (
     <div className="bg-transparent min-h-screen pb-16">
       {/* Hero Header */}
-      <section className="relative pt-8 pb-6 text-center px-4 overflow-hidden" aria-labelledby="menu-title">
-        <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2" />
+      <section className="relative pt-8 pb-6 text-center px-4" aria-labelledby="menu-title">
         <div className="relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
-            <Sparkles className="h-3 w-3 text-[#b5c99a]" />
-            <span className="text-white text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Sabor Tradicional de Sevilla</span>
+          <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 dark:bg-primary/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
+            <Sparkles className="h-3 w-3 text-[#b5c99a] dark:text-primary" />
+            <span className="text-white dark:text-primary text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Sabor Tradicional de Sevilla</span>
           </div>
           <h1 id="menu-title" className="text-4xl md:text-5xl font-headline font-bold text-foreground tracking-tight">Nuestra Carta</h1>
           <p className="text-muted-foreground text-sm md:text-base italic font-light max-w-xl mx-auto border-l-2 border-primary/30 pl-4">
@@ -200,9 +236,15 @@ export default function MenuPage() {
       </section>
 
       <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-        {/* Sticky Menu Container */}
-        <nav className="sticky top-20 z-40 py-6" aria-label="Categorías del menú">
-          <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center gap-6 lg:max-w-fit bg-card/50 dark:bg-black/80 backdrop-blur-xl border border-border dark:border-white/10 rounded-[2.5rem] p-2 shadow-xl">
+        {/* Sticky Menu Container - Fixed background and blur with smart hide logic */}
+        <nav 
+          className={cn(
+            "sticky top-20 z-40 py-4 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm transition-all duration-500 transform-gpu",
+            isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
+          )} 
+          aria-label="Categorías del menú"
+        >
+          <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center gap-6 lg:max-w-fit">
 
             {/* Desktop Tabs Wrapper */}
             <div className="hidden lg:flex items-center p-1.5 h-full">
@@ -211,10 +253,14 @@ export default function MenuPage() {
                   <TabsTrigger
                     key={cat}
                     value={cat}
-                    className="data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-lg rounded-full h-full px-6 text-[11px] font-bold uppercase tracking-wider text-foreground/80 hover:text-primary transition-colors flex items-center gap-2 flex-1 whitespace-nowrap"
+                    className="relative bg-transparent data-[state=active]:text-primary border-none rounded-full h-full px-6 text-[11px] font-bold uppercase tracking-wider text-foreground/40 hover:text-primary transition-all duration-300 flex items-center gap-2 flex-1 whitespace-nowrap group"
                   >
-                    <span className="shrink-0">{CATEGORY_ICONS[cat]}</span>
+                    <span className="shrink-0 transition-transform group-data-[state=active]:scale-110 group-hover:scale-110">
+                      {CATEGORY_ICONS[cat]}
+                    </span>
                     {cat}
+                    {/* Indicador minimalista inferior */}
+                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary rounded-full transition-all duration-500 group-data-[state=active]:w-8 opacity-0 group-data-[state=active]:opacity-100" />
                   </TabsTrigger>
                 ))}
               </TabsList>
@@ -256,7 +302,7 @@ export default function MenuPage() {
           </div>
         </nav>
 
-        <div className="container mx-auto px-4 py-12 lg:max-w-7xl">
+        <div className="container mx-auto px-1 sm:px-4 py-12 lg:max-w-7xl overflow-x-auto">
           {Object.entries(displayedMenu).map(([section, data]) => (
             <TabsContent key={section} value={section} className="mt-0 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div className="text-center mb-10">
@@ -273,16 +319,24 @@ export default function MenuPage() {
                   <table className="w-full text-left">
                     <thead>
                       <tr className="bg-primary/[0.05] border-b border-border">
-                        <th className="px-8 py-6 text-sm font-bold uppercase tracking-wider text-primary">Plato / Tapa</th>
-                        <th className="px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Tapa</th>
-                        <th className="px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-secondary">Media</th>
-                        <th className="px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-accent">Ración</th>
+                        <th className="px-4 md:px-6 lg:px-8 py-6 text-sm font-bold uppercase tracking-wider text-primary">
+                          {section === "Bebidas" ? "Bebida / Refresco" : "Plato / Tapa"}
+                        </th>
+                        <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                          {section === "Bebidas" ? "Copa / Caña" : "Tapa"}
+                        </th>
+                        <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-secondary">
+                          {section === "Bebidas" ? "Botella" : "Media"}
+                        </th>
+                        <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-accent">
+                          {section === "Bebidas" ? "Jarra / Combinado" : "Ración"}
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/50">
                       {data.items.map((item: any) => (
                         <tr key={item.id} className="group hover:bg-primary/[0.03] transition-colors">
-                          <td className="px-8 py-7">
+                          <td className="px-4 md:px-6 lg:px-8 py-7">
                             <div className="flex items-center gap-6">
                               {item.image ? (
                                 <button
@@ -319,21 +373,21 @@ export default function MenuPage() {
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-7 text-center">
+                          <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
                             {item.prices?.tapa ? (
                               <span className="text-lg font-bold text-primary font-body">{item.prices.tapa.toFixed(2)}€</span>
                             ) : (
                               <span className="text-muted-foreground/10">—</span>
                             )}
                           </td>
-                          <td className="px-6 py-7 text-center">
+                          <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
                             {item.prices?.media ? (
                               <span className="text-lg font-bold text-secondary font-body">{item.prices.media.toFixed(2)}€</span>
                             ) : (
                               <span className="text-muted-foreground/10">—</span>
                             )}
                           </td>
-                          <td className="px-6 py-7 text-center">
+                          <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
                             {item.prices?.racion ? (
                               <span className="text-lg font-bold text-accent font-body">{item.prices.racion.toFixed(2)}€</span>
                             ) : (
@@ -384,9 +438,9 @@ export default function MenuPage() {
                       </div>
 
                       <div className="flex justify-center flex-wrap gap-4 pt-2">
-                        {item.prices?.tapa && <PricePill label="Tapa" price={item.prices.tapa} variant="primary" />}
-                        {item.prices?.media && <PricePill label="Media" price={item.prices.media} variant="secondary" />}
-                        {item.prices?.racion && <PricePill label="Ración" price={item.prices.racion} variant="accent" />}
+                        {item.prices?.tapa && <PricePill label={section === "Bebidas" ? "Copa / Caña" : "Tapa"} price={item.prices.tapa} variant="primary" />}
+                        {item.prices?.media && <PricePill label={section === "Bebidas" ? "Botella" : "Media"} price={item.prices.media} variant="secondary" />}
+                        {item.prices?.racion && <PricePill label={section === "Bebidas" ? "Jarra / Combinado" : "Ración"} price={item.prices.racion} variant="accent" />}
                       </div>
                     </div>
                   ))}
@@ -408,92 +462,59 @@ export default function MenuPage() {
         </div>
       </Tabs>
 
-      {/* Guía de Alérgenos Universal */}
+      {/* Guía de Alérgenos Universal - Ahora colapsable en todas las resoluciones */}
       <section className="container mx-auto px-4 mt-12 lg:max-w-7xl" aria-labelledby="allergen-title">
         <div className="bg-card rounded-[2.5rem] border border-border/50 shadow-xl relative overflow-hidden">
-          <div className="hidden lg:flex p-12 items-center gap-16">
-            <div className="space-y-3 shrink-0 max-w-[240px]">
-              <div className="inline-flex items-center gap-2 text-secondary mb-1">
-                <ShieldAlert className="h-4 w-4" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Seguridad Alimentaria</span>
-              </div>
-              <h2 id="allergen-title" className="text-2xl font-headline font-bold text-foreground">Guía de Alérgenos</h2>
-              <p className="text-muted-foreground text-[10px] italic leading-relaxed tracking-wider">
-                Reglamento (UE) nº 1169/2011. Si tiene alguna alergia, por favor consulte con nuestro personal antes de realizar su pedido.
+          <Collapsible className="group">
+            <div className="p-6 lg:py-6 lg:px-12">
+              <CollapsibleTrigger asChild>
+                <div className="relative flex flex-col items-center justify-center cursor-pointer py-1 group/trigger">
+                  <div className="space-y-1 text-center transition-transform duration-300 group-hover/trigger:scale-105">
+                    <div className="inline-flex items-center justify-center gap-2 text-secondary">
+                      <ShieldAlert className="h-3.5 w-3.5" />
+                      <span className="text-[9px] font-bold uppercase tracking-widest">Seguridad Alimentaria</span>
+                    </div>
+                    <h2 id="allergen-title" className="text-xl md:text-2xl font-headline font-bold text-foreground">Guía de Alérgenos</h2>
+                    <p className="text-muted-foreground text-[9px] italic leading-relaxed tracking-wider max-w-md mx-auto opacity-70">
+                      Reglamento (UE) nº 1169/2011. Si tiene alguna alergia, por favor consulte antes de pedir.
+                    </p>
+                  </div>
+                  <ChevronDown className="mt-2 h-5 w-5 text-muted-foreground transition-transform duration-500 group-data-[state=open]:rotate-180" />
+                </div>
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="pt-8 animate-in fade-in slide-in-from-top-4 duration-500">
+                <div className="grid grid-cols-4 md:grid-cols-7 gap-y-8 gap-x-4 max-w-5xl mx-auto">
+                  {ALLERGENS_LIST.map((al) => (
+                    <div key={al.name} className="flex flex-col items-center group/item cursor-default">
+                      <div className={cn(
+                        "h-10 w-10 md:h-12 md:w-12 rounded-full flex items-center justify-center text-white border-2 border-white dark:border-card shadow-md transition-all duration-300 group-hover/item:scale-110 mb-3",
+                        al.color
+                      )}>
+                        <div className="h-6 w-6 md:h-7 md:w-7">
+                          {ALLERGEN_ICONS[al.name]}
+                        </div>
+                      </div>
+                      <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-center text-muted-foreground leading-tight group-hover/item:text-primary transition-colors">
+                        {al.name.split(' ')[0]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </div>
+          </Collapsible>
+
+          <div className="px-8 pb-8 lg:px-12 lg:pb-12 pt-6 border-t border-black/5 flex flex-col items-center justify-center gap-4 text-center">
+            <div className="flex flex-wrap items-center justify-center gap-3 text-foreground/80 max-w-sm mx-auto">
+              <Flame className="h-5 w-5 shrink-0 text-[#b5c99a] dark:text-primary animate-pulse" />
+              <p className="text-[10px] font-bold uppercase tracking-widest leading-relaxed">
+                Cocina: Todos los mediodías y Jueves noche a Domingo mediodía
               </p>
             </div>
-
-            <div className="flex-grow grid grid-cols-7 gap-y-6 gap-x-4">
-              {ALLERGENS_LIST.map((al) => (
-                <div key={al.name} className="flex flex-col items-center group cursor-default">
-                  <div className={cn(
-                    "h-10 w-10 rounded-full flex items-center justify-center text-white border-2 border-white dark:border-card shadow-md transition-colors duration-300 group-hover:scale-110 mb-2",
-                    al.color
-                  )}>
-                    <div className="h-6 w-6">
-                      {ALLERGEN_ICONS[al.name]}
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-center text-muted-foreground leading-tight">
-                    {al.name.split(' ')[0]}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="lg:hidden">
-            <Collapsible className="group">
-              <div className="p-8">
-                <CollapsibleTrigger asChild>
-                  <div className="relative flex items-center justify-center cursor-pointer py-4">
-                    <div className="space-y-2 text-center">
-                      <div className="inline-flex items-center justify-center gap-2 text-secondary mb-1">
-                        <ShieldAlert className="h-4 w-4" />
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Información Alérgenos</span>
-                      </div>
-                      <h2 className="text-2xl font-headline font-bold">Guía de Seguridad</h2>
-                    </div>
-                    <ChevronDown className="absolute right-0 h-6 w-6 text-muted-foreground transition-transform duration-300 group-data-[state=open]:rotate-180" />
-                  </div>
-                </CollapsibleTrigger>
-
-                <CollapsibleContent className="pt-8 animate-in fade-in slide-in-from-top-4 duration-300">
-                  <div className="grid grid-cols-4 gap-y-6 gap-x-3">
-                    {ALLERGENS_LIST.map((al, idx) => (
-                      <div
-                        key={al.name}
-                        className={cn(
-                          "flex flex-col items-center group cursor-default",
-                          idx === 12 && "col-start-2",
-                          idx === 13 && "col-start-3"
-                        )}
-                      >
-                        <div className={cn(
-                          "h-10 w-10 rounded-full flex items-center justify-center text-white border-2 border-white dark:border-card shadow-md transition-colors duration-300 group-hover:scale-110 mb-2",
-                          al.color
-                        )}>
-                          <div className="h-6 w-6">
-                            {ALLERGEN_ICONS[al.name]}
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-center text-muted-foreground leading-tight">
-                          {al.name.split(' ')[0]}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </div>
-            </Collapsible>
-          </div>
-
-          <div className="px-8 pb-8 lg:px-12 lg:pb-12 pt-6 border-t border-black/5 flex flex-col items-center justify-center gap-3 text-center">
-            <div className="flex items-center justify-center gap-2 text-primary/60">
-              <Flame className="h-3 w-3" />
-              <span className="text-[10px] font-bold uppercase tracking-widest">Cocina: <span className="font-bold">Todos los mediodías</span> y <span className="font-bold">Jueves noche a Domingo mediodía</span></span>
-            </div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">© 2026 Cafe Bar Titi Coria</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 border-t border-border/50 pt-4 w-full max-w-[200px]">
+              © 2026 Cafe Bar Titi Coria
+            </p>
           </div>
         </div>
       </section>
