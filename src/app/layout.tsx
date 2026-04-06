@@ -83,8 +83,10 @@ export default function RootLayout({
     "@id": "https://bartiti.com",
     "url": "https://bartiti.com",
     "telephone": "+34954772132",
-    "priceRange": "€",
-    "servesCuisine": "Andaluza, Tapas",
+    "priceRange": "$$",
+    "servesCuisine": "Andalusia, Tapas, Mediterranean",
+    "hasMap": "https://maps.app.goo.gl/uX7mPZp6HwZ3X7pZ9",
+    "menu": "https://bartiti.com/carta",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Av. Palomares, 1",
@@ -95,8 +97,8 @@ export default function RootLayout({
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": 37.2882,
-      "longitude": -6.0524
+      "latitude": 37.2895,
+      "longitude": -6.0545
     },
     "openingHoursSpecification": [
       {

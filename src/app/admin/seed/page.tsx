@@ -84,8 +84,8 @@ export default function AdminSeedPage() {
       const galleryData = [
         // Hero / Portadas
         { id: "hero-1", url: "/hero/00_Portada.webp", category: "El Bar", hint: "Fachada de Cafe Bar Titi" },
-        { id: "hero-2", url: "/hero/01_Portada.webp", category: "El Bar", hint: "Interior acogedor" },
-        { id: "hero-3", url: "/hero/02_Portada.webp", category: "El Bar", hint: "Detalle de nuestra barra" },
+        { id: "hero-2", url: "/hero/01_Portada.webp", category: "El Bar", hint: "Terraza exterior al aire libre" },
+        { id: "hero-3", url: "/hero/02_Portada.webp", category: "El Bar", hint: "Salón interior climatizado" },
         { id: "hero-4", url: "/hero/03_Portada.webp", category: "El Bar", hint: "Ambiente tradicional" },
         // Coria
         { id: "coria-1", url: "/galeria/Coria_Vista-Aerea.webp", category: "Coria", hint: "Vista aérea de Coria del Río" },

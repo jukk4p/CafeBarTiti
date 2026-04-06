@@ -3,7 +3,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Facebook, Instagram, MapPin, Phone, Mail, Flame, UtensilsCrossed } from "lucide-react"
+import { Facebook, Instagram, MapPin, Phone, Mail, Flame, UtensilsCrossed, Maximize2 } from "lucide-react"
 
 export function Footer() {
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Cafe+Bar+Titi+Av.+Palomares+1+Coria+del+Rio"
@@ -82,27 +82,29 @@ export function Footer() {
           {/* Nuestra Ubicación */}
           <div className="flex flex-col items-center text-center md:items-start md:text-left space-y-6">
             <h4 className={`text-[10px] font-bold uppercase tracking-[0.2em] ${brandGreen}`}>NUESTRA UBICACIÓN</h4>
-            <Link
-              href={googleMapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative aspect-video w-full max-w-[300px] md:max-w-none rounded-2xl overflow-hidden border border-white/10 shadow-2xl mx-auto md:mx-0 group cursor-pointer block"
-            >
-              <Image
-                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=600"
-                alt="Mapa Coria del Río"
-                fill
-                className="object-cover opacity-60 transition-transform duration-500 group-hover:scale-105 group-hover:opacity-80"
+            <div className="relative aspect-video w-full max-w-[300px] md:max-w-none rounded-2xl overflow-hidden border border-white/10 shadow-2xl mx-auto md:mx-0 group bg-stone-900">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3174.2327557183917!2d-6.054570600000001!3d37.28961710000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1272c700389b23%3A0x53962cf33a184785!2sBar%20Titi!5e0!3m2!1ses!2ses!4v1775488759347!5m2!1ses!2ses"
+                width="100%"
+                height="100%"
+                style={{ border: 0, filter: 'grayscale(0.1) contrast(1) brightness(0.9)' }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="transition-all duration-700 group-hover:grayscale-0 group-hover:brightness-100"
               />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className={`bg-[#b5c99a] dark:bg-primary p-2 rounded-full shadow-lg border-2 border-black/20 dark:border-background transition-colors duration-300`}>
-                  <MapPin className={`h-4 w-4 text-[#1A1614] dark:text-black animate-bounce`} />
+              <Link
+                href={googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 transition-all hover:scale-105 hover:bg-primary hover:text-white group/link shadow-lg"
+              >
+                <div className="flex items-center gap-2">
+                  <Maximize2 className="w-3 h-3 text-primary group-hover/link:text-white" />
+                  <span className="text-[8px] font-bold text-white uppercase tracking-[0.2em] whitespace-nowrap">Ampliar Mapa</span>
                 </div>
-              </div>
-              <div className={`absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/80 dark:bg-black/80 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10 dark:border-primary/20 transition-transform group-hover:scale-105`}>
-                <span className="text-[9px] font-bold text-white uppercase tracking-widest whitespace-nowrap">Ver en Google Maps</span>
-              </div>
-            </Link>
+              </Link>
+            </div>
           </div>
         </div>
 
