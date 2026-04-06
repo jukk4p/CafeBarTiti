@@ -13,7 +13,7 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const viewport: Viewport = {
-  themeColor: '#1F4E2D',
+  themeColor: '#1a4731',
   width: 'device-width',
   initialScale: 1,
 };
@@ -29,6 +29,11 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://bartiti.com'),
   alternates: {
     canonical: '/',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Cafe Bar Titi',
   },
   openGraph: {
     title: 'Bar Titi - Tapas Tradicionales en Coria del Río',
