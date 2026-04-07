@@ -8,6 +8,7 @@ import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { StickyCallButton } from '@/components/StickyCallButton';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { CartProvider } from '@/context/CartContext';
 
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -137,13 +138,15 @@ export default function RootLayout({
       <body className="font-body antialiased flex flex-col min-h-screen">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <FirebaseClientProvider>
-            <Navbar />
-            <main className="flex-grow" id="main-content">
-              {children}
-            </main>
-            <Footer />
-            <StickyCallButton />
-            <Toaster />
+            <CartProvider>
+              <Navbar />
+              <main className="flex-grow" id="main-content">
+                {children}
+              </main>
+              <Footer />
+              <StickyCallButton />
+              <Toaster />
+            </CartProvider>
           </FirebaseClientProvider>
         </ThemeProvider>
       </body>

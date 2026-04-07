@@ -3,6 +3,9 @@
 
 import * as React from "react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { AddToCartButton } from "@/components/AddToCartButton"
+import { FloatingCart } from "@/components/FloatingCart"
+import { cn } from "@/lib/utils"
 import {
   Dialog,
   DialogContent,
@@ -57,7 +60,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { cn } from "@/lib/utils"
 import { useFirebase, useCollection, useMemoFirebase } from "@/firebase"
 import { collection } from "firebase/firestore"
 import { MENU_BACKUP } from "@/lib/menu-backup"
@@ -174,10 +176,13 @@ export default function MenuPage() {
     const organized: Record<string, any> = {}
     
     CATEGORIES.forEach(cat => {
-      // 1. Filtramos de Firebase para esta categoría
-      let items = hasFirebaseData ? menuItems.filter(item => 
-        (item.categoria === cat || item.category === cat)
-      ) : (MENU_BACKUP[cat]?.items || [])
+      // 1. Filtramos de Firebase o Backup para esta categoría (insensible a mayúsculas/espacios)
+      const targetCat = cat.trim().toLowerCase();
+      
+      let items = hasFirebaseData ? menuItems.filter(item => {
+        const itemCat = (item.categoria || item.category || "").trim().toLowerCase();
+        return itemCat === targetCat;
+      }) : (MENU_BACKUP[cat]?.items || [])
 
       // 2. Filtro de Búsqueda
       if (searchTerm) {
@@ -190,14 +195,16 @@ export default function MenuPage() {
 
       // 3. Filtro de Alérgenos (Excluir)
       if (excludedAllergens.length > 0) {
-        items = items.filter((item: any) => 
-          !item.alergenos?.some((a: string) => excludedAllergens.includes(a))
-        )
+        items = items.filter((item: any) => {
+          // Si no hay alérgenos definidos, el plato no se excluye (caso de las bebidas)
+          if (!item.alergenos || !Array.isArray(item.alergenos)) return true;
+          return !item.alergenos.some((a: string) => excludedAllergens.includes(a));
+        })
       }
 
       organized[cat] = {
         items: items,
-        footer: cat === "Carnes a la Brasa" ? "Consultar carnes fuera de carta." : MENU_BACKUP[cat]?.footer
+        footer: cat === "Carnes a la Brasa" ? "Consultar carnes fuera de carta." : (MENU_BACKUP[cat]?.footer || "")
       }
     })
     
@@ -421,6 +428,9 @@ export default function MenuPage() {
                         <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-accent">
                           {section === "Bebidas" ? "Jarra / Combinado" : "Ración"}
                         </th>
+                        <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground opacity-50">
+                          Pedido
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/50">
@@ -484,6 +494,9 @@ export default function MenuPage() {
                               <span className="text-muted-foreground/10">—</span>
                             )}
                           </td>
+                          <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
+                             <AddToCartButton item={item} />
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -527,10 +540,13 @@ export default function MenuPage() {
                         </div>
                       </div>
 
-                      <div className="flex justify-center flex-wrap gap-4 pt-2">
-                        {item.prices?.tapa && <PricePill label={section === "Bebidas" ? "Copa / Caña" : "Tapa"} price={item.prices.tapa} variant="primary" />}
-                        {item.prices?.media && <PricePill label={section === "Bebidas" ? "Botella" : "Media"} price={item.prices.media} variant="secondary" />}
-                        {item.prices?.racion && <PricePill label={section === "Bebidas" ? "Jarra / Combinado" : "Ración"} price={item.prices.racion} variant="accent" />}
+                      <div className="flex justify-between items-center bg-muted/20 p-4 rounded-2xl md:rounded-[1.5rem]">
+                        <div className="flex flex-wrap gap-2">
+                          {item.prices?.tapa && <PricePill label={section === "Bebidas" ? "Copa / Caña" : "Tapa"} price={item.prices.tapa} variant="primary" />}
+                          {item.prices?.media && <PricePill label={section === "Bebidas" ? "Botella" : "Media"} price={item.prices.media} variant="secondary" />}
+                          {item.prices?.racion && <PricePill label={section === "Bebidas" ? "Jarra / Combinado" : "Ración"} price={item.prices.racion} variant="accent" />}
+                        </div>
+                        <AddToCartButton item={item} />
                       </div>
                     </div>
                   ))}
@@ -553,62 +569,55 @@ export default function MenuPage() {
         </div>
       </Tabs>
 
-      {/* Guía de Alérgenos Universal - Ahora colapsable en todas las resoluciones */}
-      <section className="container mx-auto px-4 mt-12 lg:max-w-7xl" aria-labelledby="allergen-title">
-        <div className="bg-card rounded-[2.5rem] border border-border/50 shadow-xl relative overflow-hidden">
-          <Collapsible className="group">
-            <div className="p-6 lg:py-6 lg:px-12">
-              <CollapsibleTrigger asChild>
-                <div className="relative flex flex-col items-center justify-center cursor-pointer py-1 group/trigger">
-                  <div className="space-y-1 text-center transition-transform duration-300 group-hover/trigger:scale-105">
-                    <div className="inline-flex items-center justify-center gap-2 text-secondary">
-                      <ShieldAlert className="h-3.5 w-3.5" />
-                      <span className="text-[9px] font-bold uppercase tracking-widest">Seguridad Alimentaria</span>
-                    </div>
-                    <h2 id="allergen-title" className="text-xl md:text-2xl font-headline font-bold text-foreground">Guía de Alérgenos</h2>
-                    <p className="text-muted-foreground text-[9px] italic leading-relaxed tracking-wider max-w-md mx-auto opacity-70">
-                      Reglamento (UE) nº 1169/2011. Si tiene alguna alergia, por favor consulte antes de pedir.
-                    </p>
-                  </div>
-                  <ChevronDown className="mt-2 h-5 w-5 text-muted-foreground transition-transform duration-500 group-data-[state=open]:rotate-180" />
+      {/* Pie de Página Refinado - Estilo Taberna Premium */}
+      <footer className="container mx-auto px-4 mt-24 mb-12 max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
+        <div className="bg-card/40 backdrop-blur-xl border border-border/40 rounded-[2.5rem] p-8 md:p-10 shadow-sm relative overflow-hidden group">
+          {/* Adorno sutil de fondo */}
+          <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-700">
+            <Utensils className="h-32 w-32 rotate-12" />
+          </div>
+          
+          <div className="flex flex-col items-center gap-8 relative z-10">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+              <div className="flex flex-col items-center md:items-start gap-2">
+                <div className="flex items-center gap-2 text-secondary">
+                  <ShieldAlert className="h-4 w-4" strokeWidth={2.5} />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Seguridad Alimentaria</span>
                 </div>
-              </CollapsibleTrigger>
+                <p className="text-[11px] font-medium text-muted-foreground italic">
+                  Información de alérgenos bajo Reglamento (UE) nº 1169/2011.
+                </p>
+              </div>
 
-              <CollapsibleContent className="pt-8 animate-in fade-in slide-in-from-top-4 duration-500">
-                <div className="grid grid-cols-4 md:grid-cols-7 gap-y-8 gap-x-4 max-w-5xl mx-auto">
-                  {ALLERGENS_LIST.map((al) => (
-                    <div key={al.name} className="flex flex-col items-center group/item cursor-default">
-                      <div className={cn(
-                        "h-10 w-10 md:h-12 md:w-12 rounded-full flex items-center justify-center text-white border-2 border-white dark:border-card shadow-md transition-all duration-300 group-hover/item:scale-110 mb-3",
-                        al.color
-                      )}>
-                        <div className="h-6 w-6 md:h-7 md:w-7">
-                          {ALLERGEN_ICONS[al.name]}
-                        </div>
-                      </div>
-                      <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-center text-muted-foreground leading-tight group-hover/item:text-primary transition-colors">
-                        {al.name.split(' ')[0]}
-                      </span>
-                    </div>
-                  ))}
+              <div className="hidden md:block w-px h-8 bg-border/50" />
+
+              <div className="flex flex-col items-center md:items-start gap-2">
+                <div className="flex items-center gap-2 text-primary">
+                  <Flame className="h-4 w-4" strokeWidth={2.5} />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Horario de Cocina</span>
                 </div>
-              </CollapsibleContent>
+                <p className="text-[11px] font-medium text-muted-foreground italic">
+                  Abierto mediodías diarios y cenas de Jueves a Domingo.
+                </p>
+              </div>
             </div>
-          </Collapsible>
 
-          <div className="px-8 pb-8 lg:px-12 lg:pb-12 pt-6 border-t border-black/5 flex flex-col items-center justify-center gap-4 text-center">
-            <div className="flex flex-wrap items-center justify-center gap-3 text-foreground/80 max-w-sm mx-auto">
-              <Flame className="h-5 w-5 shrink-0 text-[#b5c99a] dark:text-primary animate-pulse" />
-              <p className="text-[10px] font-bold uppercase tracking-widest leading-relaxed">
-                Cocina: Todos los mediodías y Jueves noche a Domingo mediodía
+            <div className="w-full max-w-[150px] h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
+            
+            <div className="space-y-2 text-center">
+              <p className="text-[10px] font-bold uppercase tracking-[.4em] text-muted-foreground/40">
+                © 2026 Cafe Bar Titi Coria
+              </p>
+              <p className="text-[9px] font-headline font-bold italic text-primary/40 uppercase tracking-widest">
+                Tradición del Aljarafe desde 1968
               </p>
             </div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 border-t border-border/50 pt-4 w-full max-w-[200px]">
-              © 2026 Cafe Bar Titi Coria
-            </p>
           </div>
         </div>
-      </section>
+      </footer>
+
+      
+      <FloatingCart />
       <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
         <DialogContent className="max-w-7xl p-0 border-none bg-transparent shadow-none overflow-visible flex items-end md:items-center justify-center p-0 md:p-4 pointer-events-none [&>button:last-child]:hidden">
           <div className="relative w-full max-w-md md:max-w-5xl bg-card rounded-t-[2rem] md:rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl pointer-events-auto animate-in slide-in-from-bottom md:zoom-in-95 fade-in duration-500 max-h-[92vh] flex flex-col">
