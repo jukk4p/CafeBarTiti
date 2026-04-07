@@ -3,9 +3,11 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, Phone } from "lucide-react"
+import { Menu, X, Phone, ShoppingBag } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { useCart } from "@/context/CartContext"
+import { CartCheckoutModal } from "./CartCheckoutModal"
 
 import Logo3D from "./Logo3D"
 import { ThemeToggle } from "./ThemeToggle"
@@ -21,7 +23,9 @@ const navItems = [
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false)
+  const [isCartOpen, setIsCartOpen] = React.useState(false)
   const pathname = usePathname()
+  const { itemCount } = useCart()
 
   return (
     <>
@@ -65,20 +69,45 @@ export function Navbar() {
         </div>
 
         {/* CTA Area */}
-        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
-          {/* Theme Switch - Only for large screens (xl and up) */}
-          <div className="hidden xl:flex items-center">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="hidden xl:flex items-center gap-3">
             <ThemeToggle />
+            
+            {/* Cart Icon (Desktop) - Normalized with ThemeToggle */}
+            {itemCount > 0 && (
+              <button 
+                onClick={() => setIsCartOpen(true)}
+                className="relative flex h-10 w-10 items-center justify-center rounded-full border border-primary/10 bg-white/40 dark:bg-black/40 backdrop-blur-xl shadow-md transition-all active:scale-90 group animate-in zoom-in duration-500"
+              >
+                <ShoppingBag className="h-5 w-5 text-foreground/70 group-hover:text-primary transition-colors stroke-[1.5]" />
+                <span className="absolute -top-1 -right-1 bg-primary text-white text-[9px] font-black h-4.5 w-4.5 rounded-full flex items-center justify-center border-2 border-white dark:border-black shadow-sm">
+                  {itemCount}
+                </span>
+              </button>
+            )}
           </div>
 
-          {/* CTA Reservas (Tablet & Desktop) */}
-          <Button asChild size="sm" className="hidden sm:flex bg-[#1a4731] dark:bg-primary text-white dark:text-black border-none shadow-sm h-10 px-4 xl:px-6">
+          <Button asChild size="sm" className="hidden sm:flex bg-[#1a4731] dark:bg-primary text-white dark:text-black border-none shadow-sm h-10 px-6 rounded-full font-bold">
             <Link href="/reservas">Reservar Mesa</Link>
           </Button>
 
           {/* Wrapper for Tablet/Mobile Actions */}
-          <div className="flex xl:hidden items-center gap-4 sm:gap-2 relative z-[100]">
+          <div className="flex xl:hidden items-center gap-3 relative z-[100]">
             <ThemeToggle />
+
+            {/* Cart Icon (Mobile) - Normalized with ThemeToggle */}
+            {itemCount > 0 && (
+              <button 
+                onClick={() => setIsCartOpen(true)}
+                className="relative flex h-10 w-10 items-center justify-center rounded-full border border-primary/10 bg-white/40 dark:bg-black/40 backdrop-blur-xl shadow-md transition-all active:scale-90 animate-in zoom-in duration-500"
+              >
+                <ShoppingBag className="h-5 w-5 text-foreground/80 dark:text-primary" />
+                <span className="absolute -top-1 -right-1 bg-[#1a4731] dark:bg-primary text-white dark:text-black text-[9px] font-black h-4.5 w-4.5 rounded-full flex items-center justify-center border-2 border-white dark:border-black shadow-sm">
+                  {itemCount}
+                </span>
+              </button>
+            )}
+
             {/* Hamburger Button with Custom Animation */}
             <button
               className="relative w-10 h-10 flex flex-col items-center justify-center gap-1.5 z-50"
@@ -102,6 +131,7 @@ export function Navbar() {
         </div>
       </div>
 
+      <CartCheckoutModal open={isCartOpen} onOpenChange={setIsCartOpen} />
     </nav>
 
     {/* Mobile Menu Overlay - Portal Stability + Mockup Style */}

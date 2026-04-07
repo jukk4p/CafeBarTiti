@@ -25,7 +25,11 @@ interface AddToCartButtonProps {
   className?: string
 }
 
-export function AddToCartButton({ item, variant = "outline", className }: AddToCartButtonProps) {
+export function AddToCartButton({ 
+  item, 
+  variant = "outline", 
+  className 
+}: AddToCartButtonProps) {
   const { addItem, updateQuantity, items } = useCart()
   
   // Encontrar todas las variantes de este item en el carrito
@@ -45,33 +49,51 @@ export function AddToCartButton({ item, variant = "outline", className }: AddToC
 
   if (availablePrices.length === 0) return null
 
+  // Diseño base del botón rectangular (Capturas del usuario)
+  const ButtonContent = (
+    <Button
+      variant="outline"
+      className={cn(
+        "rounded-xl h-8 md:h-9 px-3 md:px-5 font-bold flex items-center gap-2 transition-all active:scale-95 shrink-0 uppercase tracking-[0.15em] text-[10px] md:text-[11px]",
+        // Estilo Integrado: Usa los colores de la marca para que parezca parte de la tabla
+        "bg-primary/5 border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/40",
+        // En modo oscuro se adapta solo si el fondo cambia, pero el esquema primary funciona en ambos
+        "dark:bg-primary/10 dark:hover:bg-primary/20",
+        className
+      )}
+    >
+      <Plus className="h-3 w-3" strokeWidth={3} />
+      <span>Añadir</span>
+    </Button>
+  )
+
   // Si necesita variante (Lomo/Pollo) O tiene varios formatos
   if (needsVariant || availablePrices.length > 1) {
     return (
-      <div className={cn("flex flex-wrap items-center justify-center gap-2", className)}>
+      <div className={cn("flex flex-wrap items-center justify-center gap-1.5", className)}>
         {/* Chips de ítems ya añadidos con sus variantes/formatos */}
         {cartItemsForItem.map(cartItem => (
-          <div key={`${cartItem.type}-${cartItem.variant}`} className="flex items-center gap-2 bg-primary/5 rounded-full p-1 border border-primary/10">
+          <div key={`${cartItem.type}-${cartItem.variant}`} className="flex items-center gap-1.5 bg-primary/5 rounded-lg p-0.5 border border-primary/10">
             <div className="flex items-center">
                <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 rounded-full"
+                  className="h-5 w-5 rounded-md hover:bg-primary/10"
                   onClick={() => updateQuantity(item.id, cartItem.type, -1, cartItem.variant)}
                 >
-                  <Minus className="h-3.5 w-3.5" />
+                  <Minus className="h-2.5 w-2.5" />
                 </Button>
-                <span className="font-bold text-[10px] min-w-[0.8rem] text-center">{cartItem.quantity}</span>
+                <span className="font-bold text-[10px] min-w-[0.7rem] text-center">{cartItem.quantity}</span>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 rounded-full"
+                  className="h-5 w-5 rounded-md hover:bg-primary/10"
                   onClick={() => updateQuantity(item.id, cartItem.type, 1, cartItem.variant)}
                 >
-                  <Plus className="h-3.5 w-3.5" />
+                  <Plus className="h-2.5 w-2.5" />
                 </Button>
             </div>
-            <span className="text-[8px] uppercase font-bold text-primary/70 pr-3">
+            <span className="text-[8px] uppercase font-bold text-primary/70 pr-1.5">
               {cartItem.variant || cartItem.type}
             </span>
           </div>
@@ -82,29 +104,23 @@ export function AddToCartButton({ item, variant = "outline", className }: AddToC
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <TooltipTrigger asChild>
-                  <Button
-                    variant={variant}
-                    size="icon"
-                    className="rounded-full border-primary/20 text-primary hover:bg-primary hover:text-white h-9 w-9 shadow-sm"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
+                  {ButtonContent}
                 </TooltipTrigger>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="rounded-2xl p-2 min-w-[160px] glass">
+              <DropdownMenuContent align="end" className="rounded-xl p-1.5 min-w-[150px] glass-card border-white/10 shadow-2xl">
                 {needsVariant ? (
                   <>
-                    <div className="px-2 py-1.5 text-[9px] uppercase tracking-widest font-bold text-muted-foreground opacity-50">
-                      Elige ingrediente
+                    <div className="px-3 py-1.5 text-[8px] uppercase tracking-[0.2em] font-bold text-muted-foreground opacity-50">
+                      Ingrediente
                     </div>
                     {variantOptions.map(v => (
                       <DropdownMenuItem
                         key={v}
-                        className="flex justify-between items-center rounded-xl py-2.5 px-3 cursor-pointer focus:bg-primary focus:text-white"
+                        className="flex justify-between items-center rounded-lg py-2.5 px-3 cursor-pointer focus:bg-primary focus:text-white mb-0.5 last:mb-0"
                         onClick={() => handleAdd(availablePrices[0][0], availablePrices[0][1], v)}
                       >
-                        <span className="font-medium">{v}</span>
-                        <span className="text-[10px] opacity-60">
+                        <span className="font-bold text-[11px] uppercase tracking-wider">{v}</span>
+                        <span className="text-[9px] opacity-60">
                           {availablePrices.length > 1 ? availablePrices[0][0] : ""}
                         </span>
                       </DropdownMenuItem>
@@ -112,25 +128,25 @@ export function AddToCartButton({ item, variant = "outline", className }: AddToC
                   </>
                 ) : (
                   <>
-                    <div className="px-2 py-1.5 text-[9px] uppercase tracking-widest font-bold text-muted-foreground opacity-50">
-                      Selecciona formato
+                    <div className="px-3 py-1.5 text-[8px] uppercase tracking-[0.2em] font-bold text-muted-foreground opacity-50">
+                      Formato
                     </div>
                     {availablePrices.map(([type, price]) => (
                       <DropdownMenuItem
                         key={type}
-                        className="flex justify-between items-center rounded-xl py-2.5 px-3 cursor-pointer focus:bg-primary focus:text-white"
+                        className="flex justify-between items-center rounded-lg py-2.5 px-3 cursor-pointer focus:bg-primary focus:text-white mb-0.5 last:mb-0"
                         onClick={() => handleAdd(type, price)}
                       >
-                        <span className="capitalize font-medium">{type}</span>
-                        <span className="font-bold">{price.toFixed(2)}€</span>
+                        <span className="capitalize font-bold text-[11px]">{type}</span>
+                        <span className="font-bold text-[12px]">{price.toFixed(2)}€</span>
                       </DropdownMenuItem>
                     ))}
                   </>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-            <TooltipContent className="rounded-full px-3 py-1 bg-primary text-white text-[10px] font-bold">
-              {totalQuantity > 0 ? "Añadir otro formato" : "Añadir al pedido"}
+            <TooltipContent className="rounded-full px-2 py-0.5 bg-primary text-white text-[9px] font-bold border-none">
+              {totalQuantity > 0 ? "Añadir más" : "Añadir"}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -144,23 +160,23 @@ export function AddToCartButton({ item, variant = "outline", className }: AddToC
 
   if (cartItem) {
     return (
-      <div className={cn("flex items-center justify-center gap-3 bg-primary/5 rounded-full p-1 border border-primary/10", className)}>
+      <div className={cn("flex items-center justify-center gap-1.5 bg-primary/5 rounded-lg p-0.5 border border-primary/10", className)}>
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
+          className="h-6 w-6 rounded-md hover:bg-primary/20 transition-colors"
           onClick={() => updateQuantity(item.id, singleType, -1)}
         >
-          <Minus className="h-4 w-4" />
+          <Minus className="h-3 w-3" />
         </Button>
-        <span className="font-bold text-sm min-w-[1.2rem] text-center">{cartItem.quantity}</span>
+        <span className="font-bold text-[11px] min-w-[0.8rem] text-center">{cartItem.quantity}</span>
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
+          className="h-6 w-6 rounded-md hover:bg-primary/20 transition-colors"
           onClick={() => updateQuantity(item.id, singleType, 1)}
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3 w-3" />
         </Button>
       </div>
     )
@@ -171,16 +187,11 @@ export function AddToCartButton({ item, variant = "outline", className }: AddToC
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              variant={variant}
-              size="icon"
-              className="rounded-full hover:bg-primary hover:text-white transition-all duration-300 h-9 w-9 shadow-sm"
-              onClick={() => handleAdd(singleType, singlePrice)}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
+            <div onClick={() => handleAdd(singleType, singlePrice)} className="cursor-pointer">
+              {ButtonContent}
+            </div>
           </TooltipTrigger>
-          <TooltipContent className="rounded-full px-3 py-1 bg-primary text-white text-[10px] font-bold">
+          <TooltipContent className="rounded-full px-3 py-1 bg-primary text-white text-[10px] font-bold border-none">
             Añadir al pedido
           </TooltipContent>
         </Tooltip>
@@ -188,4 +199,3 @@ export function AddToCartButton({ item, variant = "outline", className }: AddToC
     </div>
   )
 }
-

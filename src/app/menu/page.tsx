@@ -40,7 +40,9 @@ import {
   Filter,
   CheckCircle2,
   AlertCircle,
-  PlusCircle
+  PlusCircle,
+  Plus,
+  Minus
 } from "lucide-react"
 import {
   Select,
@@ -63,7 +65,8 @@ import {
 import { useFirebase, useCollection, useMemoFirebase } from "@/firebase"
 import { collection } from "firebase/firestore"
 import { MENU_BACKUP } from "@/lib/menu-backup"
-import { Loader2 } from "lucide-react"
+import { Loader2, ShoppingBasket } from "lucide-react"
+import { useCart, OrderType } from "@/context/CartContext"
 
 const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Bebidas"]
 
@@ -136,9 +139,10 @@ export default function MenuPage() {
   const [isVisible, setIsVisible] = React.useState(true)
   const [lastScrollY, setLastScrollY] = React.useState(0)
   const { firestore } = useFirebase()
+  const { addItem, updateQuantity, items } = useCart()
 
   const toggleAllergen = (name: string) => {
-    setExcludedAllergens(prev => 
+    setExcludedAllergens(prev =>
       prev.includes(name) ? prev.filter(a => a !== name) : [...prev, name]
     )
   }
@@ -147,14 +151,14 @@ export default function MenuPage() {
   React.useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
-      
+
       // Si scrolleamos hacia abajo más de 200px, ocultamos. Si subimos, mostramos.
       if (currentScrollY > lastScrollY && currentScrollY > 200) {
         setIsVisible(false)
       } else {
         setIsVisible(true)
       }
-      
+
       setLastScrollY(currentScrollY)
     }
 
@@ -174,11 +178,11 @@ export default function MenuPage() {
   const displayedMenu = React.useMemo(() => {
     const hasFirebaseData = menuItems && menuItems.length > 0
     const organized: Record<string, any> = {}
-    
+
     CATEGORIES.forEach(cat => {
       // 1. Filtramos de Firebase o Backup para esta categoría (insensible a mayúsculas/espacios)
       const targetCat = cat.trim().toLowerCase();
-      
+
       let items = hasFirebaseData ? menuItems.filter(item => {
         const itemCat = (item.categoria || item.category || "").trim().toLowerCase();
         return itemCat === targetCat;
@@ -187,8 +191,8 @@ export default function MenuPage() {
       // 2. Filtro de Búsqueda
       if (searchTerm) {
         const lowerSearch = searchTerm.toLowerCase()
-        items = items.filter((item: any) => 
-          item.nombre.toLowerCase().includes(lowerSearch) || 
+        items = items.filter((item: any) =>
+          item.nombre.toLowerCase().includes(lowerSearch) ||
           (item.desc && item.desc.toLowerCase().includes(lowerSearch))
         )
       }
@@ -207,7 +211,7 @@ export default function MenuPage() {
         footer: cat === "Carnes a la Brasa" ? "Consultar carnes fuera de carta." : (MENU_BACKUP[cat]?.footer || "")
       }
     })
-    
+
     return organized
   }, [menuItems, searchTerm, excludedAllergens])
 
@@ -228,21 +232,57 @@ export default function MenuPage() {
     )
   }
 
-  const PricePill = ({ label, price, variant }: { label: string, price: number, variant: 'primary' | 'secondary' | 'accent' }) => {
+  const PricePill = ({ label, price, variant, onClick, quantity, onSubtract, onAdd, hideLabel }: { 
+    label: string, 
+    price: number, 
+    variant: 'primary' | 'secondary' | 'accent',
+    onClick?: () => void,
+    quantity?: number,
+    onSubtract?: () => void,
+    onAdd?: () => void,
+    hideLabel?: boolean
+  }) => {
     const colors = {
-      primary: 'bg-primary/5 border-primary/10 text-primary hover:bg-primary/10',
-      secondary: 'bg-secondary/5 border-secondary/10 text-secondary hover:bg-secondary/10',
-      accent: 'bg-accent/5 border-accent/10 text-accent hover:bg-accent/10'
+      primary: 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/10',
+      secondary: 'bg-secondary/10 border-secondary/20 text-secondary hover:bg-secondary/10',
+      accent: 'bg-accent/10 border-accent/20 text-accent hover:bg-accent/10'
+    }
+
+    if (quantity && quantity > 0) {
+      return (
+        <div className={cn(
+          "w-full min-w-[80px] md:min-w-[100px] border px-2 md:px-5 py-1 md:py-1.5 rounded-xl text-center transition-all flex flex-col items-center gap-1",
+          colors[variant],
+          "ring-2 ring-primary/20"
+        )}>
+          {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60">{label}</span>}
+          <div className="flex items-center gap-2">
+            <button onClick={(e) => { e.stopPropagation(); onSubtract?.(); }} className="hover:scale-110 active:scale-95 transition-transform p-0.5">
+              <Minus className="h-3 w-3" strokeWidth={3} />
+            </button>
+            <span className="text-xs font-black">{quantity}</span>
+            <button onClick={(e) => { e.stopPropagation(); onAdd?.(); }} className="hover:scale-110 active:scale-95 transition-transform p-0.5">
+              <Plus className="h-3 w-3" strokeWidth={3} />
+            </button>
+          </div>
+        </div>
+      )
     }
 
     return (
-      <div className={cn(
-        "w-fit min-w-[70px] md:min-w-[100px] border px-2 md:px-5 py-2 md:py-2.5 rounded-xl text-center transition-colors",
-        colors[variant]
-      )}>
-        <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60 mb-0.5 md:mb-1">{label}</span>
-        <span className="text-xs md:text-base font-bold">{price.toFixed(2)}€</span>
-      </div>
+      <button 
+        onClick={onClick}
+        className={cn(
+          "w-full min-w-[75px] md:min-w-[100px] border px-2 md:px-5 py-1 md:py-1.5 rounded-xl text-center transition-all hover:scale-105 active:scale-95 flex flex-col items-center justify-center",
+          colors[variant]
+        )}
+      >
+        {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60 mb-0.5 md:mb-1">{label}</span>}
+        <div className="flex items-center gap-1.5 whitespace-nowrap">
+          <span className="text-[10px] md:text-xs opacity-60 font-black">+</span>
+          <span className="text-xs md:text-base font-bold">{price.toFixed(2)}€</span>
+        </div>
+      </button>
     )
   }
 
@@ -267,7 +307,7 @@ export default function MenuPage() {
           {/* Search Input Area - Narrower to give more room to filters */}
           <div className="relative w-full md:w-56 lg:w-72 group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <input 
+            <input
               type="text"
               placeholder="¿Qué te apetece hoy?"
               className="w-full bg-background/50 border border-border/50 rounded-2xl py-3 pl-11 pr-4 text-sm text-center md:text-left focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all placeholder:text-muted-foreground/60"
@@ -275,7 +315,7 @@ export default function MenuPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
           <div className="w-full md:w-px h-px md:h-10 bg-border/50" />
 
           {/* Allergen Filters Area - Grid layout for perfect rows */}
@@ -294,9 +334,9 @@ export default function MenuPage() {
                       onClick={() => toggleAllergen(al.name)}
                       className={cn(
                         "flex items-center gap-1 md:gap-1.5 px-1.5 py-1.5 lg:px-2 lg:py-1.5 rounded-full border transition-all duration-300 w-full justify-center lg:justify-start overflow-hidden",
-                        isExcluded 
-                        ? "bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400 ring-1 ring-red-500/20 shadow-md scale-95" 
-                        : "bg-background/50 border-border hover:border-primary/30 hover:bg-primary/5 text-muted-foreground hover:scale-105"
+                        isExcluded
+                          ? "bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400 ring-1 ring-red-500/20 shadow-md scale-95"
+                          : "bg-background/50 border-border hover:border-primary/30 hover:bg-primary/5 text-muted-foreground hover:scale-105"
                       )}
                     >
                       <div className={cn(
@@ -317,11 +357,11 @@ export default function MenuPage() {
 
       <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
         {/* Sticky Menu Container - Fixed background and blur with smart hide logic */}
-        <nav 
+        <nav
           className={cn(
             "sticky top-20 z-40 py-4 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm transition-all duration-500 transform-gpu",
             isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
-          )} 
+          )}
           aria-label="Categorías del menú"
         >
           <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center gap-6 lg:max-w-fit">
@@ -402,8 +442,8 @@ export default function MenuPage() {
                     <p className="text-lg font-headline font-bold text-foreground italic">No se han encontrado platos</p>
                     <p className="text-sm text-muted-foreground">Prueba a ajustar tu búsqueda o los filtros de alérgenos.</p>
                   </div>
-                  <button 
-                    onClick={() => {setSearchTerm(""); setExcludedAllergens([])}}
+                  <button
+                    onClick={() => { setSearchTerm(""); setExcludedAllergens([]) }}
                     className="text-xs font-bold text-primary uppercase tracking-widest hover:underline"
                   >
                     Restablecer filtros
@@ -411,148 +451,238 @@ export default function MenuPage() {
                 </div>
               ) : (
                 <div className="bg-card rounded-3xl border border-border shadow-2xl overflow-hidden glass-card">
-                {/* Desktop Version */}
-                <div className="hidden md:block overflow-x-auto">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="bg-primary/[0.05] border-b border-border">
-                        <th className="px-4 md:px-6 lg:px-8 py-6 text-sm font-bold uppercase tracking-wider text-primary">
-                          {section === "Bebidas" ? "Bebida / Refresco" : "Plato / Tapa"}
-                        </th>
-                        <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
-                          {section === "Bebidas" ? "Copa / Caña" : "Tapa"}
-                        </th>
-                        <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-secondary">
-                          {section === "Bebidas" ? "Botella" : "Media"}
-                        </th>
-                        <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-accent">
-                          {section === "Bebidas" ? "Jarra / Combinado" : "Ración"}
-                        </th>
-                        <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground opacity-50">
-                          Pedido
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border/50">
-                      {data.items.map((item: any) => (
-                        <tr key={item.id} className="group hover:bg-primary/[0.03] transition-colors">
-                          <td className="px-4 md:px-6 lg:px-8 py-7">
-                            <div className="flex items-center gap-6">
-                              {item.image ? (
-                                <button
-                                  onClick={() => setSelectedItem(item)}
-                                  className="relative h-16 w-16 shrink-0 rounded-2xl overflow-hidden border border-border shadow-md group-hover:shadow-lg group-hover:scale-105 active:scale-95 transition-all duration-500 cursor-zoom-in group/img"
-                                >
-                                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-opacity z-10">
-                                    <Sparkles className="h-4 w-4 text-white" />
+                  {/* Desktop Version */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full text-left">
+                      <thead>
+                        <tr className="bg-primary/[0.05] border-b border-border">
+                          <th className="px-4 md:px-6 lg:px-8 py-6 text-sm font-bold uppercase tracking-wider text-primary">
+                            {section === "Bebidas" ? "Bebida / Refresco" : "Plato / Tapa"}
+                          </th>
+                          <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-primary w-32">
+                            {section === "Bebidas" ? "Copa / Caña" : "Tapa"}
+                          </th>
+                          <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-secondary w-32">
+                            {section === "Bebidas" ? "Botella" : "Media"}
+                          </th>
+                          <th className="px-2 md:px-4 lg:px-6 py-6 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-accent w-32">
+                            {section === "Bebidas" ? "Jarra / Combinado" : "Ración"}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/50">
+                        {data.items.map((item: any) => (
+                          <tr key={item.id} className="group hover:bg-primary/[0.03] transition-colors">
+                            <td className="px-4 md:px-6 lg:px-8 py-7">
+                              <div className="flex items-center gap-6">
+                                {item.image ? (
+                                  <button
+                                    onClick={() => setSelectedItem(item)}
+                                    className="relative h-16 w-16 shrink-0 rounded-2xl overflow-hidden border border-border shadow-md group-hover:shadow-lg group-hover:scale-105 active:scale-95 transition-all duration-500 cursor-zoom-in group/img"
+                                  >
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-opacity z-10">
+                                      <Sparkles className="h-4 w-4 text-white" />
+                                    </div>
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                      src={item.image}
+                                      alt={item.nombre}
+                                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
+                                    />
+                                  </button>
+                                ) : (
+                                  <div className="h-16 w-16 shrink-0 rounded-2xl bg-primary/5 flex items-center justify-center border border-dashed border-primary/20 group-hover:border-primary/40 transition-colors">
+                                    <ChefHat className="h-6 w-6 text-primary/30" />
                                   </div>
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img
-                                    src={item.image}
-                                    alt={item.nombre}
-                                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
-                                  />
-                                </button>
+                                )}
+                                <div className="flex flex-col gap-1.5 min-w-0">
+                                  <div className="flex items-center gap-4">
+                                    <h3 className="text-xl font-headline font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                                      {item.nombre}
+                                    </h3>
+                                    <div className="flex gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity shrink-0">
+                                      {item.alergenos?.map((a: string) => (
+                                        <AllergenBadge key={a} name={a} size="sm" />
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground italic font-light truncate max-w-lg">{item.desc}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
+                              {item.prices?.tapa ? (
+                                <PricePill 
+                                  label="Tapa" 
+                                  price={item.prices.tapa} 
+                                  variant="primary" 
+                                  hideLabel={true}
+                                  onClick={() => {
+                                    if (item.nombre.toLowerCase().includes("lomo o pollo")) {
+                                      setSelectedItem(item)
+                                    } else {
+                                      addItem(item, 'tapa', item.prices.tapa)
+                                    }
+                                  }}
+                                  quantity={items.find(i => i.id === item.id && i.type === 'tapa')?.quantity}
+                                  onSubtract={() => updateQuantity(item.id, 'tapa', -1)}
+                                  onAdd={() => updateQuantity(item.id, 'tapa', 1)}
+                                />
                               ) : (
-                                <div className="h-16 w-16 shrink-0 rounded-2xl bg-primary/5 flex items-center justify-center border border-dashed border-primary/20 group-hover:border-primary/40 transition-colors">
-                                  <ChefHat className="h-6 w-6 text-primary/30" />
-                                </div>
+                                <span className="text-muted-foreground/10">—</span>
                               )}
-                              <div className="flex flex-col gap-1.5 min-w-0">
-                                <div className="flex items-center gap-4">
-                                  <h3 className="text-xl font-headline font-bold text-foreground group-hover:text-primary transition-colors truncate">
-                                    {item.nombre}
-                                  </h3>
-                                  <div className="flex gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity shrink-0">
-                                    {item.alergenos?.map((a: string) => (
-                                      <AllergenBadge key={a} name={a} size="sm" />
-                                    ))}
-                                  </div>
-                                </div>
-                                <p className="text-xs text-muted-foreground italic font-light truncate max-w-lg">{item.desc}</p>
+                            </td>
+                            <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
+                              {item.prices?.media ? (
+                                <PricePill 
+                                  label="Media" 
+                                  price={item.prices.media} 
+                                  variant="secondary" 
+                                  hideLabel={true}
+                                  onClick={() => {
+                                    if (item.nombre.toLowerCase().includes("lomo o pollo")) {
+                                      setSelectedItem(item)
+                                    } else {
+                                      addItem(item, 'media', item.prices.media)
+                                    }
+                                  }}
+                                  quantity={items.find(i => i.id === item.id && i.type === 'media')?.quantity}
+                                  onSubtract={() => updateQuantity(item.id, 'media', -1)}
+                                  onAdd={() => updateQuantity(item.id, 'media', 1)}
+                                />
+                              ) : (
+                                <span className="text-muted-foreground/10">—</span>
+                              )}
+                            </td>
+                            <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
+                              {item.prices?.racion ? (
+                                <PricePill 
+                                  label="Ración" 
+                                  price={item.prices.racion} 
+                                  variant="accent" 
+                                  hideLabel={true}
+                                  onClick={() => {
+                                    if (item.nombre.toLowerCase().includes("lomo o pollo")) {
+                                      setSelectedItem(item)
+                                    } else {
+                                      addItem(item, 'racion', item.prices.racion)
+                                    }
+                                  }}
+                                  quantity={items.find(i => i.id === item.id && i.type === 'racion')?.quantity}
+                                  onSubtract={() => updateQuantity(item.id, 'racion', -1)}
+                                  onAdd={() => updateQuantity(item.id, 'racion', 1)}
+                                />
+                              ) : (
+                                <span className="text-muted-foreground/10">—</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Version */}
+                  <div className="md:hidden divide-y divide-border/50">
+                    {data.items.map((item: any) => (
+                      <div key={item.id} className="px-6 py-8 space-y-6 hover:bg-primary/[0.01] transition-colors">
+                        <div className="flex items-start gap-5">
+                          {item.image ? (
+                            <button
+                              onClick={() => setSelectedItem(item)}
+                              className="relative h-20 w-20 shrink-0 rounded-[1.25rem] overflow-hidden border border-border shadow-md cursor-zoom-in"
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={item.image}
+                                alt={item.nombre}
+                                className="object-cover w-full h-full"
+                              />
+                            </button>
+                          ) : (
+                            <div className="h-20 w-20 shrink-0 rounded-[1.25rem] bg-primary/5 flex items-center justify-center border border-dashed border-primary/20">
+                              <ChefHat className="h-8 w-8 text-primary/30" />
+                            </div>
+                          )}
+                          <div className="flex-1 space-y-1.5 min-w-0">
+                            <div className="flex justify-between items-start gap-2">
+                              <h3 className="text-xl font-headline font-bold text-foreground leading-tight truncate pr-2">
+                                {item.nombre}
+                              </h3>
+                              <div className="flex gap-1 shrink-0 items-center pt-1">
+                                {item.alergenos?.map((a: string) => (
+                                  <AllergenBadge key={a} name={a} size="sm" />
+                                ))}
                               </div>
                             </div>
-                          </td>
-                          <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
-                            {item.prices?.tapa ? (
-                              <span className="text-lg font-bold text-primary font-body">{item.prices.tapa.toFixed(2)}€</span>
-                            ) : (
-                              <span className="text-muted-foreground/10">—</span>
-                            )}
-                          </td>
-                          <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
-                            {item.prices?.media ? (
-                              <span className="text-lg font-bold text-secondary font-body">{item.prices.media.toFixed(2)}€</span>
-                            ) : (
-                              <span className="text-muted-foreground/10">—</span>
-                            )}
-                          </td>
-                          <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
-                            {item.prices?.racion ? (
-                              <span className="text-lg font-bold text-accent font-body">{item.prices.racion.toFixed(2)}€</span>
-                            ) : (
-                              <span className="text-muted-foreground/10">—</span>
-                            )}
-                          </td>
-                          <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
-                             <AddToCartButton item={item} />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Mobile Version */}
-                <div className="md:hidden divide-y divide-border/50">
-                  {data.items.map((item: any) => (
-                    <div key={item.id} className="px-6 py-8 space-y-6 hover:bg-primary/[0.01] transition-colors">
-                      <div className="flex items-start gap-5">
-                        {item.image ? (
-                          <button
-                            onClick={() => setSelectedItem(item)}
-                            className="relative h-20 w-20 shrink-0 rounded-[1.25rem] overflow-hidden border border-border shadow-md cursor-zoom-in"
-                          >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={item.image}
-                              alt={item.nombre}
-                              className="object-cover w-full h-full"
-                            />
-                          </button>
-                        ) : (
-                          <div className="h-20 w-20 shrink-0 rounded-[1.25rem] bg-primary/5 flex items-center justify-center border border-dashed border-primary/20">
-                            <ChefHat className="h-8 w-8 text-primary/30" />
+                            <p className="text-xs text-muted-foreground italic leading-relaxed line-clamp-3 pr-4">{item.desc}</p>
                           </div>
-                        )}
-                        <div className="flex-1 space-y-1.5 min-w-0">
-                          <div className="flex justify-between items-start gap-2">
-                            <h3 className="text-xl font-headline font-bold text-foreground leading-tight truncate pr-2">
-                              {item.nombre}
-                            </h3>
-                            <div className="flex gap-1 shrink-0 items-center pt-1">
-                              {item.alergenos?.map((a: string) => (
-                                <AllergenBadge key={a} name={a} size="sm" />
-                              ))}
+                        </div>
+
+                        <div className="flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-3 py-1">
+                          {item.prices?.tapa && (
+                            <div className="flex-1 min-w-[80px] max-w-[140px]">
+                              <PricePill 
+                                label="Tapa" 
+                                price={item.prices.tapa} 
+                                variant="primary" 
+                                onClick={() => {
+                                  if (item.nombre.toLowerCase().includes("lomo o pollo")) {
+                                    setSelectedItem(item)
+                                  } else {
+                                    addItem(item, 'tapa', item.prices.tapa)
+                                  }
+                                }}
+                                quantity={items.find(i => i.id === item.id && i.type === 'tapa')?.quantity}
+                                onSubtract={() => updateQuantity(item.id, 'tapa', -1)}
+                                onAdd={() => updateQuantity(item.id, 'tapa', 1)}
+                              />
                             </div>
-                          </div>
-                          <p className="text-xs text-muted-foreground italic leading-relaxed line-clamp-3 pr-4">{item.desc}</p>
+                          )}
+                          {item.prices?.media && (
+                            <div className="flex-1 min-w-[80px] max-w-[140px]">
+                              <PricePill 
+                                label="Media" 
+                                price={item.prices.media} 
+                                variant="secondary" 
+                                onClick={() => {
+                                  if (item.nombre.toLowerCase().includes("lomo o pollo")) {
+                                    setSelectedItem(item)
+                                  } else {
+                                    addItem(item, 'media', item.prices.media)
+                                  }
+                                }}
+                                quantity={items.find(i => i.id === item.id && i.type === 'media')?.quantity}
+                                onSubtract={() => updateQuantity(item.id, 'media', -1)}
+                                onAdd={() => updateQuantity(item.id, 'media', 1)}
+                              />
+                            </div>
+                          )}
+                          {item.prices?.racion && (
+                            <div className="flex-1 min-w-[80px] max-w-[140px]">
+                              <PricePill 
+                                label="Ración" 
+                                price={item.prices.racion} 
+                                variant="accent" 
+                                onClick={() => {
+                                  if (item.nombre.toLowerCase().includes("lomo o pollo")) {
+                                    setSelectedItem(item)
+                                  } else {
+                                    addItem(item, 'racion', item.prices.racion)
+                                  }
+                                }}
+                                quantity={items.find(i => i.id === item.id && i.type === 'racion')?.quantity}
+                                onSubtract={() => updateQuantity(item.id, 'racion', -1)}
+                                onAdd={() => updateQuantity(item.id, 'racion', 1)}
+                              />
+                            </div>
+                          )}
                         </div>
                       </div>
-
-                      <div className="flex justify-between items-center bg-muted/20 p-4 rounded-2xl md:rounded-[1.5rem]">
-                        <div className="flex flex-wrap gap-2">
-                          {item.prices?.tapa && <PricePill label={section === "Bebidas" ? "Copa / Caña" : "Tapa"} price={item.prices.tapa} variant="primary" />}
-                          {item.prices?.media && <PricePill label={section === "Bebidas" ? "Botella" : "Media"} price={item.prices.media} variant="secondary" />}
-                          {item.prices?.racion && <PricePill label={section === "Bebidas" ? "Jarra / Combinado" : "Ración"} price={item.prices.racion} variant="accent" />}
-                        </div>
-                        <AddToCartButton item={item} />
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
               {data.footer && (
                 <div className="mt-8 bg-card/60 backdrop-blur-md p-5 rounded-3xl border border-border/50 flex items-center gap-5 shadow-sm max-w-2xl mx-auto">
@@ -576,7 +706,7 @@ export default function MenuPage() {
           <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-700">
             <Utensils className="h-32 w-32 rotate-12" />
           </div>
-          
+
           <div className="flex flex-col items-center gap-8 relative z-10">
             <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
               <div className="flex flex-col items-center md:items-start gap-2">
@@ -603,7 +733,7 @@ export default function MenuPage() {
             </div>
 
             <div className="w-full max-w-[150px] h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
-            
+
             <div className="space-y-2 text-center">
               <p className="text-[10px] font-bold uppercase tracking-[.4em] text-muted-foreground/40">
                 © 2026 Cafe Bar Titi Coria
@@ -616,7 +746,7 @@ export default function MenuPage() {
         </div>
       </footer>
 
-      
+
       <FloatingCart />
       <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
         <DialogContent className="max-w-7xl p-0 border-none bg-transparent shadow-none overflow-visible flex items-end md:items-center justify-center p-0 md:p-4 pointer-events-none [&>button:last-child]:hidden">
