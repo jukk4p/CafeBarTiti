@@ -349,7 +349,7 @@ export default function MenuPage() {
                 )}
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-[320px] sm:w-[480px] p-6 bg-card/95 backdrop-blur-xl border-border/50 shadow-2xl rounded-3xl" align="end">
+            <PopoverContent className="w-[320px] sm:w-[480px] p-6 bg-card/95 backdrop-blur-xl border-border/50 shadow-2xl rounded-3xl" align="center">
               <div className="space-y-6">
                 <div className="flex items-center justify-between border-b border-border/30 pb-4">
                   <div className="space-y-1">
