@@ -316,10 +316,6 @@ export default function MenuPage() {
             {/* Title & Info Section */}
             <div className="lg:col-span-8 flex flex-col gap-4">
               <div className="space-y-2">
-                <div className="flex items-center gap-3 text-primary mb-2">
-                  <ShieldAlert className="h-4 w-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/80">Seguridad Alimentaria</span>
-                </div>
                 <h3 className="text-3xl md:text-5xl font-headline font-bold text-foreground leading-tight italic">¿Tienes alguna alergia?</h3>
               </div>
               <p className="text-sm md:text-base text-muted-foreground italic font-light max-w-2xl border-l-2 border-primary/20 pl-6 leading-relaxed">
@@ -735,28 +731,14 @@ export default function MenuPage() {
           </div>
 
           <div className="flex flex-col items-center gap-8 relative z-10">
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
-              <div className="flex flex-col items-center md:items-start gap-2">
-                <div className="flex items-center gap-2 text-secondary">
-                  <ShieldAlert className="h-4 w-4" strokeWidth={2.5} />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Seguridad Alimentaria</span>
-                </div>
-                <p className="text-[11px] font-medium text-muted-foreground italic">
-                  Información de alérgenos bajo Reglamento (UE) nº 1169/2011.
-                </p>
+            <div className="flex flex-col items-center justify-center gap-2">
+              <div className="flex items-center gap-2 text-primary">
+                <Flame className="h-4 w-4" strokeWidth={2.5} />
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Horario de Cocina</span>
               </div>
-
-              <div className="hidden md:block w-px h-8 bg-border/50" />
-
-              <div className="flex flex-col items-center md:items-start gap-2">
-                <div className="flex items-center gap-2 text-primary">
-                  <Flame className="h-4 w-4" strokeWidth={2.5} />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Horario de Cocina</span>
-                </div>
-                <p className="text-[11px] font-medium text-muted-foreground italic">
-                  Abierto mediodías diarios y cenas de Jueves a Domingo.
-                </p>
-              </div>
+              <p className="text-[11px] font-medium text-muted-foreground italic">
+                Coria del Río · Abierto mediodías diarios y cenas de Jueves a Domingo.
+              </p>
             </div>
 
             <div className="w-full max-w-[150px] h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
