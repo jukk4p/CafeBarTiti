@@ -310,27 +310,40 @@ export default function MenuPage() {
       </section>
 
       <section className="container mx-auto px-4 mb-8 lg:max-w-7xl animate-in fade-in slide-in-from-top-2 duration-700">
-        <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-3xl p-6 md:p-6 shadow-xl flex flex-col md:flex-row gap-6 items-center">
-          {/* Search Input Area - Narrower to give more room to filters */}
-          <div className="relative w-full md:w-56 lg:w-72 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <input
-              type="text"
-              placeholder="¿Qué te apetece hoy?"
-              className="w-full bg-background/50 border border-border/50 rounded-2xl py-3 pl-11 pr-4 text-sm text-center md:text-left focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all placeholder:text-muted-foreground/60"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-3xl p-6 md:p-8 shadow-xl flex flex-col gap-8">
+          {/* Header for Filter Section */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border/30 pb-6">
+            <div className="space-y-1 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-2 text-primary mb-1">
+                <ShieldAlert className="h-3.5 w-3.5" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Seguridad Alimentaria</span>
+              </div>
+              <h3 className="text-xl md:text-2xl font-headline font-bold text-foreground">¿Tienes alguna alergia?</h3>
+              <p className="text-xs text-muted-foreground italic max-w-sm">
+                Pulsa sobre los alérgenos que deseas <span className="text-red-500 font-bold">excluir</span> de tu búsqueda. 
+                Los platos que contengan estos ingredientes se ocultarán automáticamente.
+              </p>
+            </div>
+            
+            {/* Search Input Area - Moved here for better balance */}
+            <div className="relative w-full md:w-72 group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              <input
+                type="text"
+                placeholder="¿Buscas algún plato?"
+                className="w-full bg-background/50 border border-border/50 rounded-2xl py-3.5 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all placeholder:text-muted-foreground/60"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
 
-          <div className="w-full md:w-px h-px md:h-10 bg-border/50" />
-
           {/* Allergen Filters Area - Grid layout for perfect rows */}
-          <div className="w-full md:flex-1">
-            <div className="flex flex-col md:flex-row items-center gap-4">
-              <div className="flex items-center gap-2 shrink-0 text-primary justify-center md:justify-start">
-                <Filter className="h-3.5 w-3.5" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground whitespace-nowrap">Excluir:</span>
+          <div className="w-full">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
+              <div className="flex items-center gap-3 shrink-0 text-primary">
+                <Filter className="h-4 w-4" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/60 whitespace-nowrap">Excluir Alérgenos:</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-1.5 md:gap-2 w-full">
                 {ALLERGENS_LIST.map((al) => {
