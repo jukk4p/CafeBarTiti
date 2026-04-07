@@ -2,10 +2,12 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { AddToCartButton } from "@/components/AddToCartButton"
 import { FloatingCart } from "@/components/FloatingCart"
 import { cn } from "@/lib/utils"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   Dialog,
   DialogContent,
@@ -250,46 +252,76 @@ export default function MenuPage() {
     hideLabel?: boolean
   }) => {
     const colors = {
-      primary: 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/10',
-      secondary: 'bg-secondary/10 border-secondary/20 text-secondary hover:bg-secondary/10',
-      accent: 'bg-accent/10 border-accent/20 text-accent hover:bg-accent/10'
-    }
-
-    if (quantity && quantity > 0) {
-      return (
-        <div className={cn(
-          "w-full min-w-[80px] md:min-w-[100px] border px-2 md:px-5 py-1 md:py-1.5 rounded-xl text-center transition-all flex flex-col items-center gap-1",
-          colors[variant],
-          "ring-2 ring-primary/20"
-        )}>
-          {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60">{label}</span>}
-          <div className="flex items-center gap-2">
-            <button onClick={(e) => { e.stopPropagation(); onSubtract?.(); }} className="hover:scale-110 active:scale-95 transition-transform p-0.5">
-              <Minus className="h-3 w-3" strokeWidth={3} />
-            </button>
-            <span className="text-xs font-black">{quantity}</span>
-            <button onClick={(e) => { e.stopPropagation(); onAdd?.(); }} className="hover:scale-110 active:scale-95 transition-transform p-0.5">
-              <Plus className="h-3 w-3" strokeWidth={3} />
-            </button>
-          </div>
-        </div>
-      )
+      primary: 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/15',
+      secondary: 'bg-secondary/10 border-secondary/20 text-secondary hover:bg-secondary/15',
+      accent: 'bg-accent/10 border-accent/20 text-accent hover:bg-accent/15'
     }
 
     return (
-      <button 
-        onClick={onClick}
+      <motion.div 
+        layout
+        initial={false}
+        transition={{ type: "spring", stiffness: 500, damping: 30 }}
         className={cn(
-          "w-full min-w-[75px] md:min-w-[100px] border px-2 md:px-5 py-1 md:py-1.5 rounded-xl text-center transition-all hover:scale-105 active:scale-95 flex flex-col items-center justify-center",
-          colors[variant]
+          "w-full min-w-[80px] md:min-w-[100px] border rounded-xl transition-colors overflow-hidden",
+          colors[variant],
+          quantity && quantity > 0 ? "ring-2 ring-primary/20 bg-primary/5" : ""
         )}
       >
-        {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60 mb-0.5 md:mb-1">{label}</span>}
-        <div className="flex items-center gap-1.5 whitespace-nowrap">
-          <span className="text-[10px] md:text-xs opacity-60 font-black">+</span>
-          <span className="text-xs md:text-base font-bold">{price.toFixed(2)}€</span>
-        </div>
-      </button>
+        <AnimatePresence mode="wait">
+          {quantity && quantity > 0 ? (
+            <motion.div 
+              key="counter"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="px-2 md:px-5 py-1 md:py-1.5 flex flex-col items-center gap-1"
+            >
+              {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60">{label}</span>}
+              <div className="flex items-center gap-3">
+                <motion.button 
+                  whileTap={{ scale: 0.8 }}
+                  onClick={(e) => { e.stopPropagation(); onSubtract?.(); }} 
+                  className="hover:scale-110 active:scale-95 transition-transform p-0.5"
+                >
+                  <Minus className="h-3.5 w-3.5" strokeWidth={3} />
+                </motion.button>
+                <motion.span 
+                  key={quantity}
+                  initial={{ y: 5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  className="text-xs font-black min-w-[1ch] text-center"
+                >
+                  {quantity}
+                </motion.span>
+                <motion.button 
+                  whileTap={{ scale: 0.8 }}
+                  onClick={(e) => { e.stopPropagation(); onAdd?.(); }} 
+                  className="hover:scale-110 active:scale-95 transition-transform p-0.5"
+                >
+                  <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+                </motion.button>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.button 
+              key="button"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              whileTap={{ scale: 1.05 }}
+              onClick={onClick}
+              className="w-full h-full px-2 md:px-5 py-2.5 md:py-3 flex flex-col items-center justify-center group"
+            >
+              {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60 mb-0.5 md:mb-1">{label}</span>}
+              <div className="flex items-center gap-1.5 whitespace-nowrap">
+                <Plus className="h-2.5 w-2.5 opacity-40 group-hover:opacity-100 transition-opacity" strokeWidth={4} />
+                <span className="text-xs md:text-base font-black">{price.toFixed(2)}€</span>
+              </div>
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </motion.div>
     )
   }
 
@@ -411,20 +443,28 @@ export default function MenuPage() {
             {/* Desktop Tabs Wrapper */}
             <div className="hidden lg:flex items-center p-1.5 h-full">
               <TabsList className="bg-transparent w-full flex justify-between gap-1 h-12">
-                {CATEGORIES.map(cat => (
-                  <TabsTrigger
-                    key={cat}
-                    value={cat}
-                    className="relative bg-transparent data-[state=active]:text-primary border-none rounded-full h-full px-6 text-[11px] font-bold uppercase tracking-wider text-foreground/40 hover:text-primary transition-all duration-300 flex items-center gap-2 flex-1 whitespace-nowrap group"
-                  >
-                    <span className="shrink-0 transition-transform group-data-[state=active]:scale-110 group-hover:scale-110">
-                      {CATEGORY_ICONS[cat]}
-                    </span>
-                    {cat}
-                    {/* Indicador minimalista inferior */}
-                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary rounded-full transition-all duration-500 group-data-[state=active]:w-8 opacity-0 group-data-[state=active]:opacity-100" />
-                  </TabsTrigger>
-                ))}
+                {CATEGORIES.map(cat => {
+                  const isActive = activeCategory === cat;
+                  return (
+                    <TabsTrigger
+                      key={cat}
+                      value={cat}
+                      className="relative bg-transparent data-[state=active]:text-primary border-none rounded-full h-full px-6 text-[11px] font-bold uppercase tracking-wider text-foreground/40 hover:text-primary transition-all duration-300 flex items-center gap-2 flex-1 whitespace-nowrap group"
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="active-cat"
+                          className="absolute inset-0 bg-primary/10 rounded-full -z-10"
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                        />
+                      )}
+                      <span className="shrink-0 transition-transform group-data-[state=active]:scale-110 group-hover:scale-110">
+                        {CATEGORY_ICONS[cat]}
+                      </span>
+                      {cat}
+                    </TabsTrigger>
+                  )
+                })}
               </TabsList>
             </div>
 
@@ -464,18 +504,29 @@ export default function MenuPage() {
           </div>
         </nav>
 
-        <div className="container mx-auto px-1 sm:px-4 py-12 lg:max-w-7xl overflow-x-auto">
-          {Object.entries(displayedMenu).map(([section, data]) => (
-            <TabsContent key={section} value={section} className="mt-0 space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <div className="text-center mb-10">
-                <div className="inline-flex p-3 bg-card border border-border text-primary mb-4 [&>svg]:h-6 [&>svg]:w-6 shadow-sm">
-                  {CATEGORY_ICONS[section]}
-                </div>
-                <h2 className="text-3xl md:text-5xl font-headline font-bold text-foreground italic pr-2">{section}</h2>
-                <div className="h-[2px] w-16 bg-primary/20 mx-auto mt-4" />
-              </div>
+        <div className="container mx-auto px-1 sm:px-4 py-12 lg:max-w-7xl">
+          <AnimatePresence mode="wait">
+            {Object.entries(displayedMenu).map(([section, data]) => {
+              if (activeCategory !== section) return null;
+              
+              return (
+                <motion.div
+                  key={section}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="space-y-10"
+                >
+                  <div className="text-center mb-10">
+                    <div className="inline-flex p-3 bg-card border border-border text-primary mb-4 [&>svg]:h-6 [&>svg]:w-6 shadow-sm">
+                      {CATEGORY_ICONS[section]}
+                    </div>
+                    <h2 className="text-3xl md:text-5xl font-headline font-bold text-foreground italic pr-2">{section}</h2>
+                    <div className="h-[2px] w-16 bg-primary/20 mx-auto mt-4" />
+                  </div>
 
-              {data.items.length === 0 ? (
+                  {data.items.length === 0 ? (
                 <div className="py-20 text-center space-y-4 bg-muted/10 rounded-3xl border border-dashed border-border/50">
                   <div className="p-4 bg-background rounded-full w-fit mx-auto shadow-sm">
                     <Utensils className="h-8 w-8 text-muted-foreground/30" />
@@ -525,11 +576,12 @@ export default function MenuPage() {
                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-opacity z-10">
                                       <Sparkles className="h-4 w-4 text-white" />
                                     </div>
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
+                                    <Image
                                       src={item.image}
                                       alt={item.nombre}
-                                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
+                                      fill
+                                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                      sizes="64px"
                                     />
                                   </button>
                                 ) : (
@@ -634,11 +686,12 @@ export default function MenuPage() {
                               onClick={() => setSelectedItem(item)}
                               className="relative h-20 w-20 shrink-0 rounded-[1.25rem] overflow-hidden border border-border shadow-md cursor-zoom-in"
                             >
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
+                              <Image
                                 src={item.image}
                                 alt={item.nombre}
-                                className="object-cover w-full h-full"
+                                fill
+                                className="object-cover"
+                                sizes="80px"
                               />
                             </button>
                           ) : (
@@ -736,8 +789,10 @@ export default function MenuPage() {
                   </p>
                 </div>
               )}
-            </TabsContent>
-          ))}
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </div>
       </Tabs>
 

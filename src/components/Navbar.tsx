@@ -56,13 +56,20 @@ export function Navbar() {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "text-[14px] font-bold transition-all px-1 py-1 flex items-center h-full",
+                  "relative text-[14px] font-bold transition-colors px-1 py-1 flex items-center h-full",
                   isActive
-                    ? "text-[#1a4731] dark:text-primary border-b-2 border-[#1a4731] dark:border-primary"
+                    ? "text-[#1a4731] dark:text-primary"
                     : "text-foreground/80 dark:text-white/80 hover:text-[#1a4731] dark:hover:text-primary"
                 )}
               >
                 {item.name}
+                {isActive && (
+                  <motion.div
+                    layoutId="nav-active"
+                    className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-[#1a4731] dark:bg-primary"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </Link>
             )
           })}

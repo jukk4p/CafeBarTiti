@@ -41,9 +41,10 @@ export function FadeIn({
       x: 0,
       y: 0,
       transition: {
-        duration,
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
         delay,
-        ease: [0.21, 0.47, 0.32, 0.98],
         ...(stagger && {
           staggerChildren: 0.1,
         }),
