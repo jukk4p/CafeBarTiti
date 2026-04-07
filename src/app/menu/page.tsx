@@ -310,70 +310,56 @@ export default function MenuPage() {
       </section>
 
       <section className="container mx-auto px-4 mb-8 lg:max-w-7xl animate-in fade-in slide-in-from-top-2 duration-700">
-        <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-3xl p-8 md:p-12 shadow-xl flex flex-col gap-10">
-          {/* Main Controls Area */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Title & Info Section */}
-            <div className="lg:col-span-8 flex flex-col gap-4">
-              <div className="space-y-2">
-                <h3 className="text-3xl md:text-5xl font-headline font-bold text-foreground leading-tight italic">¿Tienes alguna alergia?</h3>
+        <div className="bg-card/40 backdrop-blur-md border border-border/40 rounded-[2rem] p-5 md:p-7 shadow-sm flex flex-col gap-6 lg:gap-8">
+          {/* Compact Top Bar */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="h-10 w-10 flex items-center justify-center bg-primary/10 rounded-xl text-primary shadow-inner">
+                <Filter className="h-4 w-4" />
               </div>
-              <p className="text-sm md:text-base text-muted-foreground italic font-light max-w-2xl border-l-2 border-primary/20 pl-6 leading-relaxed">
-                Marca los ingredientes que deseas <span className="text-red-500 font-bold decoration-red-500/30 underline underline-offset-4">excluir</span> de tu búsqueda. 
-                Nuestra carta se filtrará automáticamente para garantizar tu seguridad en Cafe Bar Titi.
-              </p>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/70 leading-none mb-1">Herramientas de Búsqueda</span>
+                <span className="text-[10px] md:text-[11px] text-muted-foreground italic font-light">Pulsa para <span className="text-red-500/80 font-medium italic">excluir</span> ingredientes de tu selección.</span>
+              </div>
             </div>
 
-            {/* Search Input Area */}
-            <div className="lg:col-span-4 flex justify-center lg:justify-end pt-2">
-              <div className="relative w-full max-w-sm group">
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                <input
-                  type="text"
-                  placeholder="Busca por nombre..."
-                  className="w-full bg-background/50 border border-border/30 rounded-2xl py-4 pl-14 pr-6 text-base focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary/50 transition-all shadow-sm placeholder:text-muted-foreground/50"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
+            <div className="relative w-full md:w-64 lg:w-72 group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+              <input
+                type="text"
+                placeholder="Busca un plato..."
+                className="w-full bg-background/40 border border-border/50 rounded-xl py-2.5 pl-10 pr-4 text-xs focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary/30 transition-all placeholder:text-muted-foreground/40"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
           </div>
 
-          {/* Allergen Filters Area - Integrated Label & Compact Grid */}
-          <div className="pt-10 border-t border-border/30">
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center gap-3 text-foreground/40 px-1">
-                <Filter className="h-4 w-4" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.4em] whitespace-nowrap">Excluir Alergenos:</span>
-                <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent" />
-              </div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-2 md:gap-3 w-full">
-                {ALLERGENS_LIST.map((al) => {
-                  const isExcluded = excludedAllergens.includes(al.name);
-                  return (
-                    <button
-                      key={al.name}
-                      onClick={() => toggleAllergen(al.name)}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all duration-300 w-full justify-center lg:justify-start",
-                        isExcluded
-                          ? "bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400 ring-1 ring-red-500/20 shadow-md scale-95"
-                          : "bg-background/40 border-border/50 hover:border-primary/30 hover:bg-primary/5 text-muted-foreground/80 hover:text-foreground hover:scale-105"
-                      )}
-                    >
-                      <div className={cn(
-                        "h-4 w-4 rounded-full flex items-center justify-center text-white p-0.5 shadow-sm shrink-0",
-                        isExcluded ? "bg-red-500 font-bold" : al.color
-                      )}>
-                        {isExcluded ? <X className="h-full w-full stroke-[3]" /> : ALLERGEN_ICONS[al.name]}
-                      </div>
-                      <span className="text-[9px] font-bold uppercase tracking-widest truncate">{al.label}</span>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
+          {/* Ultra Compact Allergen Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 lg:grid-cols-14 gap-1.5 md:gap-2">
+            {ALLERGENS_LIST.map((al) => {
+              const isExcluded = excludedAllergens.includes(al.name);
+              return (
+                <button
+                  key={al.name}
+                  onClick={() => toggleAllergen(al.name)}
+                  className={cn(
+                    "flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl border transition-all duration-300 group",
+                    isExcluded
+                      ? "bg-red-500/5 border-red-500/20 text-red-700 dark:text-red-400 scale-[0.98]"
+                      : "bg-background/20 border-border/30 hover:border-primary/20 hover:bg-primary/[0.02] text-muted-foreground/60 hover:text-foreground"
+                  )}
+                >
+                  <div className={cn(
+                    "h-3 w-3 rounded-full flex items-center justify-center text-white p-0.5 shadow-sm transition-transform group-hover:scale-110",
+                    isExcluded ? "bg-red-500" : al.color
+                  )}>
+                    {isExcluded ? <X className="h-full w-full stroke-[3]" /> : ALLERGEN_ICONS[al.name]}
+                  </div>
+                  <span className="text-[7.5px] font-bold uppercase tracking-widest truncate w-full text-center">{al.label}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       </section>
