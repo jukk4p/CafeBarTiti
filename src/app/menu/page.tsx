@@ -14,6 +14,11 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
   Utensils,
   Fish,
   Beef,
@@ -42,7 +47,8 @@ import {
   AlertCircle,
   PlusCircle,
   Plus,
-  Minus
+  Minus,
+  Settings2
 } from "lucide-react"
 import {
   Select,
@@ -310,57 +316,84 @@ export default function MenuPage() {
       </section>
 
       <section className="container mx-auto px-4 mb-8 lg:max-w-7xl animate-in fade-in slide-in-from-top-2 duration-700">
-        <div className="bg-card/40 backdrop-blur-md border border-border/40 rounded-[2rem] p-5 md:p-7 shadow-sm flex flex-col gap-6 lg:gap-8">
-          {/* Compact Top Bar */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="h-10 w-10 flex items-center justify-center bg-primary/10 rounded-xl text-primary shadow-inner">
-                <Filter className="h-4 w-4" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/70 leading-none mb-1">Herramientas de Búsqueda</span>
-                <span className="text-[10px] md:text-[11px] text-muted-foreground italic font-light">Pulsa para <span className="text-red-500/80 font-medium italic">excluir</span> ingredientes de tu selección.</span>
-              </div>
-            </div>
-
-            <div className="relative w-full md:w-64 lg:w-72 group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-              <input
-                type="text"
-                placeholder="Busca un plato..."
-                className="w-full bg-background/40 border border-border/50 rounded-xl py-2.5 pl-10 pr-4 text-xs focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary/30 transition-all placeholder:text-muted-foreground/40"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+        <div className="bg-card/30 backdrop-blur-md border border-border/40 rounded-2xl p-3 md:p-4 shadow-sm flex flex-col md:flex-row items-center gap-3">
+          {/* Main Search - Expanded */}
+          <div className="relative w-full md:flex-1 group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <input
+              type="text"
+              placeholder="¿Qué te apetece hoy? Busca platos, ingredientes..."
+              className="w-full bg-background/40 border border-border/50 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary/30 transition-all placeholder:text-muted-foreground/40"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
 
-          {/* Ultra Compact Allergen Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 lg:grid-cols-14 gap-1.5 md:gap-2">
-            {ALLERGENS_LIST.map((al) => {
-              const isExcluded = excludedAllergens.includes(al.name);
-              return (
-                <button
-                  key={al.name}
-                  onClick={() => toggleAllergen(al.name)}
-                  className={cn(
-                    "flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl border transition-all duration-300 group",
-                    isExcluded
-                      ? "bg-red-500/5 border-red-500/20 text-red-700 dark:text-red-400 scale-[0.98]"
-                      : "bg-background/20 border-border/30 hover:border-primary/20 hover:bg-primary/[0.02] text-muted-foreground/60 hover:text-foreground"
-                  )}
-                >
-                  <div className={cn(
-                    "h-3 w-3 rounded-full flex items-center justify-center text-white p-0.5 shadow-sm transition-transform group-hover:scale-110",
-                    isExcluded ? "bg-red-500" : al.color
-                  )}>
-                    {isExcluded ? <X className="h-full w-full stroke-[3]" /> : ALLERGEN_ICONS[al.name]}
+          <div className="hidden md:block w-px h-6 bg-border/40" />
+
+          {/* Allergen Popover Filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className={cn(
+                "w-full md:w-auto flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl border transition-all duration-300 shadow-sm font-bold text-[10px] uppercase tracking-widest",
+                excludedAllergens.length > 0
+                  ? "bg-primary/10 border-primary/30 text-primary ring-1 ring-primary/20"
+                  : "bg-background/40 border-border/50 text-muted-foreground hover:bg-background/80 hover:border-primary/20"
+              )}>
+                <Settings2 className={cn("h-4 w-4", excludedAllergens.length > 0 ? "animate-pulse" : "")} />
+                <span>Filtro Alérgico</span>
+                {excludedAllergens.length > 0 && (
+                  <span className="flex items-center justify-center h-5 w-5 bg-primary text-white rounded-full text-[9px] animate-in zoom-in">
+                    {excludedAllergens.length}
+                  </span>
+                )}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[320px] sm:w-[480px] p-6 bg-card/95 backdrop-blur-xl border-border/50 shadow-2xl rounded-3xl" align="end">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between border-b border-border/30 pb-4">
+                  <div className="space-y-1">
+                    <h4 className="font-headline font-bold text-lg text-foreground italic leading-none">Restricciones</h4>
+                    <p className="text-[10px] text-muted-foreground font-light uppercase tracking-widest italic">Selecciona para excluir</p>
                   </div>
-                  <span className="text-[7.5px] font-bold uppercase tracking-widest truncate w-full text-center">{al.label}</span>
-                </button>
-              )
-            })}
-          </div>
+                  {excludedAllergens.length > 0 && (
+                    <button 
+                      onClick={() => setExcludedAllergens([])}
+                      className="text-[9px] font-bold text-primary hover:text-primary/70 transition-colors uppercase tracking-widest underline underline-offset-2"
+                    >
+                      Limpiar Todo
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {ALLERGENS_LIST.map((al) => {
+                    const isExcluded = excludedAllergens.includes(al.name);
+                    return (
+                      <button
+                        key={al.name}
+                        onClick={() => toggleAllergen(al.name)}
+                        className={cn(
+                          "flex items-center gap-2.5 p-2 rounded-xl border transition-all duration-300 w-full group",
+                          isExcluded
+                            ? "bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400 ring-1 ring-red-500/10"
+                            : "bg-background/40 border-border/30 hover:border-primary/20 hover:bg-primary/[0.02] text-muted-foreground/80"
+                        )}
+                      >
+                        <div className={cn(
+                          "h-4 w-4 rounded-full flex items-center justify-center text-white p-0.5 shadow-sm transition-transform group-hover:scale-110",
+                          isExcluded ? "bg-red-500 font-bold" : al.color
+                        )}>
+                          {isExcluded ? <X className="h-full w-full stroke-[3]" /> : ALLERGEN_ICONS[al.name]}
+                        </div>
+                        <span className="text-[9px] font-bold uppercase tracking-widest truncate">{al.label}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </section>
 
