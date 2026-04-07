@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 import { useFirestore, useCollection, useMemoFirebase } from "@/firebase"
 import { collection, query, orderBy } from "firebase/firestore"
 import { motion, AnimatePresence } from "framer-motion"
+import { FadeIn, FadeInStagger } from "@/components/FadeIn"
 
 const FILTERS = ["Todas", "Nuestras Tapas", "El Bar", "Coria"]
 
@@ -70,44 +71,39 @@ export default function GaleriaPage() {
       <div className="container mx-auto px-4 py-20 max-w-6xl">
         {/* Header Section */}
         <div className="text-center mb-16 space-y-4">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-headline font-bold text-foreground tracking-tight"
-          >
-            El Sabor de Coria en Imágenes
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-primary text-lg max-w-3xl mx-auto leading-relaxed italic"
-          >
-            Un recorrido visual por nuestra cocina tradicional, el ambiente acogedor de 
-            nuestra taberna y la esencia auténtica de Coria del Río.
-          </motion.p>
+          <FadeIn>
+            <h1 className="text-5xl md:text-7xl font-headline font-bold text-foreground tracking-tight">
+              El Sabor de Coria en Imágenes
+            </h1>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <p className="text-primary text-lg max-w-3xl mx-auto leading-relaxed italic">
+              Un recorrido visual por nuestra cocina tradicional, el ambiente acogedor de 
+              nuestra taberna y la esencia auténtica de Coria del Río.
+            </p>
+          </FadeIn>
         </div>
 
         {/* Filter Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-20">
-          {FILTERS.map((filter, idx) => (
-            <motion.button
+        <FadeInStagger className="flex flex-wrap items-center justify-center gap-3 mb-20">
+          {FILTERS.map((filter) => (
+            <FadeIn
               key={filter}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: idx * 0.05 }}
+              direction="none"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setActiveFilter(filter)}
               className={cn(
-                "px-8 py-3 rounded-2xl text-xs font-bold uppercase tracking-[0.2em] border transition-all duration-300",
+                "px-8 py-3 rounded-2xl text-xs font-bold uppercase tracking-[0.2em] border transition-all duration-300 cursor-pointer",
                 activeFilter === filter 
                   ? "bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105" 
-                  : "bg-muted/30 text-muted-foreground border-transparent hover:bg-muted/50 hover:scale-105"
+                  : "bg-muted/30 text-muted-foreground border-transparent hover:bg-muted/50"
               )}
             >
               {filter}
-            </motion.button>
+            </FadeIn>
           ))}
-        </div>
+        </FadeInStagger>
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-40 gap-4">

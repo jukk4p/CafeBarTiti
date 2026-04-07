@@ -47,6 +47,8 @@ import { errorEmitter } from "@/firebase/error-emitter"
 import { FirestorePermissionError } from "@/firebase/errors"
 import { triggerReservationWebhook } from "@/app/actions/n8n"
 
+import { FadeIn, FadeInStagger } from "@/components/FadeIn"
+
 const LUNCH_SLOTS = ["13:00", "13:30", "14:00", "14:30", "15:00"]
 const DINNER_SLOTS = ["20:00", "20:30", "21:00", "21:30", "22:00", "22:30"]
 const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Cafe+Bar+Titi+Av.+Palomares+1+Coria+del+Rio"
@@ -147,22 +149,24 @@ export default function ReservasPage() {
   if (isSuccess) {
     return (
       <div className="container mx-auto px-4 py-20 md:py-32 text-center max-w-2xl">
-        <Card className="p-8 md:p-12 rounded-[2rem] shadow-2xl border-4 border-secondary/20 glass-card space-y-6">
-          <CheckCircle2 className="h-16 w-16 md:h-20 md:w-20 text-secondary mx-auto animate-bounce" />
-          <h1 className="text-3xl md:text-4xl font-headline font-bold text-primary">¡Reserva Solicitada!</h1>
-          <p className="text-lg md:text-xl text-muted-foreground italic leading-relaxed">
-            Hemos recibido tu solicitud para el día {selectedDate && format(selectedDate, 'dd/MM/yyyy')}.
-            Te esperamos con el mejor sabor de Coria.
-          </p>
-          <div className="pt-6 flex flex-col gap-4">
-            <Button onClick={() => setIsSuccess(false)} className="bg-primary text-white rounded-xl px-8 h-14 font-bold uppercase tracking-widest hover:scale-105 transition-transform">
-              Hacer otra reserva
-            </Button>
-            <Button variant="outline" asChild className="border-secondary text-secondary font-bold h-14 rounded-xl hover:bg-secondary/10">
-              <a href="tel:+34954772132">¿Alguna duda? Llámanos</a>
-            </Button>
-          </div>
-        </Card>
+        <FadeIn>
+          <Card className="p-8 md:p-12 rounded-[2rem] shadow-2xl border-4 border-secondary/20 glass-card space-y-6">
+            <CheckCircle2 className="h-16 w-16 md:h-20 md:w-20 text-secondary mx-auto animate-bounce" />
+            <h1 className="text-3xl md:text-4xl font-headline font-bold text-primary">¡Reserva Solicitada!</h1>
+            <p className="text-lg md:text-xl text-muted-foreground italic leading-relaxed">
+              Hemos recibido tu solicitud para el día {selectedDate && format(selectedDate, 'dd/MM/yyyy')}.
+              Te esperamos con el mejor sabor de Coria.
+            </p>
+            <div className="pt-6 flex flex-col gap-4">
+              <Button onClick={() => setIsSuccess(false)} className="bg-primary text-white rounded-xl px-8 h-14 font-bold uppercase tracking-widest hover:scale-105 transition-transform">
+                Hacer otra reserva
+              </Button>
+              <Button variant="outline" asChild className="border-secondary text-secondary font-bold h-14 rounded-xl hover:bg-secondary/10">
+                <a href="tel:+34954772132">¿Alguna duda? Llámanos</a>
+              </Button>
+            </div>
+          </Card>
+        </FadeIn>
       </div>
     )
   }
@@ -172,16 +176,22 @@ export default function ReservasPage() {
       <div className="container mx-auto px-4 max-w-7xl">
 
         <div className="text-center mb-12 md:mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 dark:bg-primary/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
-            <Sparkles className="h-3 w-3 text-[#b5c99a] dark:text-primary" />
-            <span className="text-white dark:text-primary text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Bar Titi Coria del Río</span>
-          </div>
-          <h1 className="text-4xl md:text-7xl font-headline font-bold text-foreground leading-tight">
-            Reserva tu mesa<br /><span className="italic text-primary dark:text-secondary">en Café Bar Titi</span>
-          </h1>
-          <p className="text-accent text-sm md:text-xl italic font-medium max-w-2xl mx-auto opacity-80 px-4">
-            "Sabor tradicional, ambiente familiar y el mejor tapeo de nuestro pueblo."
-          </p>
+          <FadeIn>
+            <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 dark:bg-primary/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
+              <Sparkles className="h-3 w-3 text-[#b5c99a] dark:text-primary" />
+              <span className="text-white dark:text-primary text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Bar Titi Coria del Río</span>
+            </div>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <h1 className="text-4xl md:text-7xl font-headline font-bold text-foreground leading-tight">
+              Reserva tu mesa<br /><span className="italic text-primary dark:text-secondary">en Café Bar Titi</span>
+            </h1>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <p className="text-accent text-sm md:text-xl italic font-medium max-w-2xl mx-auto opacity-80 px-4">
+              "Sabor tradicional, ambiente familiar y el mejor tapeo de nuestro pueblo."
+            </p>
+          </FadeIn>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-start">
@@ -255,18 +265,18 @@ export default function ReservasPage() {
 
               <div className="pt-8 border-t border-white/10 dark:border-border/50">
                 <h4 className="text-lg font-headline font-bold mb-4 text-primary">Ubicación</h4>
-                <Link
-                  href={googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative aspect-video rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/20 group cursor-pointer block"
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=600"
-                    alt="Ubicación de Bar Titi en Coria"
-                    className="w-full h-full object-cover grayscale opacity-40 group-hover:opacity-60 transition-all duration-700"
+                <div className="relative aspect-video rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/20 group cursor-pointer block h-full min-h-[150px]">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3175.765625907406!2d-6.057145524141!3d37.28911077227448!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1272c700389b23%3A0x53962cf33a184785!2sBar%20Titi!5e0!3m2!1ses!2ses!4v1712431234567!5m2!1ses!2ses"
+                    className="absolute inset-0 grayscale contrast-125 brightness-75 hover:grayscale-0 transition-all duration-1000"
                   />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 pointer-events-none">
                     <div className="bg-primary p-2.5 rounded-full mb-2 shadow-2xl group-hover:scale-110 transition-transform">
                       <MapPin className="h-5 w-5 text-white dark:text-background" />
                     </div>
@@ -274,7 +284,13 @@ export default function ReservasPage() {
                       Av. Palomares, 1
                     </span>
                   </div>
-                </Link>
+                  <Link
+                    href={googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute inset-0 z-10"
+                  />
+                </div>
               </div>
             </Card>
 

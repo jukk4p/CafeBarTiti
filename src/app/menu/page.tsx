@@ -67,6 +67,7 @@ import { collection } from "firebase/firestore"
 import { MENU_BACKUP } from "@/lib/menu-backup"
 import { Loader2, ShoppingBasket } from "lucide-react"
 import { useCart, OrderType } from "@/context/CartContext"
+import { FadeIn, FadeInStagger } from "@/components/FadeIn"
 
 const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Bebidas"]
 
@@ -291,14 +292,20 @@ export default function MenuPage() {
       {/* Hero Header */}
       <section className="relative pt-8 pb-6 text-center px-4" aria-labelledby="menu-title">
         <div className="relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 dark:bg-primary/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
-            <Sparkles className="h-3 w-3 text-[#b5c99a] dark:text-primary" />
-            <span className="text-white dark:text-primary text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Sabor Tradicional de Sevilla</span>
-          </div>
-          <h1 id="menu-title" className="text-4xl md:text-5xl font-headline font-bold text-foreground tracking-tight">Nuestra Carta</h1>
-          <p className="text-muted-foreground text-sm md:text-base italic font-light max-w-xl mx-auto border-l-2 border-primary/30 pl-4">
-            "Tradición de Coria del Río servida con alma en cada bocado desde 1968."
-          </p>
+          <FadeIn>
+            <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 dark:bg-primary/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
+              <Sparkles className="h-3 w-3 text-[#b5c99a] dark:text-primary" />
+              <span className="text-white dark:text-primary text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Sabor Tradicional de Sevilla</span>
+            </div>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <h1 id="menu-title" className="text-4xl md:text-5xl font-headline font-bold text-foreground tracking-tight">Nuestra Carta</h1>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <p className="text-muted-foreground text-sm md:text-base italic font-light max-w-xl mx-auto border-l-2 border-primary/30 pl-4">
+              "Tradición de Coria del Río servida con alma en cada bocado desde 1968."
+            </p>
+          </FadeIn>
         </div>
       </section>
 

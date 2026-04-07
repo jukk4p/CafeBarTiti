@@ -14,6 +14,8 @@ import { PlaceHolderImages } from "@/lib/placeholder-images"
 import { useFirebase } from "@/firebase"
 import { collection, addDoc } from "firebase/firestore"
 
+import { FadeIn, FadeInStagger } from "@/components/FadeIn"
+
 export default function ContactoPage() {
   const historyBanner = PlaceHolderImages.find(img => img.id === 'hero-bar-exterior')
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Cafe+Bar+Titi+Av.+Palomares+1+Coria+del+Rio"
@@ -47,7 +49,7 @@ export default function ContactoPage() {
     <div className="bg-transparent min-h-screen pb-20">
       {/* Hero Banner Section */}
       <section className="container mx-auto px-4 py-8 max-w-7xl" aria-labelledby="history-title">
-        <div className="relative h-[300px] md:h-[400px] w-full rounded-3xl overflow-hidden shadow-2xl bg-black">
+        <FadeIn className="relative h-[300px] md:h-[400px] w-full rounded-3xl overflow-hidden shadow-2xl bg-black">
           <Image
             src="/historia/historia-imagen.webp"
             alt="Cafe Bar Titi Fachada Exterior"
@@ -62,7 +64,7 @@ export default function ContactoPage() {
               Desde 1968, ofreciendo lo mejor de la gastronomía andaluza en el corazón de Coria del Río.
             </p>
           </div>
-        </div>
+        </FadeIn>
       </section>
 
       <div className="container mx-auto px-4 max-w-7xl mt-12">
