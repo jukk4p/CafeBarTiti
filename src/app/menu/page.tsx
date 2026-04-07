@@ -335,7 +335,7 @@ export default function MenuPage() {
           <Popover>
             <PopoverTrigger asChild>
               <button className={cn(
-                "w-full md:w-auto flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl border transition-all duration-300 shadow-sm font-bold text-[10px] uppercase tracking-widest",
+                "w-auto flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl border transition-all duration-300 shadow-sm font-bold text-[10px] uppercase tracking-widest",
                 excludedAllergens.length > 0
                   ? "bg-primary/10 border-primary/30 text-primary ring-1 ring-primary/20"
                   : "bg-background/40 border-border/50 text-muted-foreground hover:bg-background/80 hover:border-primary/20"
