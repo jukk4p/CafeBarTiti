@@ -310,42 +310,49 @@ export default function MenuPage() {
       </section>
 
       <section className="container mx-auto px-4 mb-8 lg:max-w-7xl animate-in fade-in slide-in-from-top-2 duration-700">
-        <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-3xl p-6 md:p-8 shadow-xl flex flex-col gap-8">
-          {/* Header for Filter Section */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border/30 pb-6">
-            <div className="space-y-1 text-center md:text-left">
-              <div className="flex items-center justify-center md:justify-start gap-2 text-primary mb-1">
-                <ShieldAlert className="h-3.5 w-3.5" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Seguridad Alimentaria</span>
+        <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-3xl p-8 md:p-12 shadow-xl flex flex-col gap-10">
+          {/* Main Controls Area */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Title & Info Section */}
+            <div className="lg:col-span-8 flex flex-col gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3 text-primary mb-2">
+                  <ShieldAlert className="h-4 w-4" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-primary/80">Seguridad Alimentaria</span>
+                </div>
+                <h3 className="text-3xl md:text-5xl font-headline font-bold text-foreground leading-tight italic">¿Tienes alguna alergia?</h3>
               </div>
-              <h3 className="text-xl md:text-2xl font-headline font-bold text-foreground">¿Tienes alguna alergia?</h3>
-              <p className="text-xs text-muted-foreground italic max-w-sm">
-                Pulsa sobre los alérgenos que deseas <span className="text-red-500 font-bold">excluir</span> de tu búsqueda. 
-                Los platos que contengan estos ingredientes se ocultarán automáticamente.
+              <p className="text-sm md:text-base text-muted-foreground italic font-light max-w-2xl border-l-2 border-primary/20 pl-6 leading-relaxed">
+                Marca los ingredientes que deseas <span className="text-red-500 font-bold decoration-red-500/30 underline underline-offset-4">excluir</span> de tu búsqueda. 
+                Nuestra carta se filtrará automáticamente para garantizar tu seguridad en Cafe Bar Titi.
               </p>
             </div>
-            
-            {/* Search Input Area - Moved here for better balance */}
-            <div className="relative w-full md:w-72 group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-              <input
-                type="text"
-                placeholder="¿Buscas algún plato?"
-                className="w-full bg-background/50 border border-border/50 rounded-2xl py-3.5 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all placeholder:text-muted-foreground/60"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+
+            {/* Search Input Area */}
+            <div className="lg:col-span-4 flex justify-center lg:justify-end pt-2">
+              <div className="relative w-full max-w-sm group">
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Busca por nombre..."
+                  className="w-full bg-background/50 border border-border/30 rounded-2xl py-4 pl-14 pr-6 text-base focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary/50 transition-all shadow-sm placeholder:text-muted-foreground/50"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
             </div>
           </div>
 
-          {/* Allergen Filters Area - Grid layout for perfect rows */}
-          <div className="w-full">
-            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
-              <div className="flex items-center gap-3 shrink-0 text-primary">
+          {/* Allergen Filters Area - Integrated Label & Compact Grid */}
+          <div className="pt-10 border-t border-border/30">
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center gap-3 text-foreground/40 px-1">
                 <Filter className="h-4 w-4" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/60 whitespace-nowrap">Excluir Alérgenos:</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.4em] whitespace-nowrap">Excluir Alergenos:</span>
+                <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent" />
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-1.5 md:gap-2 w-full">
+              
+              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-2 md:gap-3 w-full">
                 {ALLERGENS_LIST.map((al) => {
                   const isExcluded = excludedAllergens.includes(al.name);
                   return (
@@ -353,19 +360,19 @@ export default function MenuPage() {
                       key={al.name}
                       onClick={() => toggleAllergen(al.name)}
                       className={cn(
-                        "flex items-center gap-1 md:gap-1.5 px-1.5 py-1.5 lg:px-2 lg:py-1.5 rounded-full border transition-all duration-300 w-full justify-center lg:justify-start overflow-hidden",
+                        "flex items-center gap-2 px-3 py-2.5 rounded-xl border transition-all duration-300 w-full justify-center lg:justify-start",
                         isExcluded
                           ? "bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400 ring-1 ring-red-500/20 shadow-md scale-95"
-                          : "bg-background/50 border-border hover:border-primary/30 hover:bg-primary/5 text-muted-foreground hover:scale-105"
+                          : "bg-background/40 border-border/50 hover:border-primary/30 hover:bg-primary/5 text-muted-foreground/80 hover:text-foreground hover:scale-105"
                       )}
                     >
                       <div className={cn(
-                        "h-3.5 w-3.5 lg:h-3.5 lg:w-3.5 rounded-full flex items-center justify-center text-white p-0.5 shadow-sm shrink-0",
+                        "h-4 w-4 rounded-full flex items-center justify-center text-white p-0.5 shadow-sm shrink-0",
                         isExcluded ? "bg-red-500 font-bold" : al.color
                       )}>
                         {isExcluded ? <X className="h-full w-full stroke-[3]" /> : ALLERGEN_ICONS[al.name]}
                       </div>
-                      <span className="text-[7.5px] lg:text-[8.5px] font-bold uppercase tracking-tighter whitespace-nowrap">{al.label}</span>
+                      <span className="text-[9px] font-bold uppercase tracking-widest truncate">{al.label}</span>
                     </button>
                   )
                 })}
