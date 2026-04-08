@@ -4,7 +4,7 @@ import * as React from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Salad, UtensilsCrossed, Sandwich, FishSymbol, Fish, Beef, Beer, 
-  ChevronLeft, Flame, Sparkles, ShoppingBasket, Info 
+  ChevronLeft, Flame, Sparkles, Info, X
 } from "lucide-react"
 import { MENU_BACKUP } from "@/lib/menu-backup"
 import { cn } from "@/lib/utils"
@@ -54,15 +54,15 @@ const CATEGORY_DATA: Record<string, { icon: React.ReactNode, description: string
 export default function QRMenuPage() {
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null)
 
-  // Filtrar items por categoría
+  // Filtrar items por categoría usando la estructura real de MENU_BACKUP
   const categoryItems = React.useMemo(() => {
     if (!selectedCategory) return []
-    return MENU_BACKUP.categories.find(c => c.name === selectedCategory)?.items || []
+    return MENU_BACKUP[selectedCategory]?.items || []
   }, [selectedCategory])
 
   const categoryFooter = React.useMemo(() => {
     if (!selectedCategory) return null
-    return MENU_BACKUP.categories.find(c => c.name === selectedCategory)?.footer
+    return MENU_BACKUP[selectedCategory]?.footer
   }, [selectedCategory])
 
   return (
@@ -119,12 +119,12 @@ export default function QRMenuPage() {
                 >
                   <div className={cn(
                     "absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500",
-                    CATEGORY_DATA[cat].color
+                    CATEGORY_DATA[cat]?.color || "from-primary/10 to-transparent"
                   )} />
                   
                   <div className="relative z-10 flex justify-between items-start">
                     <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-primary group-hover:text-emerald-950 transition-colors duration-500">
-                      {CATEGORY_DATA[cat].icon}
+                      {CATEGORY_DATA[cat]?.icon || <Sparkles />}
                     </div>
                     <Sparkles className="h-4 w-4 text-primary/20 group-hover:text-primary transition-colors duration-500" />
                   </div>
@@ -132,7 +132,7 @@ export default function QRMenuPage() {
                   <div className="relative z-10">
                     <h3 className="text-2xl font-bold mb-1 tracking-tight">{cat}</h3>
                     <p className="text-[10px] uppercase tracking-widest text-emerald-500/40 font-bold group-hover:text-primary/60 transition-colors">
-                      {CATEGORY_DATA[cat].description}
+                      {CATEGORY_DATA[cat]?.description || "Ver opciones"}
                     </p>
                   </div>
                 </motion.button>
@@ -148,17 +148,17 @@ export default function QRMenuPage() {
               className="space-y-8"
             >
               {/* Top Bar for Detailed View */}
-              <div className="flex items-center justify-between sticky top-4 z-50 bg-[#050a09]/80 backdrop-blur-xl p-4 -mx-4 border-b border-white/5 md:rounded-3xl md:mx-0 md:border md:mb-8">
+              <div className="flex items-center justify-between sticky top-4 z-50 bg-[#050a09]/95 backdrop-blur-xl p-4 -mx-4 border-b border-white/5 md:rounded-3xl md:mx-0 md:border md:mb-8 shadow-2xl">
                 <button 
                   onClick={() => setSelectedCategory(null)}
                   className="flex items-center gap-2 text-primary font-bold uppercase tracking-widest text-[10px] hover:bg-primary/10 px-4 py-2 rounded-full transition-colors"
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  Volver a la Pizarra
+                  Volver
                 </button>
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                    {CATEGORY_DATA[selectedCategory].icon}
+                    {CATEGORY_DATA[selectedCategory]?.icon}
                   </div>
                   <h2 className="text-xl font-bold tracking-tight">{selectedCategory}</h2>
                 </div>
@@ -168,7 +168,7 @@ export default function QRMenuPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {categoryItems.map((item: any, idx) => (
                   <motion.div
-                    key={item.name}
+                    key={item.id || item.nombre}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
@@ -176,35 +176,36 @@ export default function QRMenuPage() {
                   >
                     <div className="flex justify-between gap-4 mb-4">
                       <div className="space-y-1 flex-1">
-                        <h4 className="font-bold text-lg group-hover:text-primary transition-colors">{item.name}</h4>
-                        {item.description && (
-                          <p className="text-xs text-emerald-500/50 leading-relaxed italic">{item.description}</p>
+                        <h4 className="font-bold text-lg group-hover:text-primary transition-colors">{item.nombre}</h4>
+                        {item.desc && (
+                          <p className="text-xs text-emerald-500/50 leading-relaxed italic">{item.desc}</p>
                         )}
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between pt-4 border-t border-white/5">
                         <div className="flex gap-4">
-                            {item.prices.tapa && (
+                            {item.prices?.tapa && (
                                 <div className="flex flex-col">
                                     <span className="text-[8px] uppercase tracking-widest text-emerald-500/30 font-bold">Tapa</span>
                                     <span className="text-primary font-bold">{item.prices.tapa.toFixed(2)}€</span>
                                 </div>
                             )}
-                            {item.prices.media && (
+                            {item.prices?.media && (
                                 <div className="flex flex-col">
                                     <span className="text-[8px] uppercase tracking-widest text-emerald-500/30 font-bold">Media</span>
                                     <span className="text-primary font-bold">{item.prices.media.toFixed(2)}€</span>
                                 </div>
                             )}
-                            {item.prices.racion && (
+                            {item.prices?.racion && (
                                 <div className="flex flex-col">
                                     <span className="text-[8px] uppercase tracking-widest text-emerald-500/30 font-bold">Ración</span>
                                     <span className="text-primary font-bold">{item.prices.racion.toFixed(2)}€</span>
                                 </div>
                             )}
                         </div>
-                        <AddToCartButton item={item} />
+                        {/* Adaptamos el item para AddToCartButton si es necesario */}
+                        <AddToCartButton item={{...item, name: item.nombre, category: selectedCategory}} />
                     </div>
                   </motion.div>
                 ))}
