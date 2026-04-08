@@ -4,6 +4,8 @@
 import * as React from "react"
 import Image from "next/image"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 import { AddToCartButton } from "@/components/AddToCartButton"
 import { FloatingCart } from "@/components/FloatingCart"
 import { cn } from "@/lib/utils"
@@ -50,7 +52,8 @@ import {
   PlusCircle,
   Plus,
   Minus,
-  Settings2
+  Settings2,
+  ArrowRight
 } from "lucide-react"
 import {
   Select,
@@ -239,7 +242,10 @@ const PricePill = ({ label, price, variant, onClick, quantity, onSubtract, onAdd
   )
 }
 
-export default function MenuPage() {
+function MenuContent() {
+  const searchParams = useSearchParams()
+  const isFromQR = searchParams.get('src') === 'qr'
+  const [showIntro, setShowIntro] = React.useState(isFromQR)
   const [activeCategory, setActiveCategory] = React.useState("Entrantes")
   const [selectedItem, setSelectedItem] = React.useState<any>(null)
   const [searchTerm, setSearchTerm] = React.useState("")
@@ -916,6 +922,57 @@ export default function MenuPage() {
           </div>
         </DialogContent>
       </Dialog>
+      <AnimatePresence>
+        {showIntro && (
+          <motion.div 
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="fixed inset-0 z-[100] bg-emerald-950 flex flex-col items-center justify-center p-6 text-center"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="space-y-12"
+            >
+              <div className="flex flex-col items-center gap-6">
+                <div className="flex items-center gap-4 text-primary">
+                  <Flame className="h-10 w-10 fill-current animate-pulse" />
+                  <div className="w-1 h-12 bg-primary/20" />
+                  <Flame className="h-10 w-10 fill-current animate-pulse" />
+                </div>
+                <div className="space-y-2">
+                  <h2 className="text-white text-sm font-bold uppercase tracking-[0.5em]">Cafe Bar Titi</h2>
+                  <p className="text-primary font-headline italic text-4xl md:text-6xl">Bienvenidos</p>
+                </div>
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowIntro(false)}
+                className="bg-primary text-emerald-950 px-12 py-5 rounded-full font-bold uppercase tracking-[0.3em] text-xs shadow-[0_0_30px_rgba(181,201,154,0.3)] hover:shadow-[0_0_50px_rgba(181,201,154,0.5)] transition-all flex items-center gap-4 mx-auto group"
+              >
+                Ver la Carta
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
+              </motion.button>
+            </motion.div>
+
+            <div className="absolute bottom-12 left-0 right-0 opacity-20 text-center">
+               <p className="text-white text-[9px] font-bold uppercase tracking-[0.4em]">Desde 1968 · Coria del Río</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
+  )
+}
+
+export default function MenuPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
+      <MenuContent />
+    </Suspense>
   )
 }
