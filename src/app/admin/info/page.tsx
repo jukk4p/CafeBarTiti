@@ -13,8 +13,8 @@ import {
   MapPin, 
   Phone, 
   Mail, 
-  Facebook, 
-  Instagram, 
+  Link, 
+  Camera, 
   Clock,
   CheckCircle2,
   AlertCircle
@@ -195,7 +195,7 @@ export default function AdminInfoPage() {
         <Card className="rounded-[2.5rem] border-border shadow-sm overflow-hidden md:col-span-2">
           <CardHeader className="bg-muted/30 pb-4 border-b">
             <CardTitle className="text-xl font-bold font-headline flex items-center gap-2">
-              <Instagram className="h-5 w-5 text-accent" /> Redes Sociales & Enlaces
+              <Camera className="h-5 w-5 text-accent" /> Redes Sociales & Enlaces
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">

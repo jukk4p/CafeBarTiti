@@ -3,7 +3,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Facebook, Instagram, MapPin, Phone, Mail, Flame, UtensilsCrossed, Maximize2 } from "lucide-react"
+import { Link as LinkIcon, Camera, MapPin, Phone, Mail, Flame, UtensilsCrossed, Maximize2 } from "lucide-react"
 
 export function Footer() {
   const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Cafe+Bar+Titi+Av.+Palomares+1+Coria+del+Rio"
@@ -34,10 +34,10 @@ export function Footer() {
                 aria-label="Síguenos en Facebook"
                 className="text-white/70 dark:text-muted-foreground hover:text-[#b5c99a] dark:hover:text-primary transition-colors"
               >
-                <Facebook className="h-5 w-5" />
+                <LinkIcon className="h-5 w-5" />
               </Link>
               <Link href="#" aria-label="Síguenos en Instagram" className="text-white/70 dark:text-muted-foreground hover:text-[#b5c99a] dark:hover:text-primary transition-colors">
-                <Instagram className="h-5 w-5" />
+                <Camera className="h-5 w-5" />
               </Link>
             </div>
           </div>
