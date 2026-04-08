@@ -140,6 +140,105 @@ const ALLERGENS_LIST = [
   { name: "Altramuces", label: "Altramuces", color: "bg-yellow-400 text-black" },
   { name: "Moluscos", label: "Moluscos", color: "bg-blue-400" },
 ];
+
+const AllergenBadge = ({ name, size = "sm" }: { name: string, size?: "sm" | "md" }) => {
+  const config = ALLERGENS_LIST.find(a => a.name === name)
+  if (!config) return null
+  return (
+    <div
+      title={name}
+      className={cn(
+        "rounded-full flex items-center justify-center text-white shadow-sm border border-white/20 shrink-0",
+        size === "sm" ? "h-4 w-4 p-0.5" : "h-6 w-6 p-1.5",
+        config.color
+      )}
+    >
+      {ALLERGEN_ICONS[name]}
+    </div>
+  )
+}
+
+const PricePill = ({ label, price, variant, onClick, quantity, onSubtract, onAdd, hideLabel }: { 
+  label: string, 
+  price: number, 
+  variant: 'primary' | 'secondary' | 'accent',
+  onClick?: () => void,
+  quantity?: number,
+  onSubtract?: () => void,
+  onAdd?: () => void,
+  hideLabel?: boolean
+}) => {
+  const colors = {
+    primary: 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/15',
+    secondary: 'bg-secondary/10 border-secondary/20 text-secondary hover:bg-secondary/15',
+    accent: 'bg-accent/10 border-accent/20 text-accent hover:bg-accent/15'
+  }
+
+  return (
+    <div 
+      className={cn(
+        "w-full min-w-[80px] md:min-w-[100px] border rounded-xl transition-colors overflow-hidden",
+        colors[variant],
+        quantity && quantity > 0 ? "ring-2 ring-primary/20 bg-primary/5" : ""
+      )}
+    >
+      <AnimatePresence mode="wait">
+        {quantity && quantity > 0 ? (
+          <motion.div 
+            key="counter"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="px-2 md:px-5 py-1 md:py-1.5 flex flex-col items-center gap-1"
+          >
+            {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60">{label}</span>}
+            <div className="flex items-center gap-3">
+              <motion.button 
+                whileTap={{ scale: 0.8 }}
+                onClick={(e) => { e.stopPropagation(); onSubtract?.(); }} 
+                className="hover:scale-110 active:scale-95 transition-transform p-0.5"
+              >
+                <Minus className="h-3.5 w-3.5" strokeWidth={3} />
+              </motion.button>
+              <motion.span 
+                key={quantity}
+                initial={{ y: 5, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="text-xs font-black min-w-[1ch] text-center"
+              >
+                {quantity}
+              </motion.span>
+              <motion.button 
+                whileTap={{ scale: 0.8 }}
+                onClick={(e) => { e.stopPropagation(); onAdd?.(); }} 
+                className="hover:scale-110 active:scale-95 transition-transform p-0.5"
+              >
+                <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+              </motion.button>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.button 
+            key="button"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            whileTap={{ scale: 1.05 }}
+            onClick={onClick}
+            className="w-full h-full px-2 md:px-5 py-2.5 md:py-3 flex flex-col items-center justify-center group"
+          >
+            {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60 mb-0.5 md:mb-1">{label}</span>}
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
+              <Plus className="h-2.5 w-2.5 opacity-40 group-hover:opacity-100 transition-opacity" strokeWidth={4} />
+              <span className="text-xs md:text-base font-black">{price.toFixed(2)}€</span>
+            </div>
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
 export default function MenuPage() {
   const [activeCategory, setActiveCategory] = React.useState("Entrantes")
   const [selectedItem, setSelectedItem] = React.useState<any>(null)
@@ -217,113 +316,12 @@ export default function MenuPage() {
 
       organized[cat] = {
         items: items,
-        footer: cat === "Carnes a la Brasa" ? "Consultar carnes fuera de carta." : (MENU_BACKUP[cat]?.footer || "")
+        footer: MENU_BACKUP[cat]?.footer || ""
       }
     })
 
     return organized
   }, [menuItems, searchTerm, excludedAllergens])
-
-  const AllergenBadge = ({ name, size = "sm" }: { name: string, size?: "sm" | "md" }) => {
-    const config = ALLERGENS_LIST.find(a => a.name === name)
-    if (!config) return null
-    return (
-      <div
-        title={name}
-        className={cn(
-          "rounded-full flex items-center justify-center text-white shadow-sm border border-white/20 shrink-0",
-          size === "sm" ? "h-4 w-4 p-0.5" : "h-6 w-6 p-1.5",
-          config.color
-        )}
-      >
-        {ALLERGEN_ICONS[name]}
-      </div>
-    )
-  }
-
-  const PricePill = ({ label, price, variant, onClick, quantity, onSubtract, onAdd, hideLabel }: { 
-    label: string, 
-    price: number, 
-    variant: 'primary' | 'secondary' | 'accent',
-    onClick?: () => void,
-    quantity?: number,
-    onSubtract?: () => void,
-    onAdd?: () => void,
-    hideLabel?: boolean
-  }) => {
-    const colors = {
-      primary: 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/15',
-      secondary: 'bg-secondary/10 border-secondary/20 text-secondary hover:bg-secondary/15',
-      accent: 'bg-accent/10 border-accent/20 text-accent hover:bg-accent/15'
-    }
-
-    return (
-      <motion.div 
-        layout
-        initial={false}
-        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-        className={cn(
-          "w-full min-w-[80px] md:min-w-[100px] border rounded-xl transition-colors overflow-hidden",
-          colors[variant],
-          quantity && quantity > 0 ? "ring-2 ring-primary/20 bg-primary/5" : ""
-        )}
-      >
-        <AnimatePresence mode="wait">
-          {quantity && quantity > 0 ? (
-            <motion.div 
-              key="counter"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              className="px-2 md:px-5 py-1 md:py-1.5 flex flex-col items-center gap-1"
-            >
-              {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60">{label}</span>}
-              <div className="flex items-center gap-3">
-                <motion.button 
-                  whileTap={{ scale: 0.8 }}
-                  onClick={(e) => { e.stopPropagation(); onSubtract?.(); }} 
-                  className="hover:scale-110 active:scale-95 transition-transform p-0.5"
-                >
-                  <Minus className="h-3.5 w-3.5" strokeWidth={3} />
-                </motion.button>
-                <motion.span 
-                  key={quantity}
-                  initial={{ y: 5, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  className="text-xs font-black min-w-[1ch] text-center"
-                >
-                  {quantity}
-                </motion.span>
-                <motion.button 
-                  whileTap={{ scale: 0.8 }}
-                  onClick={(e) => { e.stopPropagation(); onAdd?.(); }} 
-                  className="hover:scale-110 active:scale-95 transition-transform p-0.5"
-                >
-                  <Plus className="h-3.5 w-3.5" strokeWidth={3} />
-                </motion.button>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.button 
-              key="button"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              whileTap={{ scale: 1.05 }}
-              onClick={onClick}
-              className="w-full h-full px-2 md:px-5 py-2.5 md:py-3 flex flex-col items-center justify-center group"
-            >
-              {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60 mb-0.5 md:mb-1">{label}</span>}
-              <div className="flex items-center gap-1.5 whitespace-nowrap">
-                <Plus className="h-2.5 w-2.5 opacity-40 group-hover:opacity-100 transition-opacity" strokeWidth={4} />
-                <span className="text-xs md:text-base font-black">{price.toFixed(2)}€</span>
-              </div>
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    )
-  }
 
   return (
     <div className="bg-transparent min-h-screen pb-16">
@@ -471,7 +469,7 @@ export default function MenuPage() {
             {/* Mobile Select Wrapper */}
             <div className="lg:hidden w-full flex justify-center">
               <Select value={activeCategory} onValueChange={setActiveCategory}>
-                <SelectTrigger className="w-auto min-w-[200px] h-14 bg-card rounded-full border-primary/10 font-bold uppercase tracking-widest text-xs shadow-md px-6 [&>span]:w-full [&>span]:flex [&>span]:justify-center" aria-label="Seleccionar categoría">
+                <SelectTrigger className="w-auto min-w-[200px] h-14 bg-card rounded-2xl border-primary/10 font-bold uppercase tracking-widest text-xs shadow-md px-6 [&>span]:w-full [&>span]:flex [&>span]:justify-center" aria-label="Seleccionar categoría">
                   <SelectValue placeholder="Categoría">
                     <div className="flex items-center justify-center gap-3">
                       <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -785,7 +783,7 @@ export default function MenuPage() {
                     <Info className="h-5 w-5" />
                   </div>
                   <p className="text-xs text-muted-foreground italic font-medium leading-relaxed">
-                    Nuestra cocina abre <span className="text-secondary font-bold">todos los mediodías</span> y de <span className="text-secondary font-bold">Jueves noche a Domingo mediodía</span>.
+                    {data.footer}
                   </p>
                 </div>
               )}
@@ -806,12 +804,12 @@ export default function MenuPage() {
 
           <div className="flex flex-col items-center gap-8 relative z-10">
             <div className="flex flex-col items-center justify-center gap-2">
-              <div className="flex items-center gap-2 text-primary">
+              <div className="flex flex-col items-center gap-2 text-primary">
                 <Flame className="h-4 w-4" strokeWidth={2.5} />
                 <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Horario de Cocina</span>
               </div>
               <p className="text-[11px] font-medium text-muted-foreground italic">
-                Coria del Río · Abierto mediodías diarios y cenas de Jueves a Domingo.
+                Lunes a Miércoles: solo mediodía · Jueves a Sábado: mediodía y noche · Domingos: mediodía
               </p>
             </div>
 
@@ -819,7 +817,7 @@ export default function MenuPage() {
 
             <div className="space-y-2 text-center">
               <p className="text-[10px] font-bold uppercase tracking-[.4em] text-muted-foreground/40">
-                © 2026 Cafe Bar Titi Coria
+                © 2026 Cafe Bar Titi
               </p>
               <p className="text-[9px] font-headline font-bold italic text-primary/40 uppercase tracking-widest">
                 Tradición del Aljarafe desde 1968

@@ -89,7 +89,7 @@ export const MENU_BACKUP: Record<string, MenuSection> = {
       { id: "churrasco-cerdo", nombre: "Churrasco de Cerdo", prices: { racion: 10.00 }, desc: "Tiras de costilla de cerdo a la brasa.", image: "/menu/churrasco_cerdo.webp" },
       { id: "presa-iberica", nombre: "Presa Ibérica", desc: "Presa ibérica de máxima calidad a la brasa.", prices: { tapa: 6.50, racion: 13.00 }, image: "/menu/presa.webp" },
     ],
-    footer: "En todas las carnes: suplemento con jamón añadido de 4,00€. Salsa extra: 0,50€."
+    footer: "En todas las carnes: suplemento con jamón añadido de 4,50€. Salsa extra: 0,50€."
   },
   "Bebidas": {
     items: [

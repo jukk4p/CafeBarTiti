@@ -109,19 +109,19 @@ export function Footer() {
         </div>
 
         {/* Full Width Kitchen Hours */}
-        <div className="mb-12 py-6 border-y border-white/5 dark:border-border/10 flex flex-col md:flex-row items-center justify-center gap-4 text-center">
-          <div className="flex items-start gap-3">
-            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse mt-[2px]`} />
-            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.15em] md:tracking-[0.3em] text-white">
-              Cocina: Todos los mediodías y Jueves noche a Domingo mediodía
-            </span>
-            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse mt-[2px]`} />
+        <div className="mb-12 py-6 border-y border-white/5 dark:border-border/10">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4 text-center">
+            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse shrink-0 md:-translate-y-[1px]`} />
+            <p className="max-w-[300px] md:max-w-none text-[10px] md:text-xs font-bold uppercase opacity-80 leading-relaxed tracking-[0.15em] md:tracking-[0.3em] text-white">
+              LUNES A MIÉRCOLES: SOLO MEDIODÍA · JUEVES A SÁBADO: MEDIODÍA Y NOCHE · DOMINGOS: MEDIODÍA
+            </p>
+            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse shrink-0 hidden md:block md:-translate-y-[1px]`} />
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/5 dark:border-border/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[9px] text-white/40 dark:text-muted-foreground uppercase tracking-widest font-bold text-center md:text-left">
-          <p>© 2026 CAFE BAR TITI CORIA. TODOS LOS DERECHOS RESERVADOS.</p>
+          <p>© 2026 CAFE BAR TITI. TODOS LOS DERECHOS RESERVADOS.</p>
           <div className="flex flex-wrap justify-center md:justify-end gap-6 md:gap-8">
             <Link href="/aviso-legal" className="hover:text-[#b5c99a] dark:hover:text-primary transition-colors">AVISO LEGAL</Link>
             <Link href="/privacidad" className="hover:text-[#b5c99a] dark:hover:text-primary transition-colors">PRIVACIDAD</Link>
