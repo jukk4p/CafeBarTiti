@@ -5,10 +5,10 @@ import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Salad, UtensilsCrossed, Sandwich, FishSymbol, Fish, Beef, Beer,
-  ChevronLeft, Flame, Sparkles, Info, Star, ArrowRight,
+  ChevronLeft, ChevronDown, Flame, Sparkles, Info, Star, ArrowRight, LayoutGrid, Smartphone,
   Wheat, Egg, Milk, ShieldAlert, X
 } from "lucide-react"
-import { MENU_BACKUP } from "@/lib/menu-backup"
+import { MENU_BACKUP } from "@/lib/menu"
 import { cn } from "@/lib/utils"
 import { AddToCartButton } from "@/components/AddToCartButton"
 import {
@@ -151,6 +151,7 @@ export default function QRMenuPage() {
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null)
   const [excludedAllergens, setExcludedAllergens] = React.useState<string[]>([])
   const [selectedImage, setSelectedImage] = React.useState<string | null>(null)
+  const [isPopoverOpen, setIsPopoverOpen] = React.useState(false)
 
   const toggleAllergen = (name: string) => {
     setExcludedAllergens(prev =>
@@ -228,23 +229,23 @@ export default function QRMenuPage() {
                 animate={{ y: 0, opacity: 1 }}
                 className="flex items-center gap-4 px-6 py-2 rounded-full border border-primary/20 bg-primary/5"
               >
-                <Flame className="h-5 w-5 text-primary animate-bounce-slow" />
-                <span className="text-xs font-black uppercase tracking-[0.5em] text-primary">Cafe Bar Titi</span>
-                <Flame className="h-5 w-5 text-primary animate-bounce-slow" />
+                <Smartphone className="h-4 w-4 text-primary animate-pulse" />
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Carta Digital Interactiva</span>
+                <Smartphone className="h-4 w-4 text-primary animate-pulse" />
               </motion.div>
               
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="space-y-2"
+                className="space-y-3"
               >
-                <h1 className="text-5xl md:text-7xl font-headline italic tracking-tighter text-foreground">
-                  La Pizarra <span className="text-primary not-italic font-sans font-black uppercase md:ml-2 tracking-[0.1em]">Titi</span>
+                <h1 className="text-5xl md:text-8xl font-headline italic tracking-tighter text-foreground leading-[0.85]">
+                  Pizarra <span className="text-primary not-italic font-sans font-black uppercase md:ml-1 tracking-[0.05em]">Digital</span>
                 </h1>
                 <div className="flex items-center justify-center gap-3 text-muted-foreground">
-                    <Star className="h-3 w-3" />
-                    <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.4em]">Desde 1968 · Tradición</p>
-                    <Star className="h-3 w-3" />
+                    <div className="h-px w-6 bg-border" />
+                    <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em]">Toda nuestra esencia, ahora en tu mano</p>
+                    <div className="h-px w-6 bg-border" />
                 </div>
               </motion.div>
             </header>
@@ -317,21 +318,90 @@ export default function QRMenuPage() {
               className="space-y-8 md:space-y-12"
             >
               {/* Top Nav - THE SURPRISE: FILTER TRIGGER */}
-              <div className="grid grid-cols-[80px_1fr_80px] items-center sticky top-2 z-50 bg-background/90 backdrop-blur-2xl px-2 py-3 -mx-2 border-b border-border shadow-md md:rounded-[2rem] md:mx-0 md:border md:mb-12 md:top-4 transition-all">
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center sticky top-2 z-50 bg-background/90 backdrop-blur-2xl px-2 py-3 -mx-2 border-b border-border shadow-md md:rounded-[2rem] md:mx-0 md:border md:mb-12 md:top-4 transition-all">
                 <div className="flex justify-start pl-4">
-                  <button
-                    onClick={() => setSelectedCategory(null)}
-                    className="flex items-center justify-center h-10 w-10 rounded-xl border border-border bg-card/50 shadow-sm text-primary hover:bg-primary hover:text-white transition-all outline-none group"
-                  >
-                    <ChevronLeft className="h-5 w-5 stroke-[3] group-active:scale-90 transition-transform" />
-                  </button>
+                  {/* Espacio reservado para equilibrio visual */}
                 </div>
 
-                <div className="flex flex-col items-center justify-center gap-1.5">
-                  <div className={cn("p-2 rounded-xl border-2 border-primary/20 bg-card shadow-md scale-110 mb-0.5", CATEGORY_DATA[selectedCategory]?.color)}>
-                    {React.cloneElement(CATEGORY_DATA[selectedCategory]?.icon as any, { className: "h-5 w-5 stroke-[2.5]" })}
-                  </div>
-                  <h2 className="text-xs md:text-sm font-black uppercase tracking-[0.3em] text-foreground leading-none">{selectedCategory}</h2>
+                <div className="flex flex-col items-center justify-center">
+                  <TooltipProvider delayDuration={0}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+                            <PopoverTrigger asChild>
+                              <button className="flex flex-col items-center justify-center gap-2 outline-none group">
+                                <motion.div 
+                                  whileTap={{ scale: 0.9 }}
+                                  className={cn(
+                                    "p-2.5 rounded-2xl border-2 border-primary/20 bg-card shadow-lg scale-110 mb-0.5 transition-all group-hover:scale-125 group-hover:bg-primary/5 active:shadow-inner", 
+                                    CATEGORY_DATA[selectedCategory!]?.color
+                                  )}
+                                >
+                                  {React.cloneElement(CATEGORY_DATA[selectedCategory!]?.icon as any, { className: "h-6 w-6 stroke-[2.5]" })}
+                                </motion.div>
+                                <div className="flex items-center gap-2">
+                                  <h2 className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-foreground leading-none ml-1">{selectedCategory}</h2>
+                                  <ChevronDown className="h-3 w-3 text-primary opacity-40 group-hover:opacity-100 transition-opacity" />
+                                </div>
+                              </button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[280px] p-3 bg-background/95 backdrop-blur-xl border border-border shadow-2xl rounded-[2.5rem] mt-4" align="center">
+                              <div className="space-y-1">
+                                <div className="px-4 py-2 mb-2 border-b border-border/50">
+                                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Saltar a categoría</p>
+                                </div>
+                                <div className="grid grid-cols-1 gap-1">
+                                  {CATEGORIES.map(cat => (
+                                    <button
+                                      key={cat}
+                                      onClick={() => {
+                                        setSelectedCategory(cat);
+                                        setIsPopoverOpen(false);
+                                      }}
+                                      className={cn(
+                                        "flex items-center gap-4 p-3 rounded-2xl text-[11px] font-bold uppercase tracking-wider transition-all group/item",
+                                        selectedCategory === cat 
+                                          ? "bg-primary/10 text-primary" 
+                                          : "hover:bg-primary/5 text-foreground/70 hover:text-foreground"
+                                      )}
+                                    >
+                                      <div className={cn(
+                                        "p-2 rounded-xl transition-transform group-hover/item:scale-110",
+                                        selectedCategory === cat ? "bg-primary/20 shadow-none" : "bg-muted/50",
+                                        CATEGORY_DATA[cat]?.color
+                                      )}>
+                                        {React.cloneElement(CATEGORY_DATA[cat]?.icon as any, { className: "h-4 w-4" })}
+                                      </div>
+                                      <span className="flex-1 text-left">{cat}</span>
+                                      {selectedCategory === cat && <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />}
+                                    </button>
+                                  ))}
+                                </div>
+                                <div className="pt-2 mt-2 border-t border-border/50">
+                                  <button
+                                    onClick={() => {
+                                      setSelectedCategory(null);
+                                      setIsPopoverOpen(false);
+                                    }}
+                                    className="w-full flex items-center gap-4 p-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:bg-red-500/5 hover:text-red-500 transition-all group/back"
+                                  >
+                                    <div className="p-2 rounded-xl bg-muted/50 group-hover/back:bg-red-500/10 transition-colors">
+                                      <LayoutGrid className="h-4 w-4" />
+                                    </div>
+                                    <span>Volver al inicio</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="bg-card/95 backdrop-blur-md border-border text-[10px] font-bold uppercase tracking-widest p-2 px-3">
+                        <p>Cambiar categoría</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
 
                 <div className="flex justify-end pr-4">

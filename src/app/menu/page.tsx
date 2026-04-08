@@ -73,9 +73,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { useFirebase, useCollection, useMemoFirebase } from "@/firebase"
-import { collection } from "firebase/firestore"
-import { MENU_BACKUP } from "@/lib/menu-backup"
+import { MENU_BACKUP } from "@/lib/menu"
 import { Loader2, ShoppingBasket } from "lucide-react"
 import { useCart, OrderType } from "@/context/CartContext"
 import { FadeIn, FadeInStagger } from "@/components/FadeIn"
@@ -118,6 +116,16 @@ const CATEGORY_STYLES: Record<string, { color: string, bg: string, border: strin
     bg: "bg-indigo-500/10",
     border: "border-indigo-500/30"
   }
+}
+
+const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+  "Entrantes": "El preludio perfecto: bocados frescos para despertar el paladar y compartir historias.",
+  "Tapas Variadas": "Nuestra esencia en pequeño formato; platos con alma para saborear lo mejor de la casa.",
+  "Montaditos": "El arte del pan crujiente: recetas clásicas sobre una base recién horneada.",
+  "Pescado Frito": "Delicias del mar con el crujiente exacto; fritos con maestría al estilo de nuestra tierra.",
+  "Pescado Plancha": "Sabor puro y saludable: la frescura del mar cocinada al punto con un toque de aliño verde.",
+  "Carnes a la Brasa": "El aroma inconfundible del carbón sobre cortes seleccionados de primera calidad.",
+  "Bebidas": "Refresca el momento con nuestra selección; el maridaje ideal para cada bocado."
 }
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -292,8 +300,8 @@ function MenuContent() {
   const [excludedAllergens, setExcludedAllergens] = React.useState<string[]>([])
   const [isVisible, setIsVisible] = React.useState(true)
   const [lastScrollY, setLastScrollY] = React.useState(0)
-  const { firestore } = useFirebase()
-  const { addItem, updateQuantity, items } = useCart()
+  const { addItem, updateQuantity, items: cartItems } = useCart()
+  const isLoading = false
 
   const toggleAllergen = (name: string) => {
     setExcludedAllergens(prev =>
@@ -320,29 +328,14 @@ function MenuContent() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [lastScrollY])
 
-  // Suscribirse a la colección de platos en tiempo real
-  const menuQuery = useMemoFirebase(() => {
-    if (!firestore) return null
-    return collection(firestore, "menuItems")
-  }, [firestore])
-
-  const { data: menuItems, isLoading } = useCollection(menuQuery)
-
   // Organizar los platos por categoría para el renderizado
   const displayedMenu = React.useMemo(() => {
-    const hasFirebaseData = menuItems && menuItems.length > 0
     const organized: Record<string, any> = {}
 
     CATEGORIES.forEach(cat => {
-      // 1. Filtramos de Firebase o Backup para esta categoría (insensible a mayúsculas/espacios)
-      const targetCat = cat.trim().toLowerCase();
+      let items = MENU_BACKUP[cat]?.items || []
 
-      let items = hasFirebaseData ? menuItems.filter(item => {
-        const itemCat = (item.categoria || item.category || "").trim().toLowerCase();
-        return itemCat === targetCat;
-      }) : (MENU_BACKUP[cat]?.items || [])
-
-      // 2. Filtro de Búsqueda
+      // 1. Filtro de Búsqueda
       if (searchTerm) {
         const lowerSearch = searchTerm.toLowerCase()
         items = items.filter((item: any) =>
@@ -351,7 +344,7 @@ function MenuContent() {
         )
       }
 
-      // 3. Filtro de Alérgenos (Excluir)
+      // 2. Filtro de Alérgenos (Excluir)
       if (excludedAllergens.length > 0) {
         items = items.filter((item: any) => {
           // Si no hay alérgenos definidos, el plato no se excluye (caso de las bebidas)
@@ -367,7 +360,7 @@ function MenuContent() {
     })
 
     return organized
-  }, [menuItems, searchTerm, excludedAllergens])
+  }, [searchTerm, excludedAllergens])
 
   return (
     <div className="bg-transparent min-h-screen pb-16">
@@ -449,7 +442,7 @@ function MenuContent() {
                   : "bg-background/40 border-border/50 text-muted-foreground hover:bg-background/80 hover:border-primary/20"
               )}>
                 <Settings2 className={cn("h-4 w-4", excludedAllergens.length > 0 ? "animate-pulse" : "")} />
-                <span>Filtro Alérgico</span>
+                <span>Filtro de alérgenos</span>
                 {excludedAllergens.length > 0 && (
                   <span className="flex items-center justify-center h-5 w-5 bg-primary text-white rounded-full text-[9px] animate-in zoom-in">
                     {excludedAllergens.length}
@@ -556,51 +549,35 @@ function MenuContent() {
             </div>
 
             {/* Mobile Select Wrapper */}
-            <div className="lg:hidden w-full flex justify-center">
-              <Select value={activeCategory} onValueChange={setActiveCategory}>
-                <SelectTrigger className={cn(
-                    "w-auto min-w-[200px] h-14 bg-transparent border-none font-bold uppercase tracking-widest text-xs shadow-none px-6 [&>span]:w-full [&>span]:flex [&>span]:justify-center inline-flex items-center",
-                    CATEGORY_STYLES[activeCategory].color
-                )} aria-label="Seleccionar categoría">
-                  <SelectValue placeholder="Categoría">
-                    <div className="flex items-center justify-center gap-3">
-                      <div className={cn("p-1 transition-transform animate-in zoom-in")}>
-                        {CATEGORY_ICONS[activeCategory]}
-                      </div>
-                      <span className="border-b-2 border-current pb-0.5">{activeCategory}</span>
+            {/* Mobile Horizontal Scroll Navigation */}
+            <div className="md:hidden py-4 px-2">
+              <div className="flex overflow-x-auto scrollbar-hide gap-2 px-2 mask-linear-fade-sides">
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={cn(
+                      "flex items-center gap-2.5 px-5 py-3 rounded-2xl whitespace-nowrap transition-all duration-300",
+                      activeCategory === cat 
+                        ? cn("bg-primary/15 border-2 border-primary/40 shadow-sm", CATEGORY_STYLES[cat].color)
+                        : "bg-muted/5 border border-border/40 text-muted-foreground/60 hover:bg-muted/10"
+                    )}
+                  >
+                    <div className={cn(
+                      "transition-transform duration-500",
+                      activeCategory === cat ? "scale-110" : "opacity-40"
+                    )}>
+                      {CATEGORY_ICONS[cat]}
                     </div>
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent className="bg-background/95 border-none p-2 shadow-xl min-w-[220px] backdrop-blur-xl rounded-3xl">
-                  {CATEGORIES.map(cat => (
-                    <SelectItem
-                      key={cat}
-                      value={cat}
-                      className={cn(
-                        "rounded-xl text-[11px] font-bold uppercase tracking-widest py-4 mb-1 last:mb-0 cursor-pointer transition-all focus:bg-primary/5 data-[state=checked]:bg-transparent group/item px-6",
-                        "!text-zinc-900 dark:!text-zinc-100" // Forzar texto oscuro/claro legible en cualquier estado
-                      )}
-                    >
-                      <div className="flex items-center justify-center gap-4 w-full">
-                        <div className={cn(
-                            "transition-transform duration-500", 
-                            activeCategory === cat ? cn("scale-125", CATEGORY_STYLES[cat].color) : "opacity-40"
-                        )}>
-                          {CATEGORY_ICONS[cat]}
-                        </div>
-                        <span className={cn(
-                          "transition-all duration-300",
-                          activeCategory === cat 
-                            ? cn("opacity-100 font-black border-b-2 border-current pb-0.5", CATEGORY_STYLES[cat].color) 
-                            : "opacity-60 group-hover/item:opacity-100"
-                        )}>
-                          {cat}
-                        </span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    <span className={cn(
+                      "text-[10px] font-black uppercase tracking-[0.2em] transition-all",
+                      activeCategory === cat ? "opacity-100" : "opacity-50"
+                    )}>
+                      {cat}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
 
 
@@ -621,12 +598,16 @@ function MenuContent() {
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   className="space-y-10"
                 >
-                  <div className="text-center mb-10">
-                    <div className="inline-flex p-3 bg-card border border-border text-primary mb-4 [&>svg]:h-6 [&>svg]:w-6 shadow-sm">
-                      {CATEGORY_ICONS[section]}
-                    </div>
-                    <h2 className="text-3xl md:text-5xl font-headline font-bold text-foreground italic pr-2">{section}</h2>
-                    <div className="h-[2px] w-16 bg-primary/20 mx-auto mt-4" />
+                  <div className="flex flex-col items-center py-8 px-4 text-center">
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      key={section}
+                      className="text-xl md:text-2xl lg:text-3xl font-headline italic text-foreground/80 leading-snug max-w-2xl"
+                    >
+                      "{CATEGORY_DESCRIPTIONS[section]}"
+                    </motion.p>
+                    <div className="h-px w-20 bg-gradient-to-r from-transparent via-primary/30 to-transparent mt-6" />
                   </div>
 
                   {data.items.length === 0 ? (
@@ -721,7 +702,7 @@ function MenuContent() {
                                       addItem(item, 'tapa', item.prices.tapa)
                                     }
                                   }}
-                                  quantity={items.find(i => i.id === item.id && i.type === 'tapa')?.quantity}
+                                  quantity={cartItems.find(i => i.id === item.id && i.type === 'tapa')?.quantity}
                                   onSubtract={() => updateQuantity(item.id, 'tapa', -1)}
                                   onAdd={() => updateQuantity(item.id, 'tapa', 1)}
                                 />
@@ -743,7 +724,7 @@ function MenuContent() {
                                       addItem(item, 'media', item.prices.media)
                                     }
                                   }}
-                                  quantity={items.find(i => i.id === item.id && i.type === 'media')?.quantity}
+                                  quantity={cartItems.find(i => i.id === item.id && i.type === 'media')?.quantity}
                                   onSubtract={() => updateQuantity(item.id, 'media', -1)}
                                   onAdd={() => updateQuantity(item.id, 'media', 1)}
                                 />
@@ -765,7 +746,7 @@ function MenuContent() {
                                       addItem(item, 'racion', item.prices.racion)
                                     }
                                   }}
-                                  quantity={items.find(i => i.id === item.id && i.type === 'racion')?.quantity}
+                                  quantity={cartItems.find(i => i.id === item.id && i.type === 'racion')?.quantity}
                                   onSubtract={() => updateQuantity(item.id, 'racion', -1)}
                                   onAdd={() => updateQuantity(item.id, 'racion', 1)}
                                 />
@@ -817,7 +798,10 @@ function MenuContent() {
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-3 py-1">
+                        <div className={cn(
+                          "flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-3 py-1",
+                          Object.keys(item.prices || {}).length === 1 ? "justify-center" : "justify-start"
+                        )}>
                           {item.prices?.tapa && (
                             <div className="flex-1 min-w-[80px] max-w-[140px]">
                               <PricePill 
@@ -831,7 +815,7 @@ function MenuContent() {
                                     addItem(item, 'tapa', item.prices.tapa)
                                   }
                                 }}
-                                quantity={items.find(i => i.id === item.id && i.type === 'tapa')?.quantity}
+                                quantity={cartItems.find(i => i.id === item.id && i.type === 'tapa')?.quantity}
                                 onSubtract={() => updateQuantity(item.id, 'tapa', -1)}
                                 onAdd={() => updateQuantity(item.id, 'tapa', 1)}
                               />
@@ -850,7 +834,7 @@ function MenuContent() {
                                     addItem(item, 'media', item.prices.media)
                                   }
                                 }}
-                                quantity={items.find(i => i.id === item.id && i.type === 'media')?.quantity}
+                                quantity={cartItems.find(i => i.id === item.id && i.type === 'media')?.quantity}
                                 onSubtract={() => updateQuantity(item.id, 'media', -1)}
                                 onAdd={() => updateQuantity(item.id, 'media', 1)}
                               />
@@ -869,7 +853,7 @@ function MenuContent() {
                                     addItem(item, 'racion', item.prices.racion)
                                   }
                                 }}
-                                quantity={items.find(i => i.id === item.id && i.type === 'racion')?.quantity}
+                                quantity={cartItems.find(i => i.id === item.id && i.type === 'racion')?.quantity}
                                 onSubtract={() => updateQuantity(item.id, 'racion', -1)}
                                 onAdd={() => updateQuantity(item.id, 'racion', 1)}
                               />
@@ -911,7 +895,7 @@ function MenuContent() {
             <div className="flex flex-col items-center justify-center gap-2">
               <div className="flex flex-col items-center gap-2 text-primary">
                 <Flame className="h-4 w-4" strokeWidth={2.5} />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Horario de Cocina</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Filtro de alérgenos</span>
               </div>
               <p className="text-[11px] font-medium text-muted-foreground italic">
                 Lunes a Miércoles: solo mediodía · Jueves a Sábado: mediodía y noche · Domingos: mediodía
