@@ -682,7 +682,7 @@ function MenuContent() {
                                 )}
                                 <div className="flex flex-col gap-1.5 min-w-0">
                                   <div className="flex items-center gap-4">
-                                    <h3 className="text-xl font-headline font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                                    <h3 className="text-xl font-headline font-bold text-foreground group-hover:text-primary transition-colors">
                                       {item.nombre}
                                     </h3>
                                     <div className="flex gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity shrink-0">
@@ -691,7 +691,7 @@ function MenuContent() {
                                       ))}
                                     </div>
                                   </div>
-                                  <p className="text-xs text-muted-foreground italic font-light truncate max-w-lg">{item.desc}</p>
+                                  <p className="text-xs text-muted-foreground italic font-light max-w-lg">{item.desc}</p>
                                 </div>
                               </div>
                             </td>
@@ -792,7 +792,7 @@ function MenuContent() {
                           )}
                           <div className="flex-1 space-y-1.5 min-w-0">
                             <div className="flex justify-between items-start gap-2">
-                              <h3 className="text-xl font-headline font-bold text-foreground leading-tight truncate pr-2">
+                              <h3 className="text-xl font-headline font-bold text-foreground leading-tight pr-2">
                                 {item.nombre}
                               </h3>
                               <div className="flex gap-1 shrink-0 items-center pt-1">
