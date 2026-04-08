@@ -110,12 +110,12 @@ export function Footer() {
 
         {/* Full Width Kitchen Hours */}
         <div className="mb-12 py-6 border-y border-white/5 dark:border-border/10 flex flex-col md:flex-row items-center justify-center gap-4 text-center">
-          <div className="flex items-center gap-3">
-            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse`} />
-            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-white whitespace-nowrap">
+          <div className="flex items-start gap-3">
+            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse mt-[2px]`} />
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.15em] md:tracking-[0.3em] text-white">
               Cocina: Todos los mediodías y Jueves noche a Domingo mediodía
             </span>
-            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse`} />
+            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse mt-[2px]`} />
           </div>
         </div>
 
