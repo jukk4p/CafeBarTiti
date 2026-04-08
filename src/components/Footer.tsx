@@ -31,11 +31,12 @@ export function Footer() {
                 href="https://www.facebook.com/CasaTiTiCoriaDelRio/?locale=es_ES"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white/60 dark:text-muted-foreground hover:text-[#b5c99a] dark:hover:text-primary transition-colors"
+                aria-label="Síguenos en Facebook"
+                className="text-white/70 dark:text-muted-foreground hover:text-[#b5c99a] dark:hover:text-primary transition-colors"
               >
                 <Facebook className="h-5 w-5" />
               </Link>
-              <Link href="#" className="text-white/60 dark:text-muted-foreground hover:text-[#b5c99a] dark:hover:text-primary transition-colors">
+              <Link href="#" aria-label="Síguenos en Instagram" className="text-white/70 dark:text-muted-foreground hover:text-[#b5c99a] dark:hover:text-primary transition-colors">
                 <Instagram className="h-5 w-5" />
               </Link>
             </div>
@@ -85,6 +86,7 @@ export function Footer() {
             <div className="relative aspect-video w-full max-w-[300px] md:max-w-none rounded-2xl overflow-hidden border border-white/10 shadow-2xl mx-auto md:mx-0 group bg-stone-900">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3174.2327557183917!2d-6.054570600000001!3d37.28961710000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1272c700389b23%3A0x53962cf33a184785!2sBar%20Titi!5e0!3m2!1ses!2ses!4v1775488759347!5m2!1ses!2ses"
+                title="Mapa con la ubicación de Cafe Bar Titi"
                 width="100%"
                 height="100%"
                 style={{ border: 0, filter: 'grayscale(0.1) contrast(1) brightness(0.9)' }}
@@ -120,12 +122,12 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/5 dark:border-border/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[9px] text-white/40 dark:text-muted-foreground uppercase tracking-widest font-bold text-center md:text-left">
+        <div className="pt-8 border-t border-white/5 dark:border-border/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[9px] text-white/70 dark:text-muted-foreground uppercase tracking-widest font-bold text-center md:text-left">
           <p>© 2026 CAFE BAR TITI. TODOS LOS DERECHOS RESERVADOS.</p>
           <div className="flex flex-wrap justify-center md:justify-end gap-6 md:gap-8">
-            <Link href="/aviso-legal" className="hover:text-[#b5c99a] dark:hover:text-primary transition-colors">AVISO LEGAL</Link>
-            <Link href="/privacidad" className="hover:text-[#b5c99a] dark:hover:text-primary transition-colors">PRIVACIDAD</Link>
-            <Link href="/cookies" className="hover:text-[#b5c99a] dark:hover:text-primary transition-colors">COOKIES</Link>
+            <Link href="/aviso-legal" className="hover:text-[#b5c99a] dark:hover:text-primary transition-all duration-300">AVISO LEGAL</Link>
+            <Link href="/privacidad" className="hover:text-[#b5c99a] dark:hover:text-primary transition-all duration-300">PRIVACIDAD</Link>
+            <Link href="/cookies" className="hover:text-[#b5c99a] dark:hover:text-primary transition-all duration-300">COOKIES</Link>
           </div>
         </div>
       </div>

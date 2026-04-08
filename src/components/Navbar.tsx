@@ -41,7 +41,7 @@ export function Navbar() {
             <span className="text-lg sm:text-xl font-headline font-bold text-[#1a4731] dark:text-primary leading-tight whitespace-nowrap">
               Cafe Bar Titi
             </span>
-            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-secondary mt-0.5 sm:mt-1 leading-none">
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] text-[#1a4731]/80 dark:text-primary/70 mt-0.5 sm:mt-1 leading-none">
               Desde 1968
             </span>
           </div>
@@ -84,6 +84,7 @@ export function Navbar() {
             {itemCount > 0 && (
               <button 
                 onClick={() => setIsCartOpen(true)}
+                aria-label={`Ver carrito (${itemCount} platos)`}
                 className="relative flex h-10 w-10 items-center justify-center rounded-full border border-primary/10 bg-white/40 dark:bg-black/40 backdrop-blur-xl shadow-md transition-all active:scale-90 group animate-in zoom-in duration-500"
               >
                 <ShoppingBag className="h-5 w-5 text-foreground/70 group-hover:text-primary transition-colors stroke-[1.5]" />
@@ -106,6 +107,7 @@ export function Navbar() {
             {itemCount > 0 && (
               <button 
                 onClick={() => setIsCartOpen(true)}
+                aria-label={`Ver carrito (${itemCount} platos)`}
                 className="relative flex h-10 w-10 items-center justify-center rounded-full border border-primary/10 bg-white/40 dark:bg-black/40 backdrop-blur-xl shadow-md transition-all active:scale-90 animate-in zoom-in duration-500"
               >
                 <ShoppingBag className="h-5 w-5 text-foreground/80 dark:text-primary" />

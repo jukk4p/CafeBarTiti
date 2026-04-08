@@ -176,7 +176,7 @@ export default function Home() {
                   <Heart className="h-5 w-5" />
                 </div>
                 <div className="flex flex-col justify-center">
-                  <h5 className="font-bold text-lg leading-tight mb-1">Punto de Encuentro</h5>
+                  <h3 className="font-bold text-lg leading-tight mb-1">Punto de Encuentro</h3>
                   <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Ideal para familia y amigos</p>
                 </div>
               </FadeIn>
@@ -185,7 +185,7 @@ export default function Home() {
                   <HomeIcon className="h-5 w-5" />
                 </div>
                 <div className="flex flex-col justify-center">
-                  <h5 className="font-bold text-lg leading-tight mb-1">Para Llevar</h5>
+                  <h3 className="font-bold text-lg leading-tight mb-1">Para Llevar</h3>
                   <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">Recogida en local (sin reparto)</p>
                 </div>
               </FadeIn>
@@ -194,7 +194,7 @@ export default function Home() {
                   <Wind className="h-5 w-5" />
                 </div>
                 <div className="flex flex-col justify-center">
-                  <h5 className="font-bold text-lg leading-tight mb-1">Nuestra Terraza</h5>
+                  <h3 className="font-bold text-lg leading-tight mb-1">Nuestra Terraza</h3>
                   <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">El mejor clima de Sevilla</p>
                 </div>
               </FadeIn>
