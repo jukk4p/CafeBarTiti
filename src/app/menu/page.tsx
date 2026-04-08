@@ -552,7 +552,7 @@ function MenuContent() {
             {/* Mobile Horizontal Scroll Navigation */}
             <div className="md:hidden py-4 w-full max-w-[100vw] overflow-hidden">
               <div 
-                className="flex overflow-x-auto overflow-y-hidden scrollbar-hide gap-2 px-4 mask-linear-fade-sides whitespace-nowrap"
+                className="flex overflow-x-auto overflow-y-hidden scrollbar-hide gap-2 px-4 mask-fade-right whitespace-nowrap"
                 style={{ 
                   WebkitOverflowScrolling: 'touch',
                   overscrollBehaviorX: 'contain',

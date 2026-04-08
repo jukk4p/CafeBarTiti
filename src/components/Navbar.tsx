@@ -173,7 +173,7 @@ export function Navbar() {
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto py-6">
+          <div className="flex-1 overflow-y-auto scrollbar-hide py-6">
             <nav className="flex flex-col">
               {[
                 { name: "Inicio", href: "/", sub: "Nuestra historia" },
