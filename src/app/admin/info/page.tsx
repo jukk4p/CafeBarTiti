@@ -13,12 +13,11 @@ import {
   MapPin, 
   Phone, 
   Mail, 
-  Link, 
-  Camera, 
   Clock,
   CheckCircle2,
   AlertCircle
 } from "lucide-react"
+import { FacebookIcon, InstagramIcon } from "@/components/social-icons"
 
 export default function AdminInfoPage() {
   const { firestore } = useFirebase()
@@ -195,7 +194,7 @@ export default function AdminInfoPage() {
         <Card className="rounded-[2.5rem] border-border shadow-sm overflow-hidden md:col-span-2">
           <CardHeader className="bg-muted/30 pb-4 border-b">
             <CardTitle className="text-xl font-bold font-headline flex items-center gap-2">
-              <Camera className="h-5 w-5 text-accent" /> Redes Sociales & Enlaces
+              <InstagramIcon className="h-5 w-5 text-accent" /> Redes Sociales & Enlaces
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
