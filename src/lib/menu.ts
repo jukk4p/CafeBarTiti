@@ -55,9 +55,9 @@ export const MENU_BACKUP: Record<string, MenuSection> = {
   },
   "Montaditos": {
     items: [
-      { id: "serranito-lomo-pollo", nombre: "Serranitos de Lomo o Pollo", prices: { racion: 5.00 }, desc: "El clásico de la casa con pimiento frito y jamón.", alergenos: ["Contiene Gluten"], image: "/menu/serranito.webp" },
-      { id: "mini-serranito", nombre: "Mini Serranitos de Lomo o Pollo", prices: { racion: 4.00 }, desc: "Nuestra versión reducida del serranito tradicional.", alergenos: ["Contiene Gluten"], image: "/menu/mini_serranito.webp" },
-      { id: "montadito-lomo-pollo", nombre: "Montaditos de Lomo o Pollo", prices: { racion: 3.50 }, desc: "Tierno lomo o pollo en pan crujiente.", alergenos: ["Contiene Gluten"], image: "/menu/montadito_lomo_pollo.webp" },
+      { id: "serranito-lomo-pollo", nombre: "Serranito de Lomo o Pollo", prices: { racion: 5.00 }, desc: "El clásico de la casa con pimiento frito y jamón.", alergenos: ["Contiene Gluten"], image: "/menu/serranito.webp" },
+      { id: "mini-serranito", nombre: "Mini Serranito de Lomo o Pollo", prices: { racion: 4.00 }, desc: "Nuestra versión reducida del serranito tradicional.", alergenos: ["Contiene Gluten"], image: "/menu/mini_serranito.webp" },
+      { id: "montadito-lomo-pollo", nombre: "Montadito de Lomo o Pollo", prices: { racion: 3.50 }, desc: "Tierno lomo o pollo en pan crujiente.", alergenos: ["Contiene Gluten"], image: "/menu/montadito_lomo_pollo.webp" },
       { id: "montadito-jamon", nombre: "Montadito de Jamón", prices: { racion: 4.00 }, desc: "Jamón serrano seleccionado de primera calidad.", alergenos: ["Contiene Gluten"], image: "/menu/montadito_jamon.webp" },
       { id: "montadito-mechada", nombre: "Montadito de Carne Mechada", prices: { racion: 4.00 }, desc: "Carne mechada casera con su jugo.", alergenos: ["Contiene Gluten", "Dióxido de azufre y sulfitos"], image: "/menu/mechada.webp" },
     ]
