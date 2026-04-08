@@ -1,77 +1,177 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
-  Salad, UtensilsCrossed, Sandwich, FishSymbol, Fish, Beef, Beer, 
-  ChevronLeft, Flame, Sparkles, Info, X, Zap, ArrowRight, Star
+  Salad, UtensilsCrossed, Sandwich, FishSymbol, Fish, Beef, Beer,
+  ChevronLeft, Flame, Sparkles, Info, Star, ArrowRight,
+  Wheat, Egg, Milk, ShieldAlert, X
 } from "lucide-react"
 import { MENU_BACKUP } from "@/lib/menu-backup"
 import { cn } from "@/lib/utils"
 import { AddToCartButton } from "@/components/AddToCartButton"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { FloatingCart } from "@/components/FloatingCart"
 
 const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Bebidas"]
 
-const CATEGORY_DATA: Record<string, { icon: React.ReactNode, description: string, color: string, border: string, bg: string }> = {
-  "Entrantes": { 
-    icon: <Salad className="h-8 w-8" />, 
+const CATEGORY_DATA: Record<string, { icon: React.ReactNode, description: string, color: string, bg: string }> = {
+  "Entrantes": {
+    icon: <Salad className="h-8 w-8" />,
     description: "FRESCOS Y DELICIOSOS",
-    color: "text-emerald-400",
-    border: "border-emerald-500/30",
-    bg: "bg-emerald-500/10"
+    color: "text-emerald-600 dark:text-emerald-400",
+    bg: "bg-emerald-500/10 dark:bg-emerald-500/20"
   },
-  "Tapas Variadas": { 
-    icon: <UtensilsCrossed className="h-8 w-8" />, 
+  "Tapas Variadas": {
+    icon: <UtensilsCrossed className="h-8 w-8" />,
     description: "CLÁSICOS DE NUESTRA COCINA",
-    color: "text-amber-400",
-    border: "border-amber-500/30",
-    bg: "bg-amber-500/10"
+    color: "text-amber-600 dark:text-amber-400",
+    bg: "bg-amber-500/10 dark:bg-amber-500/20"
   },
-  "Montaditos": { 
-    icon: <Sandwich className="h-8 w-8" />, 
+  "Montaditos": {
+    icon: <Sandwich className="h-8 w-8" />,
     description: "EL SABOR EN PAN CRUJIENTE",
-    color: "text-orange-400",
-    border: "border-orange-500/30",
-    bg: "bg-orange-500/10"
+    color: "text-orange-600 dark:text-orange-400",
+    bg: "bg-orange-500/10 dark:bg-orange-500/20"
   },
-  "Pescado Frito": { 
-    icon: <FishSymbol className="h-8 w-8" />, 
+  "Pescado Frito": {
+    icon: <FishSymbol className="h-8 w-8" />,
     description: "CALIDAD DE NUESTRA LONJA",
-    color: "text-blue-400",
-    border: "border-blue-500/30",
-    bg: "bg-blue-500/10"
+    color: "text-blue-600 dark:text-blue-400",
+    bg: "bg-blue-500/10 dark:bg-blue-500/20"
   },
-  "Pescado Plancha": { 
-    icon: <Fish className="h-8 w-8" />, 
+  "Pescado Plancha": {
+    icon: <Fish className="h-8 w-8" />,
     description: "SABOR PURO AL FUEGO",
-    color: "text-cyan-400",
-    border: "border-cyan-500/30",
-    bg: "bg-cyan-500/10"
+    color: "text-cyan-600 dark:text-cyan-400",
+    bg: "bg-cyan-500/10 dark:bg-cyan-500/20"
   },
-  "Carnes a la Brasa": { 
-    icon: <Beef className="h-8 w-8" />, 
+  "Carnes a la Brasa": {
+    icon: <Beef className="h-8 w-8" />,
     description: "EXPERIENCIA A LA PARRILLA",
-    color: "text-red-400",
-    border: "border-red-500/30",
-    bg: "bg-red-500/10"
+    color: "text-red-600 dark:text-red-400",
+    bg: "bg-red-500/10 dark:bg-red-500/20"
   },
-  "Bebidas": { 
-    icon: <Beer className="h-8 w-8" />, 
+  "Bebidas": {
+    icon: <Beer className="h-8 w-8" />,
     description: "FRÍAS Y REFRESCANTES",
-    color: "text-yellow-400",
-    border: "border-yellow-500/30",
-    bg: "bg-yellow-500/10"
+    color: "text-yellow-600 dark:text-yellow-400",
+    bg: "bg-yellow-500/10 dark:bg-yellow-500/20"
   },
+}
+
+const ALLERGEN_ICONS: Record<string, React.ReactNode> = {
+  "Contiene Gluten": <Wheat className="h-full w-full" />,
+  "Crustáceos": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-full w-full"><path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2zM8 12h8" /></svg>
+  ),
+  "Huevos": <Egg className="h-full w-full" />,
+  "Pescado": <Fish className="h-full w-full" />,
+  "Cacahuetes": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-full w-full"><path d="M12 2a5 5 0 0 0-5 5v2a3 3 0 0 0 0 6v2a5 5 0 0 0 10 0v-2a3 3 0 0 0 0-6V7a5 5 0 0 0-5-5z" /></svg>
+  ),
+  "Soja": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-full w-full"><circle cx="12" cy="12" r="3" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4" /></svg>
+  ),
+  "Lácteos": <Milk className="h-full w-full" />,
+  "Frutos de cáscara": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-full w-full"><circle cx="12" cy="12" r="3" /><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+  ),
+  "Apio": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-full w-full"><path d="M7 20l3-12m4 0l3 12M5 8h14" /></svg>
+  ),
+  "Mostaza": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-full w-full"><circle cx="12" cy="12" r="2" /><path d="M12 12l6 6M12 12L6 6" /></svg>
+  ),
+  "Granos de sésamo": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-full w-full"><path d="M8 6h.01M16 6h.01M12 12h.01" /></svg>
+  ),
+  "Dióxido de azufre y sulfitos": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-full w-full"><path d="M22 17H2l10-15 10 15z" /></svg>
+  ),
+  "Altramuces": <Egg className="h-full w-full" />,
+  "Moluscos": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-full w-full"><path d="M12 2a10 10 0 1 0 10 10 10 10 0 0 0-10-10zM8 12h8" /></svg>
+  ),
+}
+
+const ALLERGENS_LIST = [
+  { name: "Contiene Gluten", label: "Gluten", color: "bg-orange-600" },
+  { name: "Crustáceos", label: "Crustáceos", color: "bg-blue-500" },
+  { name: "Huevos", label: "Huevos", color: "bg-yellow-500" },
+  { name: "Pescado", label: "Pescado", color: "bg-blue-800" },
+  { name: "Cacahuetes", label: "Cacahuetes", color: "bg-amber-800" },
+  { name: "Soja", label: "Soja", color: "bg-green-700" },
+  { name: "Lácteos", label: "Lácteos", color: "bg-orange-800" },
+  { name: "Frutos de cáscara", label: "Frutos", color: "bg-red-900" },
+  { name: "Apio", label: "Apio", color: "bg-emerald-600" },
+  { name: "Mostaza", label: "Mostaza", color: "bg-yellow-700" },
+  { name: "Granos de sésamo", label: "Sésamo", color: "bg-yellow-300 text-black" },
+  { name: "Dióxido de azufre y sulfitos", label: "Sulfitos", color: "bg-purple-600" },
+  { name: "Altramuces", label: "Altramuces", color: "bg-yellow-400 text-black" },
+  { name: "Moluscos", label: "Moluscos", color: "bg-blue-400" },
+]
+
+const AllergenBadge = ({ name }: { name: string }) => {
+  const config = ALLERGENS_LIST.find(a => a.name === name)
+  if (!config) return null
+  return (
+    <TooltipProvider delayDuration={0}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            className={cn(
+              "h-4 w-4 rounded-full flex items-center justify-center text-white shadow-sm border border-white/20 p-0.5 shrink-0 transition-transform hover:scale-125 cursor-help",
+              config.color
+            )}
+          >
+            {ALLERGEN_ICONS[name]}
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="bg-card/95 backdrop-blur-md border-border text-[10px] font-bold uppercase tracking-widest p-2 px-3">
+          <p>{name}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
 }
 
 export default function QRMenuPage() {
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null)
+  const [excludedAllergens, setExcludedAllergens] = React.useState<string[]>([])
+  const [selectedImage, setSelectedImage] = React.useState<string | null>(null)
+
+  const toggleAllergen = (name: string) => {
+    setExcludedAllergens(prev =>
+      prev.includes(name) ? prev.filter(a => a !== name) : [...prev, name]
+    )
+  }
 
   const categoryItems = React.useMemo(() => {
     if (!selectedCategory) return []
-    return MENU_BACKUP[selectedCategory]?.items || []
-  }, [selectedCategory])
+    let items = MENU_BACKUP[selectedCategory]?.items || []
+    
+    // Filtro inteligente de alérgenos
+    if (excludedAllergens.length > 0) {
+      items = items.filter((item: any) => {
+        if (!item.alergenos || !Array.isArray(item.alergenos)) return true;
+        return !item.alergenos.some((a: string) => excludedAllergens.includes(a));
+      })
+    }
+    
+    return items
+  }, [selectedCategory, excludedAllergens])
 
   const categoryFooter = React.useMemo(() => {
     if (!selectedCategory) return null
@@ -79,46 +179,79 @@ export default function QRMenuPage() {
   }, [selectedCategory])
 
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-50 font-sans selection:bg-primary selection:text-emerald-950 overflow-x-hidden relative">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-emerald-950 overflow-x-hidden relative">
       
-      {/* Texture Layer - Mucho más visible para dar cuerpo */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.1] bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]" />
+      {/* Texture Layer - Sutil para ambos modos */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.05] dark:opacity-[0.1] bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]" />
       
-      {/* High Contrast Background Glows */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[20%] left-[50%] -translate-x-1/2 w-[100%] h-[100%] bg-blue-600/10 blur-[150px] rounded-full" />
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-950/20 to-transparent" />
-      </div>
+      {/* Image Modal Lightbox - THE SURPRISE */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImage(null)}
+            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 cursor-zoom-out"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="relative aspect-square w-full max-w-lg rounded-[3rem] overflow-hidden shadow-2xl border border-white/10"
+            >
+              <Image 
+                src={selectedImage} 
+                alt="Highlight" 
+                fill 
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 512px"
+              />
+              <div className="absolute top-6 right-6">
+                <div className="h-10 w-10 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20">
+                    <X className="h-5 w-5" />
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="relative z-10 container mx-auto px-5 py-10 pb-32 max-w-4xl">
         
-        {/* Header - Contraste Máximo */}
+        {/* Header Responsive */}
         <AnimatePresence mode="wait">
           {!selectedCategory && (
-            <header className="flex flex-col items-center mb-16 text-center space-y-4">
+            <header className="flex flex-col items-center mb-16 text-center space-y-6">
               <motion.div 
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="bg-primary/10 border border-primary/20 px-4 py-1 rounded-full"
+                className="flex items-center gap-4 px-6 py-2 rounded-full border border-primary/20 bg-primary/5"
               >
-                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Cafe Bar Titi</span>
+                <Flame className="h-5 w-5 text-primary animate-bounce-slow" />
+                <span className="text-xs font-black uppercase tracking-[0.5em] text-primary">Cafe Bar Titi</span>
+                <Flame className="h-5 w-5 text-primary animate-bounce-slow" />
               </motion.div>
               
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="space-y-1"
+                className="space-y-2"
               >
-                <h1 className="text-5xl md:text-7xl font-headline italic tracking-tighter text-white">
-                   La Pizarra<br className="md:hidden" /><span className="text-primary not-italic font-sans font-black uppercase md:ml-4 tracking-[0.1em]">Titi</span>
+                <h1 className="text-5xl md:text-7xl font-headline italic tracking-tighter text-foreground">
+                  La Pizarra <span className="text-primary not-italic font-sans font-black uppercase md:ml-2 tracking-[0.1em]">Titi</span>
                 </h1>
-                <p className="text-slate-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.4em]">Desde 1968 · Tradición del Aljarafe</p>
+                <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                    <Star className="h-3 w-3" />
+                    <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.4em]">Desde 1968 · Tradición</p>
+                    <Star className="h-3 w-3" />
+                </div>
               </motion.div>
             </header>
           )}
         </AnimatePresence>
 
-        {/* Categories Grid - BOTONES CON CONTRASTE ALTO */}
+        {/* Categories Grid - ADAPTABLE THEME */}
         <AnimatePresence mode="wait">
           {!selectedCategory ? (
             <motion.div 
@@ -126,46 +259,49 @@ export default function QRMenuPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5"
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6"
             >
               {CATEGORIES.map((cat, idx) => (
                 <motion.button
                   key={cat}
-                  initial={{ opacity: 0, y: 15 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
+                  whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={() => setSelectedCategory(cat)}
                   className={cn(
-                    "group relative h-40 md:h-44 rounded-[2.5rem] overflow-hidden border-2 bg-slate-900/80 shadow-2xl transition-all hover:-translate-y-1 p-6 flex items-center text-left",
-                    CATEGORY_DATA[cat]?.border || "border-white/10"
+                    "group relative h-44 rounded-[2.5rem] overflow-hidden border-2 border-border/50 bg-card hover:bg-primary/[0.03] dark:hover:bg-primary/10 hover:border-primary/40 shadow-lg md:shadow-xl transition-all flex items-center p-6 text-left",
                   )}
                 >
                   {/* Subtle color flare in corner */}
                   <div className={cn(
-                    "absolute top-0 right-0 w-24 h-24 blur-[30px] opacity-40 -mr-12 -mt-12 rounded-full transition-opacity group-hover:opacity-70",
+                    "absolute top-0 right-0 w-32 h-32 blur-[40px] opacity-20 group-hover:opacity-40 transition-opacity rounded-full",
                     CATEGORY_DATA[cat]?.bg
                   )} />
 
                   <div className="relative z-10 flex items-center gap-6 w-full">
                     <div className={cn(
-                        "p-4 rounded-2xl shadow-lg border-b-4 border-black/20 group-hover:scale-110 transition-transform duration-300",
-                        CATEGORY_DATA[cat]?.bg,
-                        CATEGORY_DATA[cat]?.color
+                      "p-5 rounded-2xl shadow-inner border border-white/10 dark:border-black/10 group-hover:scale-110 transition-transform duration-500",
+                      CATEGORY_DATA[cat]?.bg,
+                      CATEGORY_DATA[cat]?.color
                     )}>
                       {CATEGORY_DATA[cat]?.icon}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-0.5 text-white">{cat}</h3>
-                      <p className={cn(
-                          "text-[9px] md:text-[10px] uppercase tracking-[0.2em] font-black opacity-60 group-hover:opacity-100 transition-opacity",
+                      <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-1">{cat}</h3>
+                      <div className="flex items-center gap-2">
+                        <span className="h-px w-4 bg-primary/40" />
+                        <p className={cn(
+                          "text-[9px] md:text-[10px] uppercase tracking-[0.2em] font-black opacity-70 group-hover:opacity-100 transition-opacity",
                           CATEGORY_DATA[cat]?.color
-                      )}>
-                        {CATEGORY_DATA[cat]?.description}
-                      </p>
+                        )}>
+                          {CATEGORY_DATA[cat]?.description}
+                        </p>
+                      </div>
                     </div>
-                    <div className="h-10 w-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 group-hover:bg-primary group-hover:text-emerald-950 transition-all">
-                        <ArrowRight className="h-4 w-4" />
+                    <div className="h-10 w-10 flex items-center justify-center rounded-full bg-primary text-white shadow-[0_4px_12px_rgba(181,201,154,0.4)] group-hover:translate-x-1 transition-all">
+                      <ArrowRight className="h-5 w-5 stroke-[3]" />
                     </div>
                   </div>
                 </motion.button>
@@ -173,84 +309,186 @@ export default function QRMenuPage() {
             </motion.div>
           ) : (
             /* Detailed Category View */
-            <motion.div 
+            <motion.div
               key="details"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="space-y-6 md:space-y-10"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-8 md:space-y-12"
             >
-              {/* Floating Top Nav */}
-              <div className="flex items-center justify-between sticky top-4 z-50 bg-slate-950/90 backdrop-blur-2xl p-4 -mx-4 border-b border-primary/20 md:rounded-[2.5rem] md:mx-0 md:border md:mb-12 shadow-2xl">
-                <button 
-                  onClick={() => setSelectedCategory(null)}
-                  className="flex items-center gap-2 text-primary font-black uppercase tracking-[0.2em] text-[10px] bg-primary/10 px-5 py-3 rounded-full border border-primary/20"
-                >
-                  <ChevronLeft className="h-4 w-4 stroke-[3]" />
-                  VOLVER
-                </button>
-                <div className="flex items-center gap-4">
-                  <div className={cn("p-2 rounded-xl border-b-2 border-black/20", CATEGORY_DATA[selectedCategory]?.bg, CATEGORY_DATA[selectedCategory]?.color)}>
-                    {CATEGORY_DATA[selectedCategory]?.icon}
+              {/* Top Nav - THE SURPRISE: FILTER TRIGGER */}
+              <div className="grid grid-cols-[80px_1fr_80px] items-center sticky top-2 z-50 bg-background/90 backdrop-blur-2xl px-2 py-3 -mx-2 border-b border-border shadow-md md:rounded-[2rem] md:mx-0 md:border md:mb-12 md:top-4 transition-all">
+                <div className="flex justify-start pl-4">
+                  <button
+                    onClick={() => setSelectedCategory(null)}
+                    className="flex items-center justify-center h-10 w-10 rounded-xl border border-border bg-card/50 shadow-sm text-primary hover:bg-primary hover:text-white transition-all outline-none group"
+                  >
+                    <ChevronLeft className="h-5 w-5 stroke-[3] group-active:scale-90 transition-transform" />
+                  </button>
+                </div>
+
+                <div className="flex flex-col items-center justify-center gap-1.5">
+                  <div className={cn("p-2 rounded-xl border-2 border-primary/20 bg-card shadow-md scale-110 mb-0.5", CATEGORY_DATA[selectedCategory]?.color)}>
+                    {React.cloneElement(CATEGORY_DATA[selectedCategory]?.icon as any, { className: "h-5 w-5 stroke-[2.5]" })}
                   </div>
-                  <h2 className="text-2xl font-bold tracking-tighter text-white">{selectedCategory}</h2>
+                  <h2 className="text-xs md:text-sm font-black uppercase tracking-[0.3em] text-foreground leading-none">{selectedCategory}</h2>
+                </div>
+
+                <div className="flex justify-end pr-4">
+                   <TooltipProvider delayDuration={0}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="w-fit h-fit">
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <button className={cn(
+                                        "flex items-center justify-center h-10 w-10 rounded-xl border border-border shadow-sm transition-all focus:outline-none relative group",
+                                        excludedAllergens.length > 0 ? "bg-red-500/10 border-red-500/30 text-red-500" : "bg-card/50 text-muted-foreground hover:bg-primary/10"
+                                    )}>
+                                        <ShieldAlert className={cn("h-5 w-5", excludedAllergens.length > 0 ? "animate-pulse" : "")} />
+                                        {excludedAllergens.length > 0 && (
+                                            <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white rounded-full text-[8px] flex items-center justify-center font-black animate-in zoom-in">
+                                                {excludedAllergens.length}
+                                            </span>
+                                        )}
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[300px] p-5 bg-background/95 backdrop-blur-xl border border-border shadow-2xl rounded-[2rem] mt-2" align="end">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between border-b border-border pb-3">
+                                            <h4 className="font-black uppercase tracking-[0.2em] text-[10px]">Restricciones</h4>
+                                            {excludedAllergens.length > 0 && (
+                                                <button onClick={() => setExcludedAllergens([])} className="text-[10px] text-primary font-bold underline">Limpiar</button>
+                                            )}
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {ALLERGENS_LIST.map(al => (
+                                                <button
+                                                    key={al.name}
+                                                    onClick={() => toggleAllergen(al.name)}
+                                                    className={cn(
+                                                        "flex items-center gap-2 p-2 rounded-xl text-[9px] font-bold uppercase tracking-wider border transition-all",
+                                                        excludedAllergens.includes(al.name) 
+                                                            ? "bg-red-500/10 border-red-500/40 text-red-600"
+                                                            : "bg-muted/30 border-transparent text-muted-foreground hover:bg-muted/50"
+                                                    )}
+                                                >
+                                                    <div className={cn("h-4 w-4 rounded-full p-0.5", al.color)}>
+                                                        {ALLERGEN_ICONS[al.name]}
+                                                    </div>
+                                                    <span className="truncate">{al.label}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <p className="text-[8px] text-muted-foreground italic text-center uppercase tracking-widest pt-2 opacity-60">Los platos no aptos se ocultarán</p>
+                                    </div>
+                                </PopoverContent>
+                            </Popover>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="bg-card/95 backdrop-blur-md border-border text-[10px] font-bold uppercase tracking-widest p-2 px-3">
+                          <p>Filtro de Alérgenos</p>
+                        </TooltipContent>
+                      </Tooltip>
+                   </TooltipProvider>
                 </div>
               </div>
 
-              {/* High Contrast Cards */}
+              {/* Items List - Using Web Standard Styles */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                {categoryItems.map((item: any, idx) => (
-                  <motion.div
-                    key={item.id || item.nombre}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.03 }}
-                    className="p-6 rounded-[2.5rem] bg-slate-900 border-2 border-slate-800 shadow-xl group relative overflow-hidden"
-                  >
-                    <div className="flex justify-between gap-4 mb-5">
-                      <div className="space-y-1.5 flex-1">
-                        <h4 className="font-bold text-xl text-white tracking-tight">{item.nombre}</h4>
-                        {item.desc && (
-                          <p className="text-[11px] md:text-sm text-slate-400 leading-relaxed italic line-clamp-2 md:line-clamp-none">{item.desc}</p>
-                        )}
-                      </div>
-                    </div>
+                <AnimatePresence mode="popLayout">
+                    {categoryItems.map((item: any, idx) => (
+                    <motion.div
+                        key={item.id || item.nombre}
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                        className="p-6 rounded-[2.5rem] bg-card border border-border hover:border-primary/40 shadow-sm md:shadow-md transition-all group flex flex-col justify-between"
+                    >
+                        <div className="flex flex-col gap-6 mb-6">
+                            {item.image && (
+                                <div 
+                                    onClick={() => setSelectedImage(item.image)}
+                                    className="relative w-full aspect-[16/10] rounded-[2rem] overflow-hidden border border-border/50 shadow-inner cursor-zoom-in group/img"
+                                >
+                                    <Image 
+                                        src={item.image} 
+                                        alt={item.nombre} 
+                                        fill 
+                                        className="object-cover group-hover/img:scale-105 transition-transform duration-700" 
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                                    <div className="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md rounded-full px-3 py-1 flex items-center gap-2 border border-white/30 text-white text-[9px] font-bold uppercase tracking-widest shadow-xl">
+                                        <Sparkles className="h-3 w-3" /> Ver Detalle
+                                    </div>
+                                </div>
+                            )}
+                            
+                            <div className="space-y-2 flex-1">
+                                <div className="flex items-center gap-3">
+                                    <h4 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors tracking-tight">{item.nombre}</h4>
+                                    <div className="flex gap-1">
+                                        {item.alergenos?.map((a: string) => (
+                                            <AllergenBadge key={a} name={a} />
+                                        ))}
+                                    </div>
+                                </div>
+                                {item.desc && (
+                                    <p className="text-[11px] md:text-sm text-muted-foreground leading-relaxed italic line-clamp-2 md:line-clamp-none">{item.desc}</p>
+                                )}
+                            </div>
+                        </div>
 
-                    <div className="flex items-center justify-between pt-5 border-t border-slate-800">
-                        <div className="flex gap-4 md:gap-6">
+                        <div className="flex flex-wrap items-center justify-center gap-3 pt-5 border-t border-border mt-auto h-auto">
                             {item.prices?.tapa && (
-                                <div className="flex flex-col">
-                                    <span className="text-[7px] uppercase tracking-[0.2em] text-primary/60 font-black mb-1">Tapa</span>
-                                    <span className="text-xl font-bold text-white leading-none">{item.prices.tapa.toFixed(2)}€</span>
+                                <div className="w-fit">
+                                    <AddToCartButton 
+                                        item={{...item, name: item.nombre, category: selectedCategory}} 
+                                        type="tapa"
+                                        price={item.prices.tapa}
+                                        showPriceOnly
+                                        className="px-4"
+                                    />
                                 </div>
                             )}
                             {item.prices?.media && (
-                                <div className="flex flex-col border-l border-slate-800 pl-4 md:pl-6">
-                                    <span className="text-[7px] uppercase tracking-[0.2em] text-primary/60 font-black mb-1">Media</span>
-                                    <span className="text-xl font-bold text-white leading-none">{item.prices.media.toFixed(2)}€</span>
+                                <div className="w-fit">
+                                    <AddToCartButton 
+                                        item={{...item, name: item.nombre, category: selectedCategory}} 
+                                        type="media"
+                                        price={item.prices.media}
+                                        showPriceOnly
+                                        className="px-4"
+                                    />
                                 </div>
                             )}
                             {item.prices?.racion && (
-                                <div className="flex flex-col border-l border-slate-800 pl-4 md:pl-6">
-                                    <span className="text-[7px] uppercase tracking-[0.2em] text-primary/60 font-black mb-1">Ración</span>
-                                    <span className="text-xl font-bold text-white leading-none">{item.prices.racion.toFixed(2)}€</span>
+                                <div className="w-fit">
+                                    <AddToCartButton 
+                                        item={{...item, name: item.nombre, category: selectedCategory}} 
+                                        type="racion"
+                                        price={item.prices.racion}
+                                        showPriceOnly
+                                        className="px-4"
+                                    />
                                 </div>
                             )}
                         </div>
-                        <AddToCartButton item={{...item, name: item.nombre, category: selectedCategory}} />
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                    ))}
+                </AnimatePresence>
               </div>
 
-              {/* Clear Informative Footer */}
+              {/* Informative Footer */}
               {categoryFooter && (
-                <div className="mt-12 p-8 rounded-[3rem] bg-slate-900 border-2 border-primary/20 flex flex-col items-center text-center gap-4 mx-auto max-w-lg shadow-2xl relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-primary/20" />
-                    <div className="p-3 bg-primary/10 rounded-2xl text-primary">
-                        <Info className="h-6 w-6" />
-                    </div>
-                    <p className="text-sm text-slate-300 leading-relaxed italic">{categoryFooter}</p>
+                <div className="mt-12 p-8 rounded-[3.5rem] bg-card border-2 border-primary/20 flex flex-col items-center text-center gap-6 mx-auto max-w-lg shadow-xl relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-primary/20" />
+                  <div className="p-4 bg-primary/10 rounded-2xl text-primary animate-pulse">
+                    <Info className="h-7 w-7" />
+                  </div>
+                  <p className="text-sm text-balance text-muted-foreground leading-relaxed italic">{categoryFooter}</p>
                 </div>
               )}
             </motion.div>

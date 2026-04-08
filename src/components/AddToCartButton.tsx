@@ -23,12 +23,18 @@ interface AddToCartButtonProps {
   item: any
   variant?: "default" | "outline" | "ghost"
   className?: string
+  type?: OrderType
+  price?: number
+  showPriceOnly?: boolean
 }
 
 export function AddToCartButton({ 
   item, 
   variant = "outline", 
-  className 
+  className,
+  type,
+  price,
+  showPriceOnly
 }: AddToCartButtonProps) {
   const { addItem, updateQuantity, items } = useCart()
   
@@ -45,6 +51,63 @@ export function AddToCartButton({
 
   const handleAdd = (type: OrderType, price: number, itemVariant?: string) => {
     addItem(item, type, price, itemVariant)
+  }
+
+  // MODO DIRECTO (Pizarra Digital / Carta Web) - CALCO DE LA CARTA ORIGINAL
+  if (showPriceOnly && type && price !== undefined) {
+    const cartItem = items.find(i => i.id === item.id && i.type === type)
+    
+    // Colores según el tipo (como en la captura del usuario)
+    const typeStyles: Record<string, string> = {
+      tapa: "bg-[#e9f0e8] text-[#1a4731] border-[#1a4731]/10 hover:bg-[#1a4731] hover:text-white",
+      media: "bg-[#fdf7e7] text-[#854d0e] border-[#854d0e]/10 hover:bg-[#854d0e] hover:text-white",
+      racion: "bg-[#efeff0] text-[#334155] border-[#334155]/10 hover:bg-[#334155] hover:text-white"
+    }
+
+    if (cartItem) {
+      return (
+        <div className={cn(
+          "flex items-center gap-3 px-3 py-2 rounded-xl shadow-sm border transition-all",
+          type === "tapa" ? "bg-[#1a4731] text-white" : 
+          type === "media" ? "bg-[#854d0e] text-white" : 
+          "bg-[#334155] text-white",
+          className
+        )}>
+          <button 
+              onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, type, -1); }}
+              className="hover:bg-white/20 p-1 rounded-md transition-colors"
+          >
+              <Minus className="h-3 w-3" strokeWidth={4} />
+          </button>
+          <span className="font-bold text-sm min-w-[1ch] text-center">{cartItem.quantity}</span>
+          <button 
+              onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, type, 1); }}
+              className="hover:bg-white/20 p-1 rounded-md transition-colors"
+          >
+              <Plus className="h-3 w-3" strokeWidth={4} />
+          </button>
+        </div>
+      )
+    }
+
+    return (
+      <button
+        onClick={(e) => { e.stopPropagation(); handleAdd(type, price); }}
+        className={cn(
+          "flex flex-col items-center justify-center gap-0.5 px-4 py-3 rounded-2xl border transition-all active:scale-95 shadow-sm group min-w-[90px] md:min-w-[100px]",
+          typeStyles[type] || "bg-slate-100 text-slate-700",
+          className
+        )}
+      >
+        <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] font-black opacity-60 mb-0.5">
+          {type === "racion" ? "RACIÓN" : type.toUpperCase()}
+        </span>
+        <div className="flex items-center gap-1.5 flex-nowrap">
+            <Plus className="h-3 w-3 opacity-40 group-hover:opacity-100 transition-opacity" strokeWidth={4} />
+            <span className="text-sm md:text-base font-bold tracking-tight whitespace-nowrap">{price.toFixed(2)}€</span>
+        </div>
+      </button>
+    )
   }
 
   if (availablePrices.length === 0) return null

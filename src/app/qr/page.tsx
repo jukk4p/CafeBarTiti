@@ -1,11 +1,12 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { motion } from "framer-motion"
 import { Flame, Sparkles, Smartphone, ArrowRight } from "lucide-react"
 
 export default function QRPage() {
-  const [productionUrl, setProductionUrl] = React.useState("https://cafebartiti.es/menu?src=qr")
+  const [productionUrl, setProductionUrl] = React.useState("https://bartiti.ivangonzalez.cloud/qr-menu")
   
   // Usamos una API externa para generar el QR real y funcional sin dependencias pesadas
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(productionUrl)}&bgcolor=FFFFFF&color=064e3b&margin=2`
@@ -66,8 +67,16 @@ export default function QRPage() {
               <Smartphone className="h-8 w-8" />
             </div>
             <p className="text-xl md:text-2xl text-emerald-900/80 leading-relaxed italic">
-              Escaneá este código con la cámara de tu móvil para ver nuestra carta completa.
+              Escaneá este código con tu móvil para ver nuestra <span className="text-emerald-950 font-bold">experiencia digital inmersiva.</span>
             </p>
+            
+            <Link 
+              href="/qr-menu" 
+              className="mt-4 bg-emerald-950 text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-emerald-800 transition-all flex items-center gap-2 group print:hidden"
+            >
+              Probar en este dispositivo
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
 
           <div className="pt-8 border-t border-emerald-900/10">

@@ -4,7 +4,7 @@
 import * as React from "react"
 import Image from "next/image"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense } from "react"
 import { AddToCartButton } from "@/components/AddToCartButton"
 import { FloatingCart } from "@/components/FloatingCart"
@@ -82,14 +82,52 @@ import { FadeIn, FadeInStagger } from "@/components/FadeIn"
 
 const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Bebidas"]
 
+const CATEGORY_STYLES: Record<string, { color: string, bg: string, border: string }> = {
+  "Entrantes": { 
+    color: "text-emerald-600 dark:text-emerald-400", 
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/30"
+  },
+  "Tapas Variadas": { 
+    color: "text-orange-600 dark:text-orange-400", 
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/30"
+  },
+  "Montaditos": { 
+    color: "text-amber-600 dark:text-amber-400", 
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/30"
+  },
+  "Pescado Frito": { 
+    color: "text-blue-600 dark:text-blue-400", 
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/30"
+  },
+  "Pescado Plancha": { 
+    color: "text-cyan-600 dark:text-cyan-400", 
+    bg: "bg-cyan-500/10",
+    border: "border-cyan-500/30"
+  },
+  "Carnes a la Brasa": { 
+    color: "text-rose-600 dark:text-rose-400", 
+    bg: "bg-rose-500/10",
+    border: "border-rose-500/30"
+  },
+  "Bebidas": { 
+    color: "text-indigo-600 dark:text-indigo-400", 
+    bg: "bg-indigo-500/10",
+    border: "border-indigo-500/30"
+  }
+}
+
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  "Entrantes": <Salad className="h-5 w-5" strokeWidth={1.75} />,
-  "Tapas Variadas": <UtensilsCrossed className="h-5 w-5" strokeWidth={1.75} />,
-  "Montaditos": <Sandwich className="h-5 w-5" strokeWidth={1.75} />,
-  "Pescado Frito": <FishSymbol className="h-5 w-5" strokeWidth={1.75} />,
-  "Pescado Plancha": <Fish className="h-5 w-5" strokeWidth={1.75} />,
-  "Carnes a la Brasa": <Beef className="h-5 w-5" strokeWidth={1.75} />,
-  "Bebidas": <Beer className="h-5 w-5" strokeWidth={1.75} />,
+  "Entrantes": <Salad className="h-4 w-4" />,
+  "Tapas Variadas": <UtensilsCrossed className="h-4 w-4" />,
+  "Montaditos": <Sandwich className="h-4 w-4" />,
+  "Pescado Frito": <FishSymbol className="h-4 w-4" />,
+  "Pescado Plancha": <Fish className="h-4 w-4" />,
+  "Carnes a la Brasa": <Beef className="h-4 w-4" />,
+  "Bebidas": <Beer className="h-4 w-4" />
 }
 
 const ALLERGEN_ICONS: Record<string, React.ReactNode> = {
@@ -243,11 +281,13 @@ const PricePill = ({ label, price, variant, onClick, quantity, onSubtract, onAdd
 }
 
 function MenuContent() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const isFromQR = searchParams.get('src') === 'qr'
   const [showIntro, setShowIntro] = React.useState(isFromQR)
   const [activeCategory, setActiveCategory] = React.useState("Entrantes")
   const [selectedItem, setSelectedItem] = React.useState<any>(null)
+  const [selectedImage, setSelectedImage] = React.useState<string | null>(null)
   const [searchTerm, setSearchTerm] = React.useState("")
   const [excludedAllergens, setExcludedAllergens] = React.useState<string[]>([])
   const [isVisible, setIsVisible] = React.useState(true)
@@ -331,6 +371,38 @@ function MenuContent() {
 
   return (
     <div className="bg-transparent min-h-screen pb-16">
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedImage(null)}
+            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 cursor-zoom-out"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="relative aspect-square w-full max-w-lg rounded-[3rem] overflow-hidden shadow-2xl border border-white/10"
+            >
+              <Image 
+                src={selectedImage} 
+                alt="Highlight" 
+                fill 
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 512px"
+              />
+              <div className="absolute top-6 right-6">
+                <div className="h-10 w-10 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20">
+                    <X className="h-5 w-5" />
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Hero Header */}
       <section className="relative pt-8 pb-6 text-center px-4" aria-labelledby="menu-title">
         <div className="relative z-10 space-y-4">
@@ -453,19 +525,30 @@ function MenuContent() {
                     <TabsTrigger
                       key={cat}
                       value={cat}
-                      className="relative bg-transparent data-[state=active]:text-primary border-none rounded-full h-full px-6 text-[11px] font-bold uppercase tracking-wider text-foreground/40 hover:text-primary transition-all duration-300 flex items-center gap-2 flex-1 whitespace-nowrap group"
+                      className={cn(
+                        "relative bg-transparent border-none rounded-full h-full px-6 text-[11px] font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-2 flex-1 whitespace-nowrap group focus-visible:ring-0 data-[state=active]:bg-transparent",
+                        isActive ? cn("!opacity-100", CATEGORY_STYLES[cat].color) : "text-foreground/40 hover:text-foreground"
+                      )}
                     >
                       {isActive && (
                         <motion.div
                           layoutId="active-cat"
-                          className="absolute inset-0 bg-primary/10 rounded-full -z-10"
+                          className={cn("absolute inset-0 rounded-full -z-10", CATEGORY_STYLES[cat].bg)}
                           transition={{ type: "spring", stiffness: 350, damping: 30 }}
                         />
                       )}
-                      <span className="shrink-0 transition-transform group-data-[state=active]:scale-110 group-hover:scale-110">
+                      <span className={cn(
+                        "shrink-0 transition-transform duration-300",
+                        isActive ? cn("scale-110 !opacity-100", CATEGORY_STYLES[cat].color) : "opacity-70 group-hover:opacity-100"
+                      )}>
                         {CATEGORY_ICONS[cat]}
                       </span>
-                      {cat}
+                      <span className={cn(
+                        "transition-colors duration-300",
+                        isActive ? cn("!text-current", CATEGORY_STYLES[cat].color) : ""
+                      )}>
+                        {cat}
+                      </span>
                     </TabsTrigger>
                   )
                 })}
@@ -475,28 +558,44 @@ function MenuContent() {
             {/* Mobile Select Wrapper */}
             <div className="lg:hidden w-full flex justify-center">
               <Select value={activeCategory} onValueChange={setActiveCategory}>
-                <SelectTrigger className="w-auto min-w-[200px] h-14 bg-card rounded-2xl border-primary/10 font-bold uppercase tracking-widest text-xs shadow-md px-6 [&>span]:w-full [&>span]:flex [&>span]:justify-center" aria-label="Seleccionar categoría">
+                <SelectTrigger className={cn(
+                    "w-auto min-w-[200px] h-14 bg-transparent border-none font-bold uppercase tracking-widest text-xs shadow-none px-6 [&>span]:w-full [&>span]:flex [&>span]:justify-center inline-flex items-center",
+                    CATEGORY_STYLES[activeCategory].color
+                )} aria-label="Seleccionar categoría">
                   <SelectValue placeholder="Categoría">
                     <div className="flex items-center justify-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                      <div className={cn("p-1 transition-transform animate-in zoom-in")}>
                         {CATEGORY_ICONS[activeCategory]}
                       </div>
-                      {activeCategory}
+                      <span className="border-b-2 border-current pb-0.5">{activeCategory}</span>
                     </div>
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-card rounded-2xl border-border p-2 shadow-2xl min-w-[220px]">
+                <SelectContent className="bg-background/95 border-none p-2 shadow-xl min-w-[220px] backdrop-blur-xl rounded-3xl">
                   {CATEGORIES.map(cat => (
                     <SelectItem
                       key={cat}
                       value={cat}
-                      className="rounded-full text-[11px] font-bold uppercase tracking-widest py-3 focus:bg-primary/10 focus:text-primary data-[state=checked]:bg-primary/5 data-[state=checked]:text-primary mb-1 last:mb-0 cursor-pointer transition-colors"
+                      className={cn(
+                        "rounded-xl text-[11px] font-bold uppercase tracking-widest py-4 mb-1 last:mb-0 cursor-pointer transition-all focus:bg-primary/5 data-[state=checked]:bg-transparent group/item px-6",
+                        "!text-zinc-900 dark:!text-zinc-100" // Forzar texto oscuro/claro legible en cualquier estado
+                      )}
                     >
-                      <div className="flex items-center justify-center gap-3 w-full">
-                        <div className="p-1.5 bg-primary/5 rounded-lg text-primary/60">
+                      <div className="flex items-center justify-center gap-4 w-full">
+                        <div className={cn(
+                            "transition-transform duration-500", 
+                            activeCategory === cat ? cn("scale-125", CATEGORY_STYLES[cat].color) : "opacity-40"
+                        )}>
                           {CATEGORY_ICONS[cat]}
                         </div>
-                        {cat}
+                        <span className={cn(
+                          "transition-all duration-300",
+                          activeCategory === cat 
+                            ? cn("opacity-100 font-black border-b-2 border-current pb-0.5", CATEGORY_STYLES[cat].color) 
+                            : "opacity-60 group-hover/item:opacity-100"
+                        )}>
+                          {cat}
+                        </span>
                       </div>
                     </SelectItem>
                   ))}
@@ -574,7 +673,7 @@ function MenuContent() {
                               <div className="flex items-center gap-6">
                                 {item.image ? (
                                   <button
-                                    onClick={() => setSelectedItem(item)}
+                                    onClick={() => setSelectedImage(item.image)}
                                     className="relative h-16 w-16 shrink-0 rounded-2xl overflow-hidden border border-border shadow-md group-hover:shadow-lg group-hover:scale-105 active:scale-95 transition-all duration-500 cursor-zoom-in group/img"
                                   >
                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-opacity z-10">
@@ -687,7 +786,7 @@ function MenuContent() {
                         <div className="flex items-start gap-5">
                           {item.image ? (
                             <button
-                              onClick={() => setSelectedItem(item)}
+                              onClick={() => setSelectedImage(item.image)}
                               className="relative h-20 w-20 shrink-0 rounded-[1.25rem] overflow-hidden border border-border shadow-md cursor-zoom-in"
                             >
                               <Image
@@ -928,39 +1027,44 @@ function MenuContent() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="fixed inset-0 z-[100] bg-emerald-950 flex flex-col items-center justify-center p-6 text-center"
+            className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-6 text-center overflow-hidden"
           >
+            {/* Fondo con textura sutil o gradiente para profundidad */}
+            <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/20 to-black pointer-events-none" />
+
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="space-y-12"
+              className="relative z-10 space-y-16"
             >
-              <div className="flex flex-col items-center gap-6">
+              <div className="flex flex-col items-center gap-8">
                 <div className="flex items-center gap-4 text-primary">
-                  <Flame className="h-10 w-10 fill-current animate-pulse" />
-                  <div className="w-1 h-12 bg-primary/20" />
-                  <Flame className="h-10 w-10 fill-current animate-pulse" />
+                  <Flame className="h-12 w-12 fill-current animate-pulse text-primary shadow-[0_0_15px_rgba(181,201,154,0.5)]" />
+                  <div className="w-[1px] h-16 bg-white/20" />
+                  <Flame className="h-12 w-12 fill-current animate-pulse text-primary shadow-[0_0_15px_rgba(181,201,154,0.5)]" />
                 </div>
-                <div className="space-y-2">
-                  <h2 className="text-white text-sm font-bold uppercase tracking-[0.5em]">Cafe Bar Titi</h2>
-                  <p className="text-primary font-headline italic text-4xl md:text-6xl">Bienvenidos</p>
+                <div className="space-y-4">
+                  <h2 className="text-white/60 text-xs font-bold uppercase tracking-[0.6em] animate-in fade-in slide-in-from-bottom-2 duration-1000">Cafe Bar Titi</h2>
+                  <p className="text-white font-headline italic text-5xl md:text-7xl tracking-tight leading-none drop-shadow-2xl">Bienvenidos</p>
+                  <p className="text-primary text-[10px] uppercase tracking-[0.4em] font-medium opacity-80">Experiencia Gastronómica</p>
                 </div>
               </div>
 
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setShowIntro(false)}
-                className="bg-primary text-emerald-950 px-12 py-5 rounded-full font-bold uppercase tracking-[0.3em] text-xs shadow-[0_0_30px_rgba(181,201,154,0.3)] hover:shadow-[0_0_50px_rgba(181,201,154,0.5)] transition-all flex items-center gap-4 mx-auto group"
+                onClick={() => router.push('/qr-menu')}
+                className="bg-primary text-emerald-950 px-14 py-6 rounded-full font-bold uppercase tracking-[0.3em] text-[11px] shadow-[0_0_40px_rgba(181,201,154,0.4)] hover:shadow-[0_0_60px_rgba(181,201,154,0.6)] transition-all flex items-center gap-5 mx-auto group border border-white/10"
               >
-                Ver la Carta
+                Abrir la Carta
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
               </motion.button>
             </motion.div>
 
-            <div className="absolute bottom-12 left-0 right-0 opacity-20 text-center">
-               <p className="text-white text-[9px] font-bold uppercase tracking-[0.4em]">Desde 1968 · Coria del Río</p>
+            <div className="absolute bottom-12 left-0 right-0 opacity-40 text-center animate-in fade-in slide-in-from-top-2 duration-1000 delay-500">
+               <p className="text-white text-[10px] font-bold uppercase tracking-[0.5em] mb-2 px-10">Desde 1968 · Coria del Río</p>
+               <div className="w-8 h-[1px] bg-primary/40 mx-auto" />
             </div>
           </motion.div>
         )}
