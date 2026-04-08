@@ -8,14 +8,8 @@ const nextConfig = {
   // Mejora el rendimiento en Docker/VPS
   output: 'standalone',
   compress: true,
-  transpilePackages: ['undici', 'firebase', '@firebase/auth', 'three', '@react-three/fiber', '@react-three/drei'],
-  webpack: (config, { isServer }) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'undici': false,
-    };
-    return config;
-  },
+  transpilePackages: ['firebase', '@firebase/auth'],
+  /* No special webpack alias needed for current setup */
   typescript: {
     ignoreBuildErrors: true,
   },
