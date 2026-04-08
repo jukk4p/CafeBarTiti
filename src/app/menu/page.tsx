@@ -550,14 +550,21 @@ function MenuContent() {
 
             {/* Mobile Select Wrapper */}
             {/* Mobile Horizontal Scroll Navigation */}
-            <div className="md:hidden py-4 px-2">
-              <div className="flex overflow-x-auto scrollbar-hide gap-2 px-2 mask-linear-fade-sides">
+            <div className="md:hidden py-4 w-full max-w-[100vw] overflow-hidden">
+              <div 
+                className="flex overflow-x-auto overflow-y-hidden scrollbar-hide gap-2 px-4 mask-linear-fade-sides whitespace-nowrap"
+                style={{ 
+                  WebkitOverflowScrolling: 'touch',
+                  overscrollBehaviorX: 'contain',
+                  touchAction: 'pan-x'
+                }}
+              >
                 {CATEGORIES.map(cat => (
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
                     className={cn(
-                      "flex items-center gap-2.5 px-5 py-3 rounded-2xl whitespace-nowrap transition-all duration-300",
+                      "flex items-center gap-2.5 px-5 py-3 rounded-2xl whitespace-nowrap transition-all duration-300 flex-shrink-0",
                       activeCategory === cat 
                         ? cn("bg-primary/15 border-2 border-primary/40 shadow-sm", CATEGORY_STYLES[cat].color)
                         : "bg-muted/5 border border-border/40 text-muted-foreground/60 hover:bg-muted/10"
