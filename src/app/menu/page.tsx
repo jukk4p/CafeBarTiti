@@ -48,6 +48,7 @@ import {
   Search,
   Filter,
   CheckCircle2,
+  Clock,
   AlertCircle,
   PlusCircle,
   Plus,
@@ -901,8 +902,8 @@ function MenuContent() {
           <div className="flex flex-col items-center gap-8 relative z-10">
             <div className="flex flex-col items-center justify-center gap-2">
               <div className="flex flex-col items-center gap-2 text-primary">
-                <Flame className="h-4 w-4" strokeWidth={2.5} />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Filtro de alérgenos</span>
+                <Clock className="h-4 w-4" strokeWidth={2.5} />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Horario de Cocina</span>
               </div>
               <p className="text-[11px] font-medium text-muted-foreground italic">
                 Lunes a Miércoles: solo mediodía · Jueves a Sábado: mediodía y noche · Domingos: mediodía
