@@ -55,58 +55,132 @@ export function AddToCartButton({
 
   // MODO DIRECTO (Pizarra Digital / Carta Web) - CALCO DE LA CARTA ORIGINAL
   if (showPriceOnly && type && price !== undefined) {
-    const cartItem = items.find(i => i.id === item.id && i.type === type)
+    const cartItemsForType = cartItemsForItem.filter(i => i.type === type)
+    const quantityForType = cartItemsForType.reduce((sum, i) => sum + i.quantity, 0)
     
-    // Colores según el tipo (como en la captura del usuario)
     const typeStyles: Record<string, string> = {
-      tapa: "bg-[#e9f0e8] text-[#1a4731] border-[#1a4731]/10 hover:bg-[#1a4731] hover:text-white",
-      media: "bg-[#fdf7e7] text-[#854d0e] border-[#854d0e]/10 hover:bg-[#854d0e] hover:text-white",
-      racion: "bg-[#efeff0] text-[#334155] border-[#334155]/10 hover:bg-[#334155] hover:text-white"
+      tapa: "bg-[#e9f0e8] text-[#1a4731] border-[#1a4731]/15",
+      media: "bg-[#fdf7e7] text-[#854d0e] border-[#854d0e]/15",
+      racion: "bg-[#efeff0] text-[#334155] border-[#334155]/15"
     }
 
-    if (cartItem) {
+    const Pill = ({ children, onClick, active }: { children: React.ReactNode, onClick?: any, active?: boolean }) => (
+      <div 
+        onClick={onClick}
+        className={cn(
+          "flex items-center h-10 rounded-full border shadow-sm transition-all duration-300",
+          typeStyles[type] || "bg-slate-100 text-slate-700",
+          active && (
+            type === "tapa" ? "ring-2 ring-[#1a4731] ring-offset-1" : 
+            type === "media" ? "ring-2 ring-[#854d0e] ring-offset-1" : 
+            "ring-2 ring-[#334155] ring-offset-1"
+          ),
+          onClick && "cursor-pointer active:scale-95 hover:brightness-95"
+        )}
+      >
+        {children}
+      </div>
+    )
+
+    if (needsVariant) {
       return (
-        <div className={cn(
-          "flex items-center gap-3 px-3 py-2 rounded-xl shadow-sm border transition-all",
-          type === "tapa" ? "bg-[#1a4731] text-white" : 
-          type === "media" ? "bg-[#854d0e] text-white" : 
-          "bg-[#334155] text-white",
-          className
-        )}>
-          <button 
-              onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, type, -1); }}
-              className="hover:bg-white/20 p-1 rounded-md transition-colors"
-          >
-              <Minus className="h-3 w-3" strokeWidth={4} />
-          </button>
-          <span className="font-bold text-sm min-w-[1ch] text-center">{cartItem.quantity}</span>
-          <button 
-              onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, type, 1); }}
-              className="hover:bg-white/20 p-1 rounded-md transition-colors"
-          >
-              <Plus className="h-3 w-3" strokeWidth={4} />
-          </button>
+        <div className={cn("relative mx-auto w-fit", className)}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="outline-none" onClick={(e) => e.stopPropagation()}>
+                <Pill active={quantityForType > 0}>
+                   {quantityForType > 0 ? (
+                     <div className="flex items-center gap-2.5 px-3">
+                        <span className="text-[10px] font-black opacity-40 tracking-widest">{type.toUpperCase()}</span>
+                        <div className="h-4 w-[1px] bg-current opacity-10" />
+                        <span className="text-sm font-black">{quantityForType}</span>
+                        <Plus className="h-3.5 w-3.5 opacity-40" strokeWidth={3} />
+                     </div>
+                   ) : (
+                     <div className="flex items-center gap-2 px-5">
+                        <Plus className="h-3.5 w-3.5 opacity-30" strokeWidth={3} />
+                        <span className="text-sm font-black tracking-tight">{price.toFixed(2)}€</span>
+                     </div>
+                   )}
+                </Pill>
+              </button>
+            </DropdownMenuTrigger>
+            
+            <DropdownMenuContent align="center" className="rounded-2xl p-2 min-w-[200px] glass-card border-white/10 shadow-2xl">
+              <div className="px-3 py-2 text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground opacity-60">
+                Selecciona ingrediente
+              </div>
+              {variantOptions.map(v => {
+                const variantItem = cartItemsForType.find(i => i.variant === v)
+                const variantQty = variantItem?.quantity || 0
+                return (
+                  <div key={v} className="flex items-stretch mb-1.5 last:mb-0 h-12 bg-black/[0.03] dark:bg-white/[0.03] rounded-xl overflow-hidden border border-black/5 dark:border-white/5 group/variant">
+                    {variantQty > 0 && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, type, -1, v); }}
+                        className="flex items-center justify-center w-12 text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-90"
+                      >
+                        <Minus className="h-4 w-4" strokeWidth={3} />
+                      </button>
+                    )}
+                    <div
+                      className={cn(
+                        "flex-1 flex justify-between items-center px-4 cursor-pointer transition-all",
+                        variantQty > 0 ? "bg-primary/5 hover:bg-primary/10" : "hover:bg-primary/5"
+                      )}
+                      onClick={(e) => { e.stopPropagation(); handleAdd(type, price, v); }}
+                    >
+                      <span className="font-bold text-[11px] uppercase tracking-wider">{v}</span>
+                      {variantQty > 0 && (
+                        <span className="bg-primary text-white text-[10px] font-black px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                          {variantQty}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                       onClick={(e) => { e.stopPropagation(); handleAdd(type, price, v); }}
+                       className="flex items-center justify-center w-10 text-primary hover:bg-primary hover:text-white transition-all active:scale-90"
+                    >
+                      <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+                    </button>
+                  </div>
+                )
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       )
     }
 
     return (
-      <button
-        onClick={(e) => { e.stopPropagation(); handleAdd(type, price); }}
-        className={cn(
-          "flex flex-col items-center justify-center gap-0.5 px-4 py-3 rounded-2xl border transition-all active:scale-95 shadow-sm group min-w-[90px] md:min-w-[100px]",
-          typeStyles[type] || "bg-slate-100 text-slate-700",
-          className
+      <div className={cn("mx-auto w-fit", className)}>
+        {quantityForType > 0 ? (
+          <Pill active={true}>
+            <button
+              onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, type, -1); }}
+              className="px-3 h-full flex items-center hover:scale-110 active:scale-95 transition-transform"
+            >
+              <Minus className="h-3.5 w-3.5" strokeWidth={3} />
+            </button>
+            <div className="px-1 min-w-[2ch] text-center">
+              <span className="text-sm font-black">{quantityForType}</span>
+            </div>
+            <button
+              onClick={(e) => { e.stopPropagation(); handleAdd(type, price); }}
+              className="px-3 h-full flex items-center hover:scale-110 active:scale-95 transition-transform"
+            >
+              <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+            </button>
+          </Pill>
+        ) : (
+          <Pill onClick={(e: any) => { e.stopPropagation(); handleAdd(type, price); }}>
+            <div className="flex items-center gap-2 px-5">
+              <Plus className="h-3.5 w-3.5 opacity-30" strokeWidth={3} />
+              <span className="text-sm font-black tracking-tight">{price.toFixed(2)}€</span>
+            </div>
+          </Pill>
         )}
-      >
-        <span className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] font-black opacity-60 mb-0.5">
-          {type === "racion" ? "RACIÓN" : type.toUpperCase()}
-        </span>
-        <div className="flex items-center gap-1.5 flex-nowrap">
-            <Plus className="h-3 w-3 opacity-40 group-hover:opacity-100 transition-opacity" strokeWidth={4} />
-            <span className="text-sm md:text-base font-bold tracking-tight whitespace-nowrap">{price.toFixed(2)}€</span>
-        </div>
-      </button>
+      </div>
     )
   }
 

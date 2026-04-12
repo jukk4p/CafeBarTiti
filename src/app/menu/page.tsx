@@ -208,86 +208,6 @@ const AllergenBadge = ({ name, size = "sm" }: { name: string, size?: "sm" | "md"
   )
 }
 
-const PricePill = ({ label, price, variant, onClick, quantity, onSubtract, onAdd, hideLabel }: { 
-  label: string, 
-  price: number, 
-  variant: 'primary' | 'secondary' | 'accent',
-  onClick?: () => void,
-  quantity?: number,
-  onSubtract?: () => void,
-  onAdd?: () => void,
-  hideLabel?: boolean
-}) => {
-  const colors = {
-    primary: 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/15',
-    secondary: 'bg-secondary/10 border-secondary/20 text-secondary hover:bg-secondary/15',
-    accent: 'bg-accent/10 border-accent/20 text-accent hover:bg-accent/15'
-  }
-
-  return (
-    <div 
-      className={cn(
-        "w-full min-w-[80px] md:min-w-[100px] border rounded-xl transition-colors overflow-hidden",
-        colors[variant],
-        quantity && quantity > 0 ? "ring-2 ring-primary/20 bg-primary/5" : ""
-      )}
-    >
-      <AnimatePresence mode="wait">
-        {quantity && quantity > 0 ? (
-          <motion.div 
-            key="counter"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            className="px-2 md:px-5 py-1 md:py-1.5 flex flex-col items-center gap-1"
-          >
-            {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60">{label}</span>}
-            <div className="flex items-center gap-3">
-              <motion.button 
-                whileTap={{ scale: 0.8 }}
-                onClick={(e) => { e.stopPropagation(); onSubtract?.(); }} 
-                className="hover:scale-110 active:scale-95 transition-transform p-0.5"
-              >
-                <Minus className="h-3.5 w-3.5" strokeWidth={3} />
-              </motion.button>
-              <motion.span 
-                key={quantity}
-                initial={{ y: 5, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                className="text-xs font-black min-w-[1ch] text-center"
-              >
-                {quantity}
-              </motion.span>
-              <motion.button 
-                whileTap={{ scale: 0.8 }}
-                onClick={(e) => { e.stopPropagation(); onAdd?.(); }} 
-                className="hover:scale-110 active:scale-95 transition-transform p-0.5"
-              >
-                <Plus className="h-3.5 w-3.5" strokeWidth={3} />
-              </motion.button>
-            </div>
-          </motion.div>
-        ) : (
-          <motion.button 
-            key="button"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            whileTap={{ scale: 1.05 }}
-            onClick={onClick}
-            className="w-full h-full px-2 md:px-5 py-2.5 md:py-3 flex flex-col items-center justify-center group"
-          >
-            {!hideLabel && <span className="block text-[7px] md:text-[8px] uppercase font-bold tracking-widest opacity-60 mb-0.5 md:mb-1">{label}</span>}
-            <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <Plus className="h-2.5 w-2.5 opacity-40 group-hover:opacity-100 transition-opacity" strokeWidth={4} />
-              <span className="text-xs md:text-base font-black">{price.toFixed(2)}€</span>
-            </div>
-          </motion.button>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
 
 function MenuContent() {
   const router = useRouter()
@@ -698,21 +618,11 @@ function MenuContent() {
                             </td>
                             <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
                               {item.prices?.tapa ? (
-                                <PricePill 
-                                  label="Tapa" 
-                                  price={item.prices.tapa} 
-                                  variant="primary" 
-                                  hideLabel={true}
-                                  onClick={() => {
-                                    if (item.nombre.toLowerCase().includes("lomo o pollo")) {
-                                      setSelectedItem(item)
-                                    } else {
-                                      addItem(item, 'tapa', item.prices.tapa)
-                                    }
-                                  }}
-                                  quantity={cartItems.find(i => i.id === item.id && i.type === 'tapa')?.quantity}
-                                  onSubtract={() => updateQuantity(item.id, 'tapa', -1)}
-                                  onAdd={() => updateQuantity(item.id, 'tapa', 1)}
+                                <AddToCartButton 
+                                  item={item}
+                                  type="tapa"
+                                  price={item.prices.tapa}
+                                  showPriceOnly={true}
                                 />
                               ) : (
                                 <span className="text-muted-foreground/10">—</span>
@@ -720,21 +630,11 @@ function MenuContent() {
                             </td>
                             <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
                               {item.prices?.media ? (
-                                <PricePill 
-                                  label="Media" 
-                                  price={item.prices.media} 
-                                  variant="secondary" 
-                                  hideLabel={true}
-                                  onClick={() => {
-                                    if (item.nombre.toLowerCase().includes("lomo o pollo")) {
-                                      setSelectedItem(item)
-                                    } else {
-                                      addItem(item, 'media', item.prices.media)
-                                    }
-                                  }}
-                                  quantity={cartItems.find(i => i.id === item.id && i.type === 'media')?.quantity}
-                                  onSubtract={() => updateQuantity(item.id, 'media', -1)}
-                                  onAdd={() => updateQuantity(item.id, 'media', 1)}
+                                <AddToCartButton 
+                                  item={item}
+                                  type="media"
+                                  price={item.prices.media}
+                                  showPriceOnly={true}
                                 />
                               ) : (
                                 <span className="text-muted-foreground/10">—</span>
@@ -742,21 +642,11 @@ function MenuContent() {
                             </td>
                             <td className="px-2 md:px-4 lg:px-6 py-7 text-center">
                               {item.prices?.racion ? (
-                                <PricePill 
-                                  label="Ración" 
-                                  price={item.prices.racion} 
-                                  variant="accent" 
-                                  hideLabel={true}
-                                  onClick={() => {
-                                    if (item.nombre.toLowerCase().includes("lomo o pollo")) {
-                                      setSelectedItem(item)
-                                    } else {
-                                      addItem(item, 'racion', item.prices.racion)
-                                    }
-                                  }}
-                                  quantity={cartItems.find(i => i.id === item.id && i.type === 'racion')?.quantity}
-                                  onSubtract={() => updateQuantity(item.id, 'racion', -1)}
-                                  onAdd={() => updateQuantity(item.id, 'racion', 1)}
+                                <AddToCartButton 
+                                  item={item}
+                                  type="racion"
+                                  price={item.prices.racion}
+                                  showPriceOnly={true}
                                 />
                               ) : (
                                 <span className="text-muted-foreground/10">—</span>
@@ -812,58 +702,31 @@ function MenuContent() {
                         )}>
                           {item.prices?.tapa && (
                             <div className="flex-1 min-w-[80px] max-w-[140px]">
-                              <PricePill 
-                                label="Tapa" 
-                                price={item.prices.tapa} 
-                                variant="primary" 
-                                onClick={() => {
-                                  if (item.nombre.toLowerCase().includes("lomo o pollo")) {
-                                    setSelectedItem(item)
-                                  } else {
-                                    addItem(item, 'tapa', item.prices.tapa)
-                                  }
-                                }}
-                                quantity={cartItems.find(i => i.id === item.id && i.type === 'tapa')?.quantity}
-                                onSubtract={() => updateQuantity(item.id, 'tapa', -1)}
-                                onAdd={() => updateQuantity(item.id, 'tapa', 1)}
+                              <AddToCartButton 
+                                item={item}
+                                type="tapa"
+                                price={item.prices.tapa}
+                                showPriceOnly={true}
                               />
                             </div>
                           )}
                           {item.prices?.media && (
                             <div className="flex-1 min-w-[80px] max-w-[140px]">
-                              <PricePill 
-                                label="Media" 
-                                price={item.prices.media} 
-                                variant="secondary" 
-                                onClick={() => {
-                                  if (item.nombre.toLowerCase().includes("lomo o pollo")) {
-                                    setSelectedItem(item)
-                                  } else {
-                                    addItem(item, 'media', item.prices.media)
-                                  }
-                                }}
-                                quantity={cartItems.find(i => i.id === item.id && i.type === 'media')?.quantity}
-                                onSubtract={() => updateQuantity(item.id, 'media', -1)}
-                                onAdd={() => updateQuantity(item.id, 'media', 1)}
+                              <AddToCartButton 
+                                item={item}
+                                type="media"
+                                price={item.prices.media}
+                                showPriceOnly={true}
                               />
                             </div>
                           )}
                           {item.prices?.racion && (
                             <div className="flex-1 min-w-[80px] max-w-[140px]">
-                              <PricePill 
-                                label="Ración" 
-                                price={item.prices.racion} 
-                                variant="accent" 
-                                onClick={() => {
-                                  if (item.nombre.toLowerCase().includes("lomo o pollo")) {
-                                    setSelectedItem(item)
-                                  } else {
-                                    addItem(item, 'racion', item.prices.racion)
-                                  }
-                                }}
-                                quantity={cartItems.find(i => i.id === item.id && i.type === 'racion')?.quantity}
-                                onSubtract={() => updateQuantity(item.id, 'racion', -1)}
-                                onAdd={() => updateQuantity(item.id, 'racion', 1)}
+                              <AddToCartButton 
+                                item={item}
+                                type="racion"
+                                price={item.prices.racion}
+                                showPriceOnly={true}
                               />
                             </div>
                           )}
