@@ -4,7 +4,7 @@ import * as React from "react"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
-  Salad, UtensilsCrossed, Sandwich, FishSymbol, Fish, Beef, Beer,
+  Salad, UtensilsCrossed, Sandwich, FishSymbol, Fish, Beef, Beer, IceCream,
   ChevronLeft, ChevronDown, Flame, Sparkles, Info, Star, ArrowRight, LayoutGrid, Smartphone,
   Wheat, Egg, Milk, ShieldAlert, X
 } from "lucide-react"
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/tooltip"
 import { FloatingCart } from "@/components/FloatingCart"
 
-const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Bebidas"]
+const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Postres o Helados", "Bebidas"]
 
 const CATEGORY_DATA: Record<string, { icon: React.ReactNode, description: string, color: string, bg: string }> = {
   "Entrantes": {
@@ -68,6 +68,12 @@ const CATEGORY_DATA: Record<string, { icon: React.ReactNode, description: string
     description: "FRÍAS Y REFRESCANTES",
     color: "text-yellow-600 dark:text-yellow-400",
     bg: "bg-yellow-500/10 dark:bg-yellow-500/20"
+  },
+  "Postres o Helados": {
+    icon: <IceCream className="h-8 w-8" />,
+    description: "EL BROCHE DE ORO DULCE",
+    color: "text-pink-600 dark:text-pink-400",
+    bg: "bg-pink-500/10 dark:bg-pink-500/20"
   },
 }
 
@@ -240,11 +246,11 @@ export default function QRMenuPage() {
                 className="space-y-3"
               >
                 <h1 className="text-5xl md:text-8xl font-headline italic tracking-tighter text-foreground leading-[0.85]">
-                  Pizarra <span className="text-primary not-italic font-sans font-black uppercase md:ml-1 tracking-[0.05em]">Digital</span>
+                  La Pizarra de <span className="text-primary not-italic font-sans font-black uppercase md:ml-1 tracking-[0.05em]">Titi</span>
                 </h1>
                 <div className="flex items-center justify-center gap-3 text-muted-foreground">
                     <div className="h-px w-6 bg-border" />
-                    <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em]">Toda nuestra esencia, ahora en tu mano</p>
+                    <p className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em]">Desde 1968, cocinando historias para ti</p>
                     <div className="h-px w-6 bg-border" />
                 </div>
               </motion.div>
@@ -511,7 +517,7 @@ export default function QRMenuPage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-center gap-3 pt-5 border-t border-border mt-auto h-auto">
+                        <div className="flex items-center justify-center gap-1 pt-5 pb-1 border-t border-border mt-auto h-auto overflow-x-auto no-scrollbar">
                             {item.prices?.tapa && (
                                 <div className="w-fit">
                                     <AddToCartButton 

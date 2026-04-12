@@ -293,7 +293,7 @@ function MenuContent() {
   }, [searchTerm, excludedAllergens])
 
   return (
-    <div className="bg-transparent min-h-screen pb-16">
+    <div className="bg-transparent min-h-screen pb-16 max-w-full overflow-x-hidden">
       <AnimatePresence>
         {selectedImage && (
           <motion.div
@@ -432,12 +432,12 @@ function MenuContent() {
         {/* Sticky Menu Container - Fixed background and blur with smart hide logic */}
         <nav
           className={cn(
-            "sticky top-20 z-40 py-4 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm transition-all duration-500 transform-gpu",
+            "sticky top-20 z-40 py-4 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm transition-all duration-500 transform-gpu overflow-x-hidden",
             isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
           )}
           aria-label="Categorías del menú"
         >
-          <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center gap-6 lg:max-w-fit">
+          <div className="container mx-auto px-0 md:px-4 flex flex-col lg:flex-row items-center justify-center gap-6 lg:max-w-fit">
 
             {/* Desktop Tabs Wrapper */}
             <div className="hidden lg:flex items-center p-1.5 h-full">

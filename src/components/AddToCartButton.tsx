@@ -97,7 +97,7 @@ export function AddToCartButton({
                         <Plus className="h-3.5 w-3.5 opacity-40" strokeWidth={3} />
                      </div>
                    ) : (
-                     <div className="flex items-center gap-2 px-5">
+                     <div className="flex items-center gap-1.5 px-3">
                         <Plus className="h-3.5 w-3.5 opacity-30" strokeWidth={3} />
                         <span className="text-sm font-black tracking-tight">{price.toFixed(2)}€</span>
                      </div>
@@ -158,7 +158,7 @@ export function AddToCartButton({
           <Pill active={true}>
             <button
               onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, type, -1); }}
-              className="px-3 h-full flex items-center hover:scale-110 active:scale-95 transition-transform"
+              className="px-2 h-full flex items-center hover:scale-110 active:scale-95 transition-transform"
             >
               <Minus className="h-3.5 w-3.5" strokeWidth={3} />
             </button>
@@ -167,14 +167,14 @@ export function AddToCartButton({
             </div>
             <button
               onClick={(e) => { e.stopPropagation(); handleAdd(type, price); }}
-              className="px-3 h-full flex items-center hover:scale-110 active:scale-95 transition-transform"
+              className="px-2 h-full flex items-center hover:scale-110 active:scale-95 transition-transform"
             >
               <Plus className="h-3.5 w-3.5" strokeWidth={3} />
             </button>
           </Pill>
         ) : (
           <Pill onClick={(e: any) => { e.stopPropagation(); handleAdd(type, price); }}>
-            <div className="flex items-center gap-2 px-5">
+            <div className="flex items-center gap-1.5 px-3">
               <Plus className="h-3.5 w-3.5 opacity-30" strokeWidth={3} />
               <span className="text-sm font-black tracking-tight">{price.toFixed(2)}€</span>
             </div>
