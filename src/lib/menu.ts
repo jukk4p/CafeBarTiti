@@ -104,5 +104,15 @@ export const MENU_BACKUP: Record<string, MenuSection> = {
       { id: "combinado-nacional", nombre: "Copa Combinada", desc: "Larios, Barceló, Terry... con tu refresco favorito.", prices: { racion: 5.50 }, image: "/menu/combinado.png" },
       { id: "cafe-infusion", nombre: "Café o Infusión", desc: "Café recién hecho, té, manzanilla o poleo.", prices: { tapa: 1.40 }, image: "/menu/cafe.png" },
     ]
+  },
+  "Postres o Helados": {
+    items: [
+      { id: "tarta-abuela", nombre: "Tarta de la Abuela", desc: "La clásica de capas de galleta, chocolate y natillas caseras.", prices: { racion: 4.50 }, alergenos: ["Contiene Gluten", "Lácteos", "Huevos"], image: "/menu/tarta_abuela.webp" },
+      { id: "tarta-queso-casera", nombre: "Tarta de Queso", desc: "Tarta de queso cremosa al horno con mermelada de arándanos.", prices: { racion: 5.00 }, alergenos: ["Lácteos", "Huevos"], image: "/menu/tarta_queso.webp" },
+      { id: "copa-helado", nombre: "Copa de Helado Variado", desc: "Tres bolas de helado a elegir: Vainilla, Chocolate o Fresa.", prices: { racion: 3.50 }, alergenos: ["Lácteos"] },
+      { id: "pijama-titi", nombre: "Pijama Especial Titi", desc: "El postre más completo: flan, helado, fruta en almíbar y nata.", prices: { racion: 6.50 }, alergenos: ["Huevos", "Lácteos"], image: "/menu/pijama.webp" },
+      { id: "flan-huevo", nombre: "Flan de Huevo Casero", desc: "Receta tradicional con caramelo artesano.", prices: { racion: 3.00 }, alergenos: ["Huevos", "Lácteos"] },
+      { id: "brownie-helado", nombre: "Brownie con Vainilla", desc: "Bizcocho de chocolate caliente con nueces y bola de vainilla.", prices: { racion: 5.50 }, alergenos: ["Contiene Gluten", "Lácteos", "Frutos de cáscara"], image: "/menu/brownie.webp" },
+    ]
   }
 };

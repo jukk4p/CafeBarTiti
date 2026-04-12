@@ -54,7 +54,9 @@ import {
   Plus,
   Minus,
   Settings2,
-  ArrowRight
+  ArrowRight,
+  IceCream,
+  Cake
 } from "lucide-react"
 import {
   Select,
@@ -79,7 +81,7 @@ import { Loader2, ShoppingBasket } from "lucide-react"
 import { useCart, OrderType } from "@/context/CartContext"
 import { FadeIn, FadeInStagger } from "@/components/FadeIn"
 
-const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Bebidas"]
+const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Postres o Helados", "Bebidas"]
 
 const CATEGORY_STYLES: Record<string, { color: string, bg: string, border: string }> = {
   "Entrantes": { 
@@ -116,6 +118,11 @@ const CATEGORY_STYLES: Record<string, { color: string, bg: string, border: strin
     color: "text-indigo-600 dark:text-indigo-400", 
     bg: "bg-indigo-500/10",
     border: "border-indigo-500/30"
+  },
+  "Postres o Helados": { 
+    color: "text-pink-600 dark:text-pink-400", 
+    bg: "bg-pink-500/10",
+    border: "border-pink-500/30"
   }
 }
 
@@ -126,7 +133,8 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   "Pescado Frito": "Delicias del mar con el crujiente exacto; fritos con maestría al estilo de nuestra tierra.",
   "Pescado Plancha": "Sabor puro y saludable: la frescura del mar cocinada al punto con un toque de aliño verde.",
   "Carnes a la Brasa": "El aroma inconfundible del carbón sobre cortes seleccionados de primera calidad.",
-  "Bebidas": "Refresca el momento con nuestra selección; el maridaje ideal para cada bocado."
+  "Bebidas": "Refresca el momento con nuestra selección; el maridaje ideal para cada bocado.",
+  "Postres o Helados": "El broche de oro dulce: postres caseros y helados para terminar con la mejor sonrisa."
 }
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
@@ -136,7 +144,8 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "Pescado Frito": <FishSymbol className="h-4 w-4" />,
   "Pescado Plancha": <Fish className="h-4 w-4" />,
   "Carnes a la Brasa": <Beef className="h-4 w-4" />,
-  "Bebidas": <Beer className="h-4 w-4" />
+  "Bebidas": <Beer className="h-4 w-4" />,
+  "Postres o Helados": <IceCream className="h-4 w-4" />
 }
 
 const ALLERGEN_ICONS: Record<string, React.ReactNode> = {
