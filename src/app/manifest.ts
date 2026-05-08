@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next'
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Cafe Bar Titi',
-    short_name: 'Bar Titi',
+    short_name: 'Cafe Bar Titi',
     description: 'Sabores tradicionales desde 1968 en el corazón de Coria del Río.',
     start_url: '/',
     display: 'standalone',

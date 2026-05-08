@@ -179,7 +179,7 @@ export default function ReservasPage() {
           <FadeIn>
             <div className="inline-flex items-center gap-2 bg-[#152b1b]/90 dark:bg-primary/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg shadow-black/20">
               <Sparkles className="h-3 w-3 text-[#b5c99a] dark:text-primary" />
-              <span className="text-white dark:text-primary text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Bar Titi Coria del Río</span>
+              <span className="text-white dark:text-primary text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em]">Cafe Bar Titi Coria del Río</span>
             </div>
           </FadeIn>
           <FadeIn delay={0.1}>

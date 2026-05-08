@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Bar Titi - Tapas Tradicionales en Coria del Río | Sevilla',
+    default: 'Cafe Bar Titi - Tapas Tradicionales en Coria del Río | Sevilla',
     template: '%s | Cafe Bar Titi'
   },
   description: 'Desde 1968 ofreciendo el sabor auténtico de Sevilla. Serranitos, chocos y presa ibérica en el corazón de Coria del Río. ¡Reserva tu mesa!',
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     title: 'Cafe Bar Titi',
   },
   openGraph: {
-    title: 'Bar Titi - Tapas Tradicionales en Coria del Río',
+    title: 'Cafe Bar Titi - Tapas Tradicionales en Coria del Río',
     description: 'El corazón del tapeo en Coria del Río desde 1968.',
     url: 'https://cafebartiti.es',
     siteName: 'Cafe Bar Titi',
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Bar Titi - Tapas Tradicionales en Coria del Río',
+    title: 'Cafe Bar Titi - Tapas Tradicionales en Coria del Río',
     description: 'El corazón del tapeo en Coria del Río desde 1968.',
     images: ['/hero/00_Portada.webp'],
   },

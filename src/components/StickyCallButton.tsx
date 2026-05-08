@@ -24,7 +24,7 @@ export function StickyCallButton() {
       <a
         href="tel:+34954772132"
         className="flex items-center justify-center h-14 w-14 bg-secondary text-white rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-transform"
-        aria-label="Llamar a Bar Titi"
+        aria-label="Llamar a Cafe Bar Titi"
       >
         <Phone className="h-6 w-6" />
       </a>
