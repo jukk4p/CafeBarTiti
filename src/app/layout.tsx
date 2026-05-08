@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   description: 'Desde 1968 ofreciendo el sabor auténtico de Sevilla. Serranitos, chocos y presa ibérica en el corazón de Coria del Río. ¡Reserva tu mesa!',
   keywords: ['Bar Titi', 'Tapas Coria del Río', 'Restaurante Sevilla', 'Serranitos Sevilla', 'Comer en Coria', 'Gastronomía Andaluza'],
   authors: [{ name: 'Cafe Bar Titi' }],
-  metadataBase: new URL('https://bartiti.com'),
+  metadataBase: new URL('https://cafebartiti.es'),
   alternates: {
     canonical: '/',
   },
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Bar Titi - Tapas Tradicionales en Coria del Río',
     description: 'El corazón del tapeo en Coria del Río desde 1968.',
-    url: 'https://bartiti.com',
+    url: 'https://cafebartiti.es',
     siteName: 'Cafe Bar Titi',
     locale: 'es_ES',
     type: 'website',
@@ -80,14 +80,25 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Restaurant",
     "name": "Cafe Bar Titi",
-    "image": "https://bartiti.com/hero/00_Portada.webp",
-    "@id": "https://bartiti.com",
-    "url": "https://bartiti.com",
+    "image": "https://cafebartiti.es/hero/00_Portada.webp",
+    "@id": "https://cafebartiti.es",
+    "url": "https://cafebartiti.es",
     "telephone": "+34954772132",
-    "priceRange": "$$",
-    "servesCuisine": "Andalusia, Tapas, Mediterranean",
+    "priceRange": "€",
+    "servesCuisine": "Andaluza, Tapas, Española",
     "hasMap": "https://maps.app.goo.gl/uX7mPZp6HwZ3X7pZ9",
-    "menu": "https://bartiti.com/carta",
+    "menu": "https://cafebartiti.es/menu",
+    "hasMenu": "https://cafebartiti.es/menu",
+    "openingHours": [
+      "Mo-We 06:00-00:00",
+      "Th-Sa 06:00-02:00",
+      "Su 06:00-17:00"
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.5",
+      "reviewCount": "410"
+    },
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Av. Palomares, 1",

@@ -31,7 +31,7 @@ export default function AvisoLegalPage() {
           <section className="bg-white/50 p-8 rounded-2xl backdrop-blur-sm border border-black/5">
             <h2 className="text-2xl font-bold text-foreground mb-4">3. Uso del Portal</h2>
             <p>
-              bartiti.com proporciona el acceso a multitud de informaciones, servicios, programas o datos en Internet pertenecientes a El Titular a los que el USUARIO pueda tener acceso. El USUARIO asume la responsabilidad del uso del portal.
+              cafebartiti.es proporciona el acceso a multitud de informaciones, servicios, programas o datos en Internet pertenecientes a El Titular a los que el USUARIO pueda tener acceso. El USUARIO asume la responsabilidad del uso del portal.
             </p>
           </section>
 

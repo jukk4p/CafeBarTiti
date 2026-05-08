@@ -112,10 +112,10 @@ export default function ContactoPage() {
                 <div className="pt-4 border-t border-muted/20">
                   <div className="flex items-center gap-3 text-primary mb-2">
                     <Flame className="h-5 w-5" />
-                    <h4 className="font-bold text-sm uppercase tracking-wider">Horario de Cocina</h4>
+                    <h4 className="font-bold text-sm uppercase tracking-wider">Servicio de Cocina</h4>
                   </div>
                   <p className="text-xs text-muted-foreground italic font-medium leading-relaxed">
-                    Abierta <span className="text-primary font-bold">todos los mediodías</span> y de <span className="text-primary font-bold">Jueves noche a Domingo mediodía</span>.
+                    Disfruta de nuestras tapas y platos caseros durante todo nuestro horario de apertura.
                   </p>
                 </div>
 

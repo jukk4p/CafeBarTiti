@@ -37,7 +37,13 @@ export function Footer() {
               >
                 <FacebookIcon className="h-5 w-5" />
               </Link>
-              <Link href="#" aria-label="Síguenos en Instagram" className="text-white/70 dark:text-muted-foreground hover:text-[#b5c99a] dark:hover:text-primary transition-colors">
+              <Link
+                href="https://www.instagram.com/cafebartiti"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Síguenos en Instagram"
+                className="text-white/70 dark:text-muted-foreground hover:text-[#b5c99a] dark:hover:text-primary transition-colors"
+              >
                 <InstagramIcon className="h-5 w-5" />
               </Link>
             </div>
@@ -108,17 +114,6 @@ export function Footer() {
                 </div>
               </Link>
             </div>
-          </div>
-        </div>
-
-        {/* Full Width Kitchen Hours */}
-        <div className="mb-12 py-6 border-y border-white/5 dark:border-border/10">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4 text-center">
-            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse shrink-0 md:-translate-y-[1px]`} />
-            <p className="max-w-[300px] md:max-w-none text-[10px] md:text-xs font-bold uppercase opacity-80 leading-relaxed tracking-[0.15em] md:tracking-[0.3em] text-white">
-              LUNES A MIÉRCOLES: SOLO MEDIODÍA · JUEVES A SÁBADO: MEDIODÍA Y NOCHE · DOMINGOS: MEDIODÍA
-            </p>
-            <Flame className={`h-4 w-4 ${brandGreen} animate-pulse shrink-0 hidden md:block md:-translate-y-[1px]`} />
           </div>
         </div>
 

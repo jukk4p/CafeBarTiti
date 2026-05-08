@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/admin/',
     },
-    sitemap: 'https://bartiti.com/sitemap.xml',
+    sitemap: 'https://cafebartiti.es/sitemap.xml',
   }
 }

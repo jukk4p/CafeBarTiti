@@ -1,5 +1,4 @@
-
 User-agent: *
 Allow: /
 
-Sitemap: https://bartiti.com/sitemap.xml
+Sitemap: https://cafebartiti.es/sitemap.xml
