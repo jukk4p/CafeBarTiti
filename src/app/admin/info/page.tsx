@@ -33,7 +33,7 @@ export default function AdminInfoPage() {
     },
     redes: {
       facebook: "https://www.facebook.com/CasaTiTiCoriaDelRio/?locale=es_ES",
-      instagram: "https://www.instagram.com/cafebartiti"
+      instagram: "https://www.instagram.com/casatiti1968/"
     },
     horario: {
       lun_mie: "06:00 - 00:00",

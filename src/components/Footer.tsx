@@ -38,7 +38,7 @@ export function Footer() {
                 <FacebookIcon className="h-5 w-5" />
               </Link>
               <Link
-                href="https://www.instagram.com/cafebartiti"
+                href="https://www.instagram.com/casatiti1968/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Síguenos en Instagram"

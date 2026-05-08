@@ -134,7 +134,7 @@ export default function RootLayout({
     ],
     "sameAs": [
       "https://www.facebook.com/CasaTiTiCoriaDelRio/?locale=es_ES",
-      "https://www.instagram.com/cafebartiti"
+      "https://www.instagram.com/casatiti1968/"
     ]
   };
 
