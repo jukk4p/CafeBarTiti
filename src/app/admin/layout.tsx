@@ -185,9 +185,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </Sidebar>
       <SidebarInset className="bg-background">
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 backdrop-blur-sm bg-background/80 sticky top-0 z-30">
-          <SidebarTrigger />
-          <div className="w-px h-4 bg-border/50 mx-2" />
-          <span className="text-sm font-medium text-muted-foreground capitalize">
+          <SidebarTrigger className="md:hidden" />
+          <div className="w-px h-4 bg-border/50 mx-2 md:hidden" />
+          <span className="text-sm font-medium text-muted-foreground capitalize ml-2 md:ml-0">
             {pathname.split('/').pop() || 'Dashboard'}
           </span>
         </header>

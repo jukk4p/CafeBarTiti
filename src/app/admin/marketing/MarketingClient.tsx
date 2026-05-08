@@ -11,14 +11,13 @@ import {
   Loader2, 
   CheckCircle2, 
   AlertCircle,
-  Instagram,
-  Facebook,
   Image as ImageIcon,
   MoreHorizontal,
   Heart,
   MessageCircle,
   Bookmark
 } from "lucide-react"
+import { FacebookIcon, InstagramIcon } from "@/components/social-icons"
 import { triggerSocialPost } from "@/app/actions/social"
 import { cn } from "@/lib/utils"
 
@@ -158,7 +157,7 @@ export default function MarketingClient() {
                       : "border-border bg-transparent text-muted-foreground hover:bg-muted/50"
                   )}
                 >
-                  <Instagram className="h-5 w-5" />
+                  <InstagramIcon className="h-5 w-5" />
                   <span className="font-bold">Instagram</span>
                 </button>
                 <button
@@ -171,7 +170,7 @@ export default function MarketingClient() {
                       : "border-border bg-transparent text-muted-foreground hover:bg-muted/50"
                   )}
                 >
-                  <Facebook className="h-5 w-5" />
+                  <FacebookIcon className="h-5 w-5" />
                   <span className="font-bold">Facebook</span>
                 </button>
               </div>

@@ -25,32 +25,30 @@ export default function AdminInfoPage() {
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
   const [settings, setSettings] = useState({
-    contacto: {
-      telefono: "954 77 21 32",
-      email: "info@cafebartiti.es",
-      direccion: "Av. Palomares, 1, 41100 Coria del Río, Sevilla",
-      googleMaps: "https://www.google.com/maps/search/?api=1&query=Cafe+Bar+Titi+Av.+Palomares+1+Coria+del+Rio"
-    },
-    redes: {
-      facebook: "https://www.facebook.com/CasaTiTiCoriaDelRio/?locale=es_ES",
-      instagram: "https://www.instagram.com/casatiti1968/"
-    },
-    horario: {
-      lun_mie: "06:00 - 00:00",
-      jue_sab: "06:00 - 02:00",
-      dom: "06:00 - 17:00",
-      cocina: "Todos los mediodías | Jueves noche a Domingo mediodía"
-    }
+    contactPhone: "954 77 21 32",
+    contactEmail: "info@cafebartiti.es",
+    address: "Av. Palomares, 1, 41100 Coria del Río, Sevilla",
+    googleMaps: "https://www.google.com/maps/search/?api=1&query=Cafe+Bar+Titi+Av.+Palomares+1+Coria+del+Rio",
+    facebook: "https://www.facebook.com/CasaTiTiCoriaDelRio/?locale=es_ES",
+    instagram: "https://www.instagram.com/casatiti1968/",
+    hours_lun_mie: "06:00 - 00:00",
+    hours_jue_sab: "06:00 - 02:00",
+    hours_dom: "06:00 - 17:00",
+    kitchenHours: "Todos los mediodías | Jueves noche a Domingo mediodía",
+    heroTitle: "Cafe Bar Titi: Sabor Tradicional en Coria del Río",
+    heroSubtitle: "DESDE 1968 CUIDANDO EL TAPEO",
+    historyTitle: "Una Taberna con Historia y Corazón",
+    historyText: "Ubicados en el emblemático pueblo de Coria del Río, Cafe Bar Titi ha sido el punto de encuentro de generaciones..."
   })
 
   useEffect(() => {
     async function loadSettings() {
       if (!firestore) return
       try {
-        const docRef = doc(firestore, "settings", "general")
+        const docRef = doc(firestore, "siteConfig", "global")
         const docSnap = await getDoc(docRef)
         if (docSnap.exists()) {
-          setSettings(docSnap.data() as any)
+          setSettings(prev => ({ ...prev, ...docSnap.data() }))
         }
       } catch (error) {
         console.error("Error loading settings:", error)
@@ -68,7 +66,7 @@ export default function AdminInfoPage() {
     setSaving(true)
     setSuccess(false)
     try {
-      const docRef = doc(firestore, "settings", "general")
+      const docRef = doc(firestore, "siteConfig", "global")
       await setDoc(docRef, {
         ...settings,
         updatedAt: new Date().toISOString()
@@ -123,24 +121,24 @@ export default function AdminInfoPage() {
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Teléfono</label>
               <Input 
-                value={settings.contacto.telefono} 
-                onChange={e => setSettings({...settings, contacto: {...settings.contacto, telefono: e.target.value}})}
+                value={settings.contactPhone} 
+                onChange={e => setSettings({...settings, contactPhone: e.target.value})}
                 className="h-12 rounded-xl"
               />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Email de contacto</label>
               <Input 
-                value={settings.contacto.email} 
-                onChange={e => setSettings({...settings, contacto: {...settings.contacto, email: e.target.value}})}
+                value={settings.contactEmail} 
+                onChange={e => setSettings({...settings, contactEmail: e.target.value})}
                 className="h-12 rounded-xl"
               />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Dirección Física</label>
               <Input 
-                value={settings.contacto.direccion} 
-                onChange={e => setSettings({...settings, contacto: {...settings.contacto, direccion: e.target.value}})}
+                value={settings.address} 
+                onChange={e => setSettings({...settings, address: e.target.value})}
                 className="h-12 rounded-xl"
               />
             </div>
@@ -158,32 +156,32 @@ export default function AdminInfoPage() {
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Lunes a Miércoles</label>
               <Input 
-                value={settings.horario.lun_mie} 
-                onChange={e => setSettings({...settings, horario: {...settings.horario, lun_mie: e.target.value}})}
+                value={settings.hours_lun_mie} 
+                onChange={e => setSettings({...settings, hours_lun_mie: e.target.value})}
                 className="h-12 rounded-xl"
               />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Jueves a Sábado</label>
               <Input 
-                value={settings.horario.jue_sab} 
-                onChange={e => setSettings({...settings, horario: {...settings.horario, jue_sab: e.target.value}})}
+                value={settings.hours_jue_sab} 
+                onChange={e => setSettings({...settings, hours_jue_sab: e.target.value})}
                 className="h-12 rounded-xl"
               />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Domingo</label>
               <Input 
-                value={settings.horario.dom} 
-                onChange={e => setSettings({...settings, horario: {...settings.horario, dom: e.target.value}})}
+                value={settings.hours_dom} 
+                onChange={e => setSettings({...settings, hours_dom: e.target.value})}
                 className="h-12 rounded-xl"
               />
             </div>
             <div className="pt-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block mb-1">Notas de Cocina</label>
               <Input 
-                value={settings.horario.cocina} 
-                onChange={e => setSettings({...settings, horario: {...settings.horario, cocina: e.target.value}})}
+                value={settings.kitchenHours} 
+                onChange={e => setSettings({...settings, kitchenHours: e.target.value})}
                 className="h-10 rounded-lg text-xs italic"
               />
             </div>
@@ -201,24 +199,24 @@ export default function AdminInfoPage() {
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">URL de Facebook</label>
               <Input 
-                value={settings.redes.facebook} 
-                onChange={e => setSettings({...settings, redes: {...settings.redes, facebook: e.target.value}})}
+                value={settings.facebook} 
+                onChange={e => setSettings({...settings, facebook: e.target.value})}
                 className="h-12 rounded-xl"
               />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">URL de Instagram</label>
               <Input 
-                value={settings.redes.instagram} 
-                onChange={e => setSettings({...settings, redes: {...settings.redes, instagram: e.target.value}})}
+                value={settings.instagram} 
+                onChange={e => setSettings({...settings, instagram: e.target.value})}
                 className="h-12 rounded-xl"
               />
             </div>
             <div className="space-y-2 md:col-span-2">
               <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Enlace Google Maps</label>
               <Input 
-                value={settings.contacto.googleMaps} 
-                onChange={e => setSettings({...settings, contacto: {...settings.contacto, googleMaps: e.target.value}})}
+                value={settings.googleMaps} 
+                onChange={e => setSettings({...settings, googleMaps: e.target.value})}
                 className="h-12 rounded-xl"
               />
             </div>

@@ -74,8 +74,8 @@ export default function AdminGalleryPage() {
       updatedAt: new Date().toISOString()
     }
 
-    if (editingItem.firestoreId) { // We use firestoreId to distinguish update from create
-      const docRef = doc(colRef, editingItem.firestoreId)
+    if (editingItem.id && galleryItems?.some(i => i.id === editingItem.id)) { 
+      const docRef = doc(colRef, editingItem.id)
       updateDocumentNonBlocking(docRef, dataToSave)
     } else {
       addDocumentNonBlocking(colRef, dataToSave)
@@ -189,7 +189,7 @@ export default function AdminGalleryPage() {
         <DialogContent className="max-w-lg rounded-[2rem]">
           <DialogHeader>
             <DialogTitle className="text-2xl font-headline font-bold">
-              {editingItem?.firestoreId ? "Editar Imagen" : "Nueva Imagen"}
+              {editingItem?.id && galleryItems?.some(i => i.id === editingItem.id) ? "Editar Imagen" : "Nueva Imagen"}
             </DialogTitle>
             <DialogDescription>
               Vincula una imagen local y asígnale una categoría.
@@ -242,12 +242,7 @@ export default function AdminGalleryPage() {
 
           <DialogFooter className="pt-4 mt-2">
             <Button variant="ghost" onClick={() => setIsEditDialogOpen(false)} className="rounded-xl font-bold">Cancelar</Button>
-            <Button onClick={() => {
-              // Hack to handle firestore vs internal id field
-              const item = { ...editingItem };
-              if (!item.firestoreId) item.firestoreId = undefined;
-              saveItem();
-            }} className="rounded-xl font-bold gap-2 px-8">
+            <Button onClick={() => saveItem()} className="rounded-xl font-bold gap-2 px-8">
               <Save className="h-4 w-4" /> Guardar
             </Button>
           </DialogFooter>

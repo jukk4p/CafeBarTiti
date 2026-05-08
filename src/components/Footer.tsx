@@ -6,8 +6,33 @@ import Image from "next/image"
 import { MapPin, Phone, Mail, Flame, UtensilsCrossed, Maximize2 } from "lucide-react"
 import { FacebookIcon, InstagramIcon } from "@/components/social-icons"
 
+import { useFirestore, useCollection, useMemoFirebase } from "@/firebase"
+import { collection, query, limit } from "firebase/firestore"
+
 export function Footer() {
-  const googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=Cafe+Bar+Titi+Av.+Palomares+1+Coria+del+Rio"
+  const firestore = useFirestore()
+  const settingsQuery = useMemoFirebase(() => {
+    if (!firestore) return null
+    return query(collection(firestore, "siteConfig"), limit(1))
+  }, [firestore])
+
+  const { data: settingsData } = useCollection(settingsQuery)
+  
+  const defaults = {
+    contactPhone: "954 77 21 32",
+    contactEmail: "info@cafebartiti.es",
+    address: "Av. Palomares, 1, Coria del Río, Sevilla",
+    googleMaps: "https://www.google.com/maps/search/?api=1&query=Cafe+Bar+Titi+Av.+Palomares+1+Coria+del+Rio",
+    facebook: "https://www.facebook.com/CasaTiTiCoriaDelRio/?locale=es_ES",
+    instagram: "https://www.instagram.com/casatiti1968/",
+    hours_lun_mie: "06:00 - 00:00",
+    hours_jue_sab: "06:00 - 02:00",
+    hours_dom: "06:00 - 17:00"
+  }
+
+  const settings = settingsData?.[0] ? { ...defaults, ...settingsData[0] } : defaults
+
+  const googleMapsUrl = settings.googleMaps
   const brandGreen = "text-[#b5c99a] dark:text-primary transition-colors duration-300"
 
   return (
@@ -29,7 +54,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-5 justify-center md:justify-start">
               <Link
-                href="https://www.facebook.com/CasaTiTiCoriaDelRio/?locale=es_ES"
+                href={settings.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Síguenos en Facebook"
@@ -38,7 +63,7 @@ export function Footer() {
                 <FacebookIcon className="h-5 w-5" />
               </Link>
               <Link
-                href="https://www.instagram.com/casatiti1968/"
+                href={settings.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Síguenos en Instagram"
@@ -55,15 +80,15 @@ export function Footer() {
             <div className="space-y-4 text-sm w-full text-white/80 dark:text-foreground/80">
               <div className="flex flex-col items-center md:flex-row md:items-start gap-3 justify-center md:justify-start group">
                 <MapPin className={`h-5 w-5 ${brandGreen} shrink-0 transition-transform group-hover:scale-110`} />
-                <p>Av. Palomares, 1<br />41100 Coria del Río, Sevilla</p>
+                <p>{settings.address}</p>
               </div>
               <div className="flex flex-col items-center md:flex-row md:items-start gap-3 justify-center md:justify-start group">
                 <Phone className={`h-5 w-5 ${brandGreen} shrink-0 transition-transform group-hover:scale-110`} />
-                <p>954 77 21 32</p>
+                <p>{settings.contactPhone}</p>
               </div>
               <div className="flex flex-col items-center md:flex-row md:items-start gap-3 justify-center md:justify-start group">
                 <Mail className={`h-5 w-5 ${brandGreen} shrink-0 transition-transform group-hover:scale-110`} />
-                <p>info@cafebartiti.es</p>
+                <p>{settings.contactEmail}</p>
               </div>
             </div>
           </div>
@@ -74,15 +99,15 @@ export function Footer() {
             <div className="w-full max-w-[280px] md:max-w-none space-y-3 text-sm text-white/80 dark:text-foreground/80 mx-auto md:mx-0">
               <div className="flex justify-between items-center border-b border-white/5 dark:border-border/10 pb-2">
                 <span className="font-medium">Lun - Mié</span>
-                <span className="font-bold">06:00 - 00:00</span>
+                <span className="font-bold">{settings.hours_lun_mie}</span>
               </div>
               <div className="flex justify-between items-center border-b border-white/5 dark:border-border/10 pb-2">
                 <span className="font-medium">Jue - Sáb</span>
-                <span className="font-bold">06:00 - 02:00</span>
+                <span className="font-bold">{settings.hours_jue_sab}</span>
               </div>
               <div className="flex justify-between items-center border-b border-white/5 dark:border-border/10 pb-2">
                 <span className="font-medium">Domingos</span>
-                <span className="font-bold">06:00 - 17:00</span>
+                <span className="font-bold">{settings.hours_dom}</span>
               </div>
             </div>
           </div>

@@ -406,7 +406,7 @@ export default function ReservasPage() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-14 md:h-16 bg-secondary text-primary text-base md:text-lg font-bold rounded-xl md:rounded-2xl shadow-xl shadow-secondary/20 hover:bg-secondary/90 flex items-center justify-center gap-3 uppercase tracking-widest hover:scale-[1.02] transition-all"
+              className="w-full h-14 md:h-16 bg-secondary text-white text-base md:text-lg font-bold rounded-xl md:rounded-2xl shadow-xl shadow-secondary/20 hover:bg-secondary/90 flex items-center justify-center gap-3 uppercase tracking-widest hover:scale-[1.02] transition-all"
             >
               {isSubmitting ? "Confirmando..." : <>Confirmar mi Reserva <Send className="h-5 w-5" /></>}
             </Button>

@@ -56,9 +56,10 @@ import {
   IceCream,
   Cake
 } from "lucide-react"
-import { MENU_BACKUP } from "@/lib/menu"
 import { useCart } from "@/context/CartContext"
 import { FadeIn } from "@/components/FadeIn"
+import { useFirestore, useCollection, useMemoFirebase } from "@/firebase"
+import { collection, query, orderBy } from "firebase/firestore"
 
 const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Postres o Helados", "Bebidas"]
 
@@ -159,6 +160,14 @@ export default function MenuClient() {
   const [isVisible, setIsVisible] = React.useState(true)
   const [lastScrollY, setLastScrollY] = React.useState(0)
   const { addItem, updateQuantity, items: cartItems } = useCart()
+  
+  const firestore = useFirestore()
+  const menuQuery = useMemoFirebase(() => {
+    if (!firestore) return null
+    return query(collection(firestore, "menuItems"), orderBy("nombre", "asc"))
+  }, [firestore])
+
+  const { data: menuData, isLoading: loadingFirestore } = useCollection(menuQuery)
 
   const toggleAllergen = (name: string) => {
     setExcludedAllergens(prev =>
@@ -182,8 +191,11 @@ export default function MenuClient() {
 
   const displayedMenu = React.useMemo(() => {
     const organized: Record<string, any> = {}
+    
     CATEGORIES.forEach(cat => {
-      let items = MENU_BACKUP[cat]?.items || []
+      // Usar datos de Firestore si están disponibles, si no, fallback a vacío (o podrías usar MENU_BACKUP mientras carga)
+      let items = menuData?.filter((item: any) => item.category === cat) || []
+      
       if (searchTerm) {
         const lowerSearch = searchTerm.toLowerCase()
         items = items.filter((item: any) =>
@@ -199,11 +211,11 @@ export default function MenuClient() {
       }
       organized[cat] = {
         items: items,
-        footer: MENU_BACKUP[cat]?.footer || ""
+        footer: "" // El footer se podría parametrizar en Firestore también si fuera necesario
       }
     })
     return organized
-  }, [searchTerm, excludedAllergens])
+  }, [menuData, searchTerm, excludedAllergens])
 
   return (
     <div className="bg-transparent min-h-screen pb-16 max-w-full overflow-x-hidden">

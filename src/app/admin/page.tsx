@@ -20,9 +20,11 @@ import {
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useToast } from "@/hooks/use-toast"
 
 export default function AdminDashboard() {
   const { firestore } = useFirebase()
+  const { toast } = useToast()
 
   // Queries for basic stats
   const menuQuery = useMemoFirebase(() => !firestore ? null : collection(firestore, "menuItems"), [firestore])
@@ -185,6 +187,7 @@ export default function AdminDashboard() {
               </p>
             </CardContent>
           </Card>
+
         </div>
       </div>
     </div>

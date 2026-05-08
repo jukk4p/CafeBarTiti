@@ -29,8 +29,10 @@ import {
   Sparkles
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { MENU_BACKUP } from "@/lib/menu"
+import { setDoc } from "firebase/firestore"
 
-const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa"]
+const CATEGORIES = ["Entrantes", "Tapas Variadas", "Montaditos", "Pescado Frito", "Pescado Plancha", "Carnes a la Brasa", "Postres o Helados", "Bebidas"]
 
 const ALLERGENS = [
   "Contiene Gluten", "Crustáceos", "Huevos", "Pescado", "Cacahuetes", 
@@ -103,6 +105,32 @@ export default function AdminMenuPage() {
     setEditingItem(null)
   }
 
+  const syncWithBackup = async () => {
+    if (!firestore || !confirm("¿Estás seguro? Esto sobrescribirá los platos existentes con los datos del respaldo estático.")) return
+    
+    try {
+      const colRef = collection(firestore, "menuItems")
+      let count = 0
+      
+      for (const [category, section] of Object.entries(MENU_BACKUP)) {
+        for (const item of section.items) {
+          const docRef = doc(colRef, item.id)
+          await setDoc(docRef, {
+            ...item,
+            category,
+            updatedAt: new Date().toISOString()
+          })
+          count++
+        }
+      }
+      
+      alert(`¡Sincronización completada! Se han actualizado ${count} platos.`)
+    } catch (error) {
+      console.error("Error sincronizando:", error)
+      alert("Hubo un error al sincronizar. Revisa la consola.")
+    }
+  }
+
   const confirmDelete = () => {
     if (!firestore || !editingItem?.id) return
     const docRef = doc(firestore, "menuItems", editingItem.id)
@@ -137,13 +165,22 @@ export default function AdminMenuPage() {
           <h1 className="text-4xl font-headline font-bold">Carta & Menú</h1>
           <p className="text-muted-foreground">Gestiona los platos, precios y alérgenos de tu carta física.</p>
         </div>
-        <Button onClick={handleAddNew} className="h-12 px-6 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20">
-          <Plus className="h-5 w-5" /> Añadir Nuevo Plato
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="outline" 
+            onClick={syncWithBackup}
+            className="h-12 px-6 rounded-xl font-bold gap-2 border-primary/20 hover:bg-primary/5 text-primary"
+          >
+            <Sparkles className="h-5 w-5" /> Sincronizar Respaldo
+          </Button>
+          <Button onClick={handleAddNew} className="h-12 px-6 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20">
+            <Plus className="h-5 w-5" /> Añadir Nuevo Plato
+          </Button>
+        </div>
       </div>
 
       <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-        <TabsList className="bg-card border border-border p-1 h-auto flex flex-wrap lg:grid lg:grid-cols-6 rounded-2xl">
+        <TabsList className="bg-card border border-border p-1 h-auto flex flex-wrap lg:grid lg:grid-cols-4 rounded-2xl">
           {CATEGORIES.map(cat => (
             <TabsTrigger 
               key={cat} 
