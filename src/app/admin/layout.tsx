@@ -28,7 +28,8 @@ import {
   Settings, 
   LogOut,
   UtensilsCrossed,
-  Mail
+  Mail,
+  Megaphone
 } from "lucide-react"
 
 const adminItems = [
@@ -61,6 +62,11 @@ const adminItems = [
     title: "Reservas",
     url: "/admin/reservas",
     icon: Calendar,
+  },
+  {
+    title: "Marketing",
+    url: "/admin/marketing",
+    icon: Megaphone,
   },
   {
     title: "Información",

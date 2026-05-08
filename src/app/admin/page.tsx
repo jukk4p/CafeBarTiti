@@ -15,7 +15,8 @@ import {
   Clock,
   ExternalLink,
   Loader2,
-  Mail
+  Mail,
+  Megaphone
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -156,6 +157,11 @@ export default function AdminDashboard() {
               <Button asChild variant="secondary" className="w-full rounded-xl h-12 font-bold justify-between">
                 <a href="/admin/info">
                   Configuración <Settings className="h-4 w-4" />
+                </a>
+              </Button>
+              <Button asChild variant="secondary" className="w-full rounded-xl h-12 font-bold justify-between">
+                <a href="/admin/marketing">
+                  Marketing Social <Megaphone className="h-4 w-4" />
                 </a>
               </Button>
               <div className="mt-8 pt-6 border-t border-white/10 flex items-center gap-3">
