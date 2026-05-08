@@ -235,7 +235,7 @@ export default function ContactoPage() {
                   <div className="p-3 bg-primary rounded-xl">
                     <img
                       src="/historia/historia-imagen.webp"
-                      alt="Bar Titi"
+                      alt="Cafe Bar Titi"
                       className="h-10 w-10 object-cover rounded-md"
                     />
                   </div>

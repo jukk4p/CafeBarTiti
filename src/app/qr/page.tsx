@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import { Flame, Sparkles, Smartphone, ArrowRight } from "lucide-react"
 
 export default function QRPage() {
-  const [productionUrl, setProductionUrl] = React.useState("https://bartiti.ivangonzalez.cloud/qr-menu")
+  const [productionUrl, setProductionUrl] = React.useState("https://cafebartiti.es/qr-menu")
   
   // Usamos una API externa para generar el QR real y funcional sin dependencias pesadas
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(productionUrl)}&bgcolor=FFFFFF&color=064e3b&margin=2`

@@ -2,13 +2,13 @@
   "placeholderImages": [
     {
       "id": "hero-bar-exterior",
-      "description": "Fachada principal de Bar Titi en Coria del Río",
+      "description": "Fachada principal de Cafe Bar Titi en Coria del Río",
       "imageUrl": "/hero/00_Portada.webp",
       "imageHint": "Bar facade"
     },
     {
       "id": "historia-titi",
-      "description": "Imagen de la familia y el legado de Bar Titi",
+      "description": "Imagen de la familia y el legado de Cafe Bar Titi",
       "imageUrl": "/historia/historia-imagen.webp",
       "imageHint": "Family bar"
     },

@@ -15,6 +15,14 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "Descubre nuestra carta de tapas: serranito, choco frito, presa ibérica y mucho más. Tradición desde 1968.",
       url: "https://cafebartiti.es/menu",
       type: "website",
+      images: [
+        {
+          url: 'https://cafebartiti.es/hero/00_Portada.webp',
+          width: 1200,
+          height: 630,
+          alt: 'Carta Cafe Bar Titi',
+        },
+      ],
     }
   }
 }

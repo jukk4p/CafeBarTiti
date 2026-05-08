@@ -25,11 +25,11 @@ export const metadata: Metadata = {
     template: '%s | Cafe Bar Titi'
   },
   description: 'Desde 1968 ofreciendo el sabor auténtico de Sevilla. Serranitos, chocos y presa ibérica en el corazón de Coria del Río. ¡Reserva tu mesa!',
-  keywords: ['Bar Titi', 'Tapas Coria del Río', 'Restaurante Sevilla', 'Serranitos Sevilla', 'Comer en Coria', 'Gastronomía Andaluza'],
+  keywords: ['Cafe Bar Titi', 'Tapas Coria del Río', 'Restaurante Sevilla', 'Serranitos Sevilla', 'Comer en Coria', 'Gastronomía Andaluza'],
   authors: [{ name: 'Cafe Bar Titi' }],
   metadataBase: new URL('https://cafebartiti.es'),
   alternates: {
-    canonical: '/',
+    canonical: 'https://cafebartiti.es',
   },
   appleWebApp: {
     capable: true,
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/hero/00_Portada.webp',
+        url: 'https://cafebartiti.es/hero/00_Portada.webp',
         width: 1200,
         height: 630,
         alt: 'Fachada Cafe Bar Titi',
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Cafe Bar Titi - Tapas Tradicionales en Coria del Río',
     description: 'El corazón del tapeo en Coria del Río desde 1968.',
-    images: ['/hero/00_Portada.webp'],
+    images: ['https://cafebartiti.es/hero/00_Portada.webp'],
   },
   robots: {
     index: true,
