@@ -16,9 +16,9 @@
     --primary: 138 43% 15%;
     /* Verde Bosque Profundo #152B1B */
     --primary-foreground: 60 15% 97%;
-    --secondary: 46 65% 52%;
-    /* Dorado #D4AF37 */
-    --secondary-foreground: 138 43% 10%;
+    --secondary: 138 43% 15%;
+    /* Verde Corporativo */
+    --secondary-foreground: 60 15% 97%;
     --muted: 60 10% 90%;
     --muted-foreground: 0 0% 40%;
     --accent: 0 0% 13.3%;
@@ -217,4 +217,26 @@
   .glass-nav {
     @apply backdrop-blur-md border-b border-border transition-colors duration-300;
   }
+}
+
+/* 
+ * FINAL BOSS OVERRIDE: Reservation Calendar 
+ * Forces white text on selected days regardless of library internals or hover states.
+ */
+.rdp-selected, 
+.rdp-day_selected,
+[aria-selected="true"],
+.aria-selected {
+  color: white !important;
+}
+
+.rdp-selected:hover,
+.rdp-day_selected:hover,
+[aria-selected="true"]:hover {
+  color: white !important;
+  background-color: hsl(var(--secondary)) !important;
+}
+
+.rdp-today[aria-selected="true"] {
+  text-decoration-color: white !important;
 }

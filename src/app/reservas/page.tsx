@@ -243,28 +243,28 @@ export default function ReservasPage() {
           <div className="lg:col-span-4 space-y-8">
             <Card className="rounded-[2rem] md:rounded-[2.5rem] shadow-xl border-none dark:border-solid dark:border-white/10 bg-primary dark:bg-white/5 p-8 md:p-10 space-y-8 glass">
               <div className="space-y-4">
-                <div className="flex items-center gap-3 text-primary">
+                <div className="flex items-center gap-3 text-white dark:text-primary">
                   <Info className="h-5 w-5 md:h-6 md:w-6" />
                   <h3 className="text-xl md:text-2xl font-headline font-bold">Información Útil</h3>
                 </div>
                 <ul className="space-y-4 text-[13px] md:text-sm font-light text-white/90 dark:text-foreground/80 italic leading-relaxed">
                   <li className="flex gap-3">
-                    <ChevronRight className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <ChevronRight className="h-4 w-4 text-white/50 dark:text-primary shrink-0 mt-0.5" />
                     <span>Límite de 4 mesas diarias por reserva online.</span>
                   </li>
                   <li className="flex gap-3">
-                    <ChevronRight className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <ChevronRight className="h-4 w-4 text-white/50 dark:text-primary shrink-0 mt-0.5" />
                     <span>Se ruega puntualidad. La mesa se mantendrá 15 min.</span>
                   </li>
                   <li className="flex gap-3">
-                    <ChevronRight className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <ChevronRight className="h-4 w-4 text-white/50 dark:text-primary shrink-0 mt-0.5" />
                     <span>Indíquenos en 'Notas' si prefiere terraza o interior.</span>
                   </li>
                 </ul>
               </div>
 
               <div className="pt-8 border-t border-white/10 dark:border-border/50">
-                <h4 className="text-lg font-headline font-bold mb-4 text-primary">Ubicación</h4>
+                <h4 className="text-lg font-headline font-bold mb-4 text-white dark:text-primary">Ubicación</h4>
                 <div className="relative aspect-video rounded-2xl md:rounded-3xl overflow-hidden border-2 border-white/20 group cursor-pointer block h-full min-h-[150px]">
                   <iframe
                     width="100%"

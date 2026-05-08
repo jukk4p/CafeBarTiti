@@ -79,18 +79,20 @@ export function BookingCalendar({
 
       {/* Legend */}
       <div className="w-full max-w-md mx-auto">
-        <div className="grid grid-cols-3 gap-2 bg-card/50 backdrop-blur-sm p-2 rounded-2xl border border-border/50 shadow-inner">
-          <div className="flex flex-col items-center gap-1.5 py-3">
-            <div className="w-3 h-3 bg-background border border-primary/10 rounded-full shadow-sm" />
-            <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground">Disponible</span>
+        <div className="grid grid-cols-3 gap-2 bg-card/30 backdrop-blur-md p-2 rounded-[1.5rem] border border-border/50 shadow-sm">
+          <div className="flex flex-col items-center gap-2 py-3">
+            <div className="w-4 h-4 bg-background border-2 border-primary/10 rounded-lg shadow-sm" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">Disponible</span>
           </div>
-          <div className="flex flex-col items-center gap-1.5 py-3 border-x border-primary/5">
-            <div className="w-3 h-3 bg-muted/40 rounded-full" />
-            <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground/70">Ocupado</span>
+          <div className="flex flex-col items-center gap-2 py-3 border-x border-border/50">
+            <div className="w-4 h-4 bg-muted/40 rounded-lg flex items-center justify-center overflow-hidden relative">
+              <div className="absolute w-[140%] h-[2px] bg-muted-foreground/20 rotate-45" />
+            </div>
+            <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/30">Ocupado</span>
           </div>
-          <div className="flex flex-col items-center gap-1.5 py-3">
-            <div className="w-3 h-3 bg-secondary rounded-full shadow-md" />
-            <span className="text-[8px] font-bold uppercase tracking-widest text-primary">Seleccionado</span>
+          <div className="flex flex-col items-center gap-2 py-3">
+            <div className="w-4 h-4 bg-secondary rounded-lg shadow-md ring-2 ring-secondary/20" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-primary">Seleccionado</span>
           </div>
         </div>
       </div>

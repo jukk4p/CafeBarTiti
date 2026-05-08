@@ -229,18 +229,18 @@ export default function GaleriaPage() {
         </AnimatePresence>
 
         {/* Call to Action Section */}
-        <div className="mt-32 bg-card border border-black/5 rounded-[3rem] p-10 md:p-20 flex flex-col md:flex-row items-center justify-between gap-12 shadow-2xl relative overflow-hidden group">
+        <div className="mt-32 bg-card border border-black/5 rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-20 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 shadow-2xl relative overflow-hidden group text-center md:text-left">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="space-y-6 text-center md:text-left relative z-10">
-            <h2 className="text-4xl md:text-5xl font-headline font-bold text-foreground">¿Te ha entrado hambre?</h2>
-            <p className="text-muted-foreground text-lg max-w-md leading-relaxed italic">
+          <div className="space-y-4 md:space-y-6 relative z-10">
+            <h2 className="text-3xl md:text-5xl font-headline font-bold text-foreground">¿Te ha entrado hambre?</h2>
+            <p className="text-muted-foreground text-base md:text-lg max-w-md leading-relaxed italic mx-auto md:mx-0">
               No te quedes solo con las fotos. Ven a visitarnos y disfruta 
               del auténtico sabor de Coria del Río en nuestra mesa.
             </p>
           </div>
-          <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white px-12 py-8 rounded-[2rem] text-xl font-bold font-headline shadow-2xl shadow-primary/20 transition-all hover:scale-105 relative z-10">
-            <Link href="/reservas" className="flex items-center gap-3">
-              <Calendar className="h-6 w-6" />
+          <Button asChild size="lg" className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white px-8 md:px-12 py-6 md:py-8 rounded-2xl md:rounded-[2rem] text-lg md:text-xl font-bold font-headline shadow-2xl shadow-primary/20 transition-all hover:scale-105 relative z-10 uppercase tracking-widest">
+            <Link href="/reservas" className="flex items-center justify-center gap-3">
+              <Calendar className="h-5 w-5 md:h-6 md:w-6" />
               Reservar Mesa Ahora
             </Link>
           </Button>

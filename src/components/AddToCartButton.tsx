@@ -106,42 +106,54 @@ export function AddToCartButton({
               </button>
             </DropdownMenuTrigger>
             
-            <DropdownMenuContent align="center" className="rounded-2xl p-2 min-w-[200px] glass-card border-white/10 shadow-2xl">
-              <div className="px-3 py-2 text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground opacity-60">
+            <DropdownMenuContent align="center" className="rounded-[1.8rem] p-3 min-w-[240px] glass-card border-white/10 shadow-2xl space-y-2">
+              <div className="px-3 pb-1 text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground opacity-40">
                 Selecciona ingrediente
               </div>
               {variantOptions.map(v => {
                 const variantItem = cartItemsForType.find(i => i.variant === v)
                 const variantQty = variantItem?.quantity || 0
                 return (
-                  <div key={v} className="flex items-stretch mb-1.5 last:mb-0 h-12 bg-black/[0.03] dark:bg-white/[0.03] rounded-xl overflow-hidden border border-black/5 dark:border-white/5 group/variant">
-                    {variantQty > 0 && (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, type, -1, v); }}
-                        className="flex items-center justify-center w-12 text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-90"
-                      >
-                        <Minus className="h-4 w-4" strokeWidth={3} />
-                      </button>
-                    )}
+                  <div 
+                    key={v} 
+                    className="flex items-stretch h-14 bg-muted/20 dark:bg-white/5 rounded-[1.2rem] overflow-hidden border border-border transition-all hover:border-primary/20"
+                  >
+                    {/* Botón Menos */}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); updateQuantity(item.id, type, -1, v); }}
+                      disabled={variantQty === 0}
+                      className={cn(
+                        "flex items-center justify-center w-12 transition-all active:scale-90",
+                        variantQty > 0 
+                          ? "text-red-500 hover:bg-red-500/10" 
+                          : "text-muted-foreground/10 cursor-not-allowed"
+                      )}
+                    >
+                      <Minus className={cn("h-4 w-4", variantQty > 0 ? "opacity-100" : "opacity-20")} strokeWidth={3} />
+                    </button>
+
+                    {/* Centro: Nombre + Badge */}
                     <div
                       className={cn(
-                        "flex-1 flex justify-between items-center px-4 cursor-pointer transition-all",
-                        variantQty > 0 ? "bg-primary/5 hover:bg-primary/10" : "hover:bg-primary/5"
+                        "flex-1 flex flex-col items-center justify-center gap-0.5 px-2 transition-all cursor-pointer select-none",
+                        variantQty > 0 ? "bg-primary/5" : "hover:bg-primary/5"
                       )}
                       onClick={(e) => { e.stopPropagation(); handleAdd(type, price, v); }}
                     >
-                      <span className="font-bold text-[11px] uppercase tracking-wider">{v}</span>
+                      <span className="font-black text-[10px] uppercase tracking-widest text-foreground/70">{v}</span>
                       {variantQty > 0 && (
-                        <span className="bg-primary text-white text-[10px] font-black px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                        <div className="bg-primary text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-md animate-in zoom-in-50 duration-300">
                           {variantQty}
-                        </span>
+                        </div>
                       )}
                     </div>
+
+                    {/* Botón Más */}
                     <button
-                       onClick={(e) => { e.stopPropagation(); handleAdd(type, price, v); }}
-                       className="flex items-center justify-center w-10 text-primary hover:bg-primary hover:text-white transition-all active:scale-90"
+                      onClick={(e) => { e.stopPropagation(); handleAdd(type, price, v); }}
+                      className="flex items-center justify-center w-12 text-primary hover:bg-primary/10 transition-all active:scale-90"
                     >
-                      <Plus className="h-3.5 w-3.5" strokeWidth={3} />
+                      <Plus className="h-4 w-4" strokeWidth={3} />
                     </button>
                   </div>
                 )
