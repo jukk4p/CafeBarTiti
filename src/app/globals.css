@@ -46,6 +46,16 @@
     --border-subtle: 25 10% 90%;
     --border-default: 25 10% 85%;
     --border-strong: 25 10% 75%;
+
+    /* Sidebar Variables - Light Mode */
+    --sidebar-background: 60 15% 98%;
+    --sidebar-foreground: 0 0% 13.3%;
+    --sidebar-primary: 138 43% 15%;
+    --sidebar-primary-foreground: 60 15% 97%;
+    --sidebar-accent: 60 10% 90%;
+    --sidebar-accent-foreground: 0 0% 13.3%;
+    --sidebar-border: 25 10% 85%;
+    --sidebar-ring: 138 43% 21%;
   }
 
   /* Dark Mode Palette - Deep Tavern Aesthetic / IGU Premium */
@@ -93,6 +103,16 @@
     --border-subtle: 25 10% 15%;
     --border-default: 25 10% 20%;
     --border-strong: 25 10% 30%;
+
+    /* Sidebar Variables - Dark Mode */
+    --sidebar-background: 0 0% 7%;
+    --sidebar-foreground: 60 15% 97%;
+    --sidebar-primary: 41 100% 50%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 20%;
+    --sidebar-accent-foreground: 60 15% 97%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 41 100% 50%;
   }
 }
 

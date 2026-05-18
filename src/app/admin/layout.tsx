@@ -191,7 +191,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {pathname.split('/').pop() || 'Dashboard'}
           </span>
         </header>
-        <main className="flex-1 p-6 lg:p-10 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-4 sm:p-6 lg:p-10 max-w-7xl mx-auto w-full overflow-x-hidden">
           {children}
         </main>
       </SidebarInset>

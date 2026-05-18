@@ -160,32 +160,32 @@ export default function AdminMenuPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-4xl font-headline font-bold">Carta & Menú</h1>
-          <p className="text-muted-foreground">Gestiona los platos, precios y alérgenos de tu carta física.</p>
+          <h1 className="text-3xl sm:text-4xl font-headline font-bold">Carta & Menú</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Gestiona los platos, precios y alérgenos de tu carta física.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
           <Button 
             variant="outline" 
             onClick={syncWithBackup}
-            className="h-12 px-6 rounded-xl font-bold gap-2 border-primary/20 hover:bg-primary/5 text-primary"
+            className="h-12 px-6 rounded-xl font-bold gap-2 border-primary/20 hover:bg-primary/5 text-primary w-full sm:w-auto justify-center"
           >
-            <Sparkles className="h-5 w-5" /> Sincronizar Respaldo
+            <Sparkles className="h-5 w-5 shrink-0" /> <span className="truncate">Sincronizar Respaldo</span>
           </Button>
-          <Button onClick={handleAddNew} className="h-12 px-6 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20">
-            <Plus className="h-5 w-5" /> Añadir Nuevo Plato
+          <Button onClick={handleAddNew} className="h-12 px-6 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20 w-full sm:w-auto justify-center">
+            <Plus className="h-5 w-5 shrink-0" /> <span className="truncate">Añadir Nuevo Plato</span>
           </Button>
         </div>
       </div>
 
       <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-        <TabsList className="bg-card border border-border p-1 h-auto flex flex-wrap lg:grid lg:grid-cols-4 rounded-2xl">
+        <TabsList className="bg-card border border-border p-1.5 h-auto flex flex-wrap lg:grid lg:grid-cols-4 rounded-2xl gap-1">
           {CATEGORIES.map(cat => (
             <TabsTrigger 
               key={cat} 
               value={cat}
-              className="rounded-xl py-3 text-[10px] font-bold uppercase tracking-widest data-[state=active]:bg-primary data-[state=active]:text-white transition-all"
+              className="rounded-xl py-2.5 px-3 text-[10px] font-bold uppercase tracking-widest data-[state=active]:bg-primary data-[state=active]:text-white transition-all flex-1 min-w-[120px] text-center"
             >
               {cat}
             </TabsTrigger>
@@ -196,7 +196,7 @@ export default function AdminMenuPage() {
           <TabsContent key={category} value={category} className="mt-8 space-y-4">
             <div className="grid gap-4">
               {menuItems?.filter(item => item.category === category).length === 0 ? (
-                <div className="text-center py-20 bg-card/50 rounded-[2rem] border-2 border-dashed border-muted">
+                <div className="text-center py-20 bg-card/50 rounded-[2rem] border-2 border-dashed border-muted px-4">
                   <UtensilsCrossed className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
                   <h3 className="text-xl font-bold text-muted-foreground">No hay platos en esta categoría</h3>
                   <p className="text-sm text-muted-foreground mt-2">Usa el botón superior para añadir tu primer plato a {category}.</p>
@@ -205,21 +205,38 @@ export default function AdminMenuPage() {
                 menuItems?.filter(item => item.category === category).map((item) => (
                   <Card key={item.id} className="overflow-hidden group hover:border-primary/30 transition-all shadow-sm">
                     <CardContent className="p-0">
-                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center p-4 gap-4">
-                        <div className="h-20 w-20 rounded-2xl bg-muted overflow-hidden shrink-0 border border-border">
-                          {item.image ? (
-                            <img src={item.image} alt={item.nombre} className="h-full w-full object-cover" />
-                          ) : (
-                            <div className="h-full w-full flex items-center justify-center bg-primary/5">
-                              <Sparkles className="h-6 w-6 text-primary/20" />
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center p-4 sm:p-6 gap-4 sm:gap-6">
+                        {/* Imagen y Título en móvil / Imagen en desktop */}
+                        <div className="flex items-center gap-4">
+                          <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-muted overflow-hidden shrink-0 border border-border">
+                            {item.image ? (
+                              <img src={item.image} alt={item.nombre} className="h-full w-full object-cover" />
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center bg-primary/5">
+                                <Sparkles className="h-6 w-6 text-primary/20" />
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="flex-1 sm:hidden space-y-1">
+                            <div className="flex items-center gap-1 flex-wrap">
+                              <h3 className="text-lg font-bold font-headline leading-tight">{item.nombre}</h3>
+                              <div className="flex gap-1 items-center ml-1">
+                                {item.alergenos?.slice(0, 3).map((a: string) => (
+                                  <div key={a} className="h-1.5 w-1.5 rounded-full bg-primary/40" title={a} />
+                                ))}
+                                {item.alergenos?.length > 3 && <span className="text-[8px] font-bold opacity-40">+{item.alergenos.length - 3}</span>}
+                              </div>
                             </div>
-                          )}
+                            <p className="text-xs text-muted-foreground line-clamp-2 italic">{item.desc || "Sin descripción disponible."}</p>
+                          </div>
                         </div>
                         
-                        <div className="flex-1 space-y-1">
+                        {/* Título y descripción en Desktop */}
+                        <div className="hidden sm:block flex-1 space-y-1">
                           <div className="flex items-center gap-2">
                             <h3 className="text-xl font-bold font-headline">{item.nombre}</h3>
-                            <div className="flex gap-1">
+                            <div className="flex gap-1 items-center">
                               {item.alergenos?.slice(0, 3).map((a: string) => (
                                 <div key={a} className="h-1.5 w-1.5 rounded-full bg-primary/40" title={a} />
                               ))}
@@ -229,33 +246,35 @@ export default function AdminMenuPage() {
                           <p className="text-sm text-muted-foreground line-clamp-1 italic">{item.desc || "Sin descripción disponible."}</p>
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-4 px-4 border-l border-border/50">
+                        {/* Precios */}
+                        <div className="flex flex-wrap items-center justify-around sm:justify-end gap-4 pt-4 sm:pt-0 border-t sm:border-t-0 sm:border-l border-border/50 sm:pl-6">
                           {item.prices?.tapa > 0 && (
                             <div className="text-center">
-                              <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground">Tapa</span>
-                              <p className="font-bold text-primary">{item.prices.tapa.toFixed(2)}€</p>
+                              <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground block">Tapa</span>
+                              <p className="font-bold text-primary text-sm sm:text-base">{item.prices.tapa.toFixed(2)}€</p>
                             </div>
                           )}
                           {item.prices?.media > 0 && (
                             <div className="text-center">
-                              <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground">Media</span>
-                              <p className="font-bold text-secondary">{item.prices.media.toFixed(2)}€</p>
+                              <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground block">Media</span>
+                              <p className="font-bold text-secondary text-sm sm:text-base">{item.prices.media.toFixed(2)}€</p>
                             </div>
                           )}
                           {item.prices?.racion > 0 && (
                             <div className="text-center">
-                              <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground">Ración</span>
-                              <p className="font-bold text-accent">{item.prices.racion.toFixed(2)}€</p>
+                              <span className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground block">Ración</span>
+                              <p className="font-bold text-accent text-sm sm:text-base">{item.prices.racion.toFixed(2)}€</p>
                             </div>
                           )}
                         </div>
 
-                        <div className="flex items-center gap-2 pl-4 border-l border-border/50">
-                          <Button variant="ghost" size="icon" onClick={() => handleEdit(item)} className="hover:bg-primary/10 hover:text-primary">
-                            <Edit3 className="h-5 w-5" />
+                        {/* Acciones */}
+                        <div className="flex items-center justify-end gap-2 pt-3 sm:pt-0 border-t sm:border-t-0 sm:border-l border-border/50 sm:pl-4">
+                          <Button variant="ghost" size="sm" onClick={() => handleEdit(item)} className="hover:bg-primary/10 hover:text-primary gap-1.5 h-9 px-3">
+                            <Edit3 className="h-4 w-4" /> <span className="sm:hidden text-xs font-bold">Editar</span>
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(item)} className="hover:bg-destructive/10 hover:text-destructive">
-                            <Trash2 className="h-5 w-5" />
+                          <Button variant="ghost" size="sm" onClick={() => handleDeleteClick(item)} className="hover:bg-destructive/10 hover:text-destructive gap-1.5 h-9 px-3">
+                            <Trash2 className="h-4 w-4" /> <span className="sm:hidden text-xs font-bold">Eliminar</span>
                           </Button>
                         </div>
                       </div>

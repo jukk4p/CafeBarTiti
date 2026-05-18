@@ -2,11 +2,8 @@
 import type { Metadata, Viewport } from 'next';
 import { Space_Grotesk, Inter } from 'next/font/google';
 import './globals.css';
-import { Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import { StickyCallButton } from '@/components/StickyCallButton';
-import { ChatAgent } from '@/components/ChatAgent';
+import { PublicLayoutElements } from '@/components/PublicLayoutElements';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { CartProvider } from '@/context/CartContext';
@@ -151,13 +148,9 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <FirebaseClientProvider>
             <CartProvider>
-              <Navbar />
-              <main className="flex-grow" id="main-content">
+              <PublicLayoutElements>
                 {children}
-              </main>
-              <Footer />
-              <StickyCallButton />
-              <ChatAgent />
+              </PublicLayoutElements>
               <Toaster />
             </CartProvider>
           </FirebaseClientProvider>
