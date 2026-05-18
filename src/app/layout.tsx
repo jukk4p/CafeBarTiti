@@ -6,6 +6,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { StickyCallButton } from '@/components/StickyCallButton';
+import { ChatAgent } from '@/components/ChatAgent';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { CartProvider } from '@/context/CartContext';
@@ -156,6 +157,7 @@ export default function RootLayout({
               </main>
               <Footer />
               <StickyCallButton />
+              <ChatAgent />
               <Toaster />
             </CartProvider>
           </FirebaseClientProvider>
