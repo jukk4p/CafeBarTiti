@@ -29,7 +29,8 @@ import {
   LogOut,
   UtensilsCrossed,
   Mail,
-  Megaphone
+  Megaphone,
+  ShoppingBag
 } from "lucide-react"
 
 const adminItems = [
@@ -42,6 +43,11 @@ const adminItems = [
     title: "Carta & Menú",
     url: "/admin/menu",
     icon: BookOpen,
+  },
+  {
+    title: "Pedidos",
+    url: "/admin/orders",
+    icon: ShoppingBag,
   },
   {
     title: "Galería",

@@ -10,11 +10,7 @@ const nextConfig = {
   transpilePackages: ['firebase', '@firebase/auth'],
   typescript: {
     // Saltamos errores para permitir el deploy.
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    // Saltamos linting para permitir el deploy.
-    ignoreDuringBuilds: true,
+    ignoreBuildErrors: false,
   },
   async headers() {
     return [
@@ -36,6 +32,14 @@ const nextConfig = {
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' blob: data: https://placehold.co https://images.unsplash.com https://picsum.photos; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com;",
           },
         ],
       },

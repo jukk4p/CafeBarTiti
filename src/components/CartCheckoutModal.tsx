@@ -2,6 +2,9 @@
 
 import * as React from "react"
 import { useCart } from "@/context/CartContext"
+import { useFirebase } from "@/firebase"
+import { collection, Timestamp } from "firebase/firestore"
+import { addDocumentNonBlocking } from "@/firebase/non-blocking-updates"
 import { cn } from "@/lib/utils"
 import {
   Dialog,
@@ -21,6 +24,7 @@ interface CartCheckoutModalProps {
 
 export function CartCheckoutModal({ open, onOpenChange }: CartCheckoutModalProps) {
   const { items, total, updateQuantity, clearCart } = useCart()
+  const { firestore } = useFirebase()
   const [name, setName] = React.useState("")
   const [pickupTime, setPickupTime] = React.useState("Pronto (aprox 40min)")
   const [notes, setNotes] = React.useState("")
@@ -34,6 +38,30 @@ export function CartCheckoutModal({ open, onOpenChange }: CartCheckoutModalProps
   const handleWhatsApp = () => {
     if (!name) return
 
+    // 1. Guardar el pedido en Firebase Firestore automáticamente para el panel de cocina
+    if (firestore && items.length > 0) {
+      const orderItems = items.map(i => ({
+        id: i.id,
+        nombre: i.nombre,
+        type: i.variant || i.type,
+        price: i.price,
+        qty: i.quantity
+      }))
+
+      const orderData = {
+        customerName: name.trim(),
+        pickupTime: pickupTime.trim(),
+        notes: notes.trim(),
+        items: orderItems,
+        total: parseFloat(total.toFixed(2)),
+        status: "pending",
+        createdAt: Timestamp.now()
+      }
+
+      addDocumentNonBlocking(collection(firestore, "orders"), orderData)
+    }
+
+    // 2. Abrir WhatsApp para enviar la confirmación al bar
     const orderText = items.map(i => `- ${i.quantity}x ${i.nombre} (${i.variant || i.type.toUpperCase()})`).join("\n")
     const notesText = notes.trim() ? `\n\n⚠️ NOTAS/ALERGIAS:\n${notes.trim()}` : ""
     

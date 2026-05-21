@@ -4,6 +4,7 @@
 import { useEffect } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default function Error({
   error,
@@ -30,7 +31,7 @@ export default function Error({
           Reintentar
         </Button>
         <Button variant="outline" asChild size="lg" className="border-primary text-primary rounded-xl px-10 h-14 font-bold uppercase tracking-widest">
-          <a href="/">Volver al Inicio</a>
+          <Link href="/">Volver al Inicio</Link>
         </Button>
       </div>
     </div>

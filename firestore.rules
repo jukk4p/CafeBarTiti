@@ -1,45 +1,60 @@
-
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isSignedIn() {
-      return request.auth != null;
-    }
+
+    // Función simple y segura para verificar que sos VOS (el administrador)
     function isAdmin() {
-      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      return request.auth != null && request.auth.token.email == "jukk4p@gmail.com";
     }
 
+    // Carta & Menú (Todos leen, solo admin escribe)
     match /menuItems/{menuItemId} {
       allow get, list: if true;
       allow write: if isAdmin();
     }
+
+    // Galería (Todos leen, solo admin escribe)
     match /gallery/{galleryId} {
       allow get, list: if true;
       allow write: if isAdmin();
     }
+
+    // Mensajes de contacto
+    match /contacts/{contactId} {
+      allow create: if true;
+      allow get, list, update, delete: if isAdmin();
+    }
+
+    // Reservas
     match /reservas/{reservationId} {
-      // Permitimos crear reservas a cualquiera
       allow create: if true;
-      // Permitimos listar para que el calendario pueda marcar días como "Ocupados"
-      allow get, list: if true;
-      // Solo el admin puede borrar o modificar reservas existentes
+      allow get, list: if isAdmin();
       allow write: if isAdmin();
     }
+
+    // NUEVA: Configuración del sitio (siteConfig)
+    // Es la que usamos para los textos dinámicos de la web
+    match /siteConfig/{configId} {
+      allow get, list: if true;
+      allow write: if isAdmin();
+    }
+
+    // Reseñas y sugerencias
     match /reviews/{reviewId} {
-      allow get, list: if true;
-      allow create: if true;
+      allow get, list, create: if true;
       allow write: if isAdmin();
     }
+
     match /suggestions/{suggestionId} {
       allow create: if true;
       allow get, list, write: if isAdmin();
     }
-    match /admins/{adminId} {
-      allow get: if isSignedIn();
-      allow write: if false;
-    }
-    match /siteConfig/{configId} {
-      allow get, list: if true;
+
+    // NUEVA: Pedidos de Cocina (orders)
+    match /orders/{orderId} {
+      allow create: if true;
+      allow get, list: if isAdmin();
       allow write: if isAdmin();
     }
   }
