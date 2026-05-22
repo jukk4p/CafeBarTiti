@@ -497,7 +497,7 @@ export default function MenuClient() {
               <div className="flex flex-col items-center gap-2 text-primary">
                 <Clock className="h-4 w-4" strokeWidth={2.5} /><span className="text-[10px] font-black uppercase tracking-[0.2em]">Horario de Cocina</span>
               </div>
-              <p className="text-[11px] font-medium text-muted-foreground italic">Lun - Mié: 06:00 - 00:00 · Jue - Sáb: 06:00 - 02:00 · Dom: 06:00 - 17:00</p>
+              <p className="text-[11px] font-medium text-muted-foreground italic">Lun–Mié: solo almuerzo · Jue–Sáb: almuerzo y cena · Dom: solo almuerzo</p>
             </div>
             <div className="w-full max-w-[150px] h-px bg-gradient-to-r from-transparent via-border/60 to-transparent" />
             <div className="space-y-2 text-center">
